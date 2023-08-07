@@ -29,8 +29,8 @@ The application is powered by CommerceTools 🌐, a leading provider of commerce
 
 ## 4.Scripts:
 
-- running Prettier: npx prettier
-- running ESLint: npx eslint **/*.ts --fix
+- running Prettier: npm run fix
+- running ESLint: npm run lint
 - running Jest: npm test
 
 ## 5.Setting up and running the project locally
@@ -42,4 +42,6 @@ The bundler configuration supports both development and production build modes.
 
 The project supports running locally.
 - open with live server: npm start
+
+To initialize husky run script "npm run prepare" once!
 

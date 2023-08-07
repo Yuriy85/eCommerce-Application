@@ -28,10 +28,13 @@
     "webpack-dev-server": "^4.15.1"
   },
   "scripts": {
-    "test": "jest",
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
-    "start": "webpack serve"
+    "start": "webpack serve",
+    "test": "jest",
+    "lint": "eslint .",
+    "fix": "eslint . --fix",
+    "prepare": "husky install"
   },
   "author": "TrueOrFalse",
   "license": "ISC"
