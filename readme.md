@@ -43,3 +43,5 @@ The bundler configuration supports both development and production build modes.
 The project supports running locally.
 - open with live server: npm start
 
+To initialize husky run script "npm run prepare" once!
+
