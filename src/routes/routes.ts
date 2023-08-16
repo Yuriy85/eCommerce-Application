@@ -7,4 +7,5 @@ export const pagePaths = {
   registerPath: "#register",
   basketPath: "#basket",
   aboutPath: "#about",
+  errorPath: "#error",
 };

@@ -9,6 +9,7 @@ import LoginPage from "./pages/login_page/login_page";
 import RegisterPage from "./pages/register_page/register_page";
 import BasketPage from "./pages/basket_page/basket_page";
 import AboutPage from "./pages/about_page/about_page";
+import ErrorPage from "./pages/404_page/404_page";
 import { pagePaths } from "./routes/routes";
 import Events from "./controller/events";
 
@@ -25,6 +26,7 @@ class App {
   registerPage: HTMLElement;
   basketPage: HTMLElement;
   aboutPage: HTMLElement;
+  errorPage: ErrorPage;
   events: Events;
 
   constructor() {
@@ -40,6 +42,7 @@ class App {
     this.registerPage = new RegisterPage().render();
     this.basketPage = new BasketPage().render();
     this.aboutPage = new AboutPage().render();
+    this.errorPage = new ErrorPage();
     this.events = new Events();
   }
 
@@ -52,7 +55,7 @@ class App {
   }
 
   renderPage(path: string): void {
-    let pageInnerData: HTMLElement = this.mainPage;
+    let pageInnerData: HTMLElement = this.errorPage.render();
     if (path === pagePaths.mainPath || path === "") {
       pageInnerData = this.mainPage;
     } else if (path === pagePaths.catalogPath) {
@@ -88,13 +91,6 @@ class App {
       ?.addEventListener("click", () => {
         this.goToPage(pagePaths.mainPath);
       });
-    document.querySelectorAll(".header__button").forEach((element) => {
-      element.addEventListener("click", (event) => {
-        event.preventDefault();
-        const path = new URL((event.currentTarget as HTMLAnchorElement).href);
-        this.goToPage(path.hash);
-      });
-    });
     this.renderPage(new URL(window.location.href).hash);
   }
 }
