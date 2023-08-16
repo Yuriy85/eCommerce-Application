@@ -1,3 +1,5 @@
-import "./styles/main.scss";
+import "./styles/general.scss";
+import App from "./app";
 
-console.log("Hello eCommerce");
+const app = new App();
+app.run();
