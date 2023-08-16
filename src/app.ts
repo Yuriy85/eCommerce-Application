@@ -9,7 +9,7 @@ import LoginPage from "./pages/login_page/login_page";
 import RegisterPage from "./pages/register_page/register_page";
 import BasketPage from "./pages/basket_page/basket_page";
 import AboutPage from "./pages/about_page/about_page";
-import { pageRoutes, pagePaths } from "./routes/routes";
+import { pagePaths } from "./routes/routes";
 import Events from "./controller/events";
 
 class App {
@@ -53,21 +53,21 @@ class App {
 
   renderPage(path: string): void {
     let pageInnerData: HTMLElement = this.mainPage;
-    if (pageRoutes.main.match(path)) {
+    if (path === pagePaths.mainPath || path === "") {
       pageInnerData = this.mainPage;
-    } else if (pageRoutes.catalog.match(path)) {
+    } else if (path === pagePaths.catalogPath) {
       pageInnerData = this.catalogPage;
-    } else if (pageRoutes.detailed.match(path)) {
+    } else if (path === pagePaths.detailedPath) {
       pageInnerData = this.detailPage;
-    } else if (pageRoutes.profile.match(path)) {
+    } else if (path === pagePaths.profilePath) {
       pageInnerData = this.profilePage;
-    } else if (pageRoutes.login.match(path)) {
+    } else if (path === pagePaths.loginPath) {
       pageInnerData = this.loginPage;
-    } else if (pageRoutes.register.match(path)) {
+    } else if (path === pagePaths.registerPath) {
       pageInnerData = this.registerPage;
-    } else if (pageRoutes.basket.match(path)) {
+    } else if (path === pagePaths.basketPath) {
       pageInnerData = this.basketPage;
-    } else if (pageRoutes.about.match(path)) {
+    } else if (path === pagePaths.aboutPath) {
       pageInnerData = this.aboutPage;
     }
     (document.querySelector(".main") as HTMLElement).innerHTML = "";
@@ -81,7 +81,7 @@ class App {
 
   initRouter() {
     window.addEventListener("popstate", () => {
-      this.renderPage(new URL(window.location.href).pathname);
+      this.renderPage(new URL(window.location.href).hash);
     });
     document
       .querySelector(".header__caption")
@@ -92,10 +92,10 @@ class App {
       element.addEventListener("click", (event) => {
         event.preventDefault();
         const path = new URL((event.currentTarget as HTMLAnchorElement).href);
-        this.goToPage(path.pathname);
+        this.goToPage(path.hash);
       });
     });
-    this.renderPage(new URL(window.location.href).pathname);
+    this.renderPage(new URL(window.location.href).hash);
   }
 }
 
