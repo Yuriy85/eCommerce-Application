@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "Arial-MT";
+  src: url("../assets/fonts/Arial-MT.woff");
+}
+
+* {
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #d8fdf6;
+  min-height: 100vh;
+  color: #1d41b5;
+}

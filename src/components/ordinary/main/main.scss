@@ -1,0 +1,14 @@
+.main {
+  height: 100%;
+}
+
+.main__wrapper {
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 200px);
+  margin: auto;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}

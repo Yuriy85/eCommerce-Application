@@ -1,0 +1,17 @@
+.footer {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(270deg, #00d69f, #1e1173);
+  border-radius: 15px 15px 0 0;
+}
+
+.footer__wrapper {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  margin: auto;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
