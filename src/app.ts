@@ -9,7 +9,7 @@ import LoginPage from "./pages/login_page/login_page";
 import RegisterPage from "./pages/register_page/register_page";
 import BasketPage from "./pages/basket_page/basket_page";
 import AboutPage from "./pages/about_page/about_page";
-import { pageRoutes } from "./routes/routes";
+import { pageRoutes, pagePaths } from "./routes/routes";
 
 class App {
   body: HTMLElement;
@@ -79,6 +79,11 @@ class App {
     window.addEventListener("popstate", () => {
       this.renderPage(new URL(window.location.href).pathname);
     });
+    document
+      .querySelector(".header__caption")
+      ?.addEventListener("click", () => {
+        this.goToPage(pagePaths.mainPath);
+      });
     document.querySelectorAll(".header__button").forEach((element) => {
       element.addEventListener("click", (event) => {
         event.preventDefault();
