@@ -1,0 +1,13 @@
+.main__wrapper--404 {
+  background: center / contain no-repeat url("../../assets/images/404.png");
+}
+
+.main__anchor-to-main {
+  color: #1d41b5;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: all .3s;
+  &:hover {
+    color: #571db5;
+  }
+}
