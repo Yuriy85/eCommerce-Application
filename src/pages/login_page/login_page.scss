@@ -1,14 +1,33 @@
-.input-log-email, .input-log-password {
-    margin: 0 0 20px 0;
+.main__email-error,
+.main__password-error {
+  margin: 0 0 20px 0;
+  color: red;
 }
 
 .btn-login {
-   background: #1d41b5;
-   color: beige;
-   border: none;
-   border-radius: 3px;
-   width: 176px;
-   height: 25px;
-   cursor: pointer;
-   padding: 0;
+  background: #1d41b5;
+  color: beige;
+  border: none;
+  border-radius: 3px;
+  width: 176px;
+  height: 25px;
+  cursor: pointer;
+  padding: 0;
 }
+.main__password-open-view {
+  &:hover {
+    cursor: pointer;
+  }
+
+  &::after {
+    font-size: 1.1rem;
+    content: " \2601";
+  }
+}
+
+.main__password-open-view-show {
+    &::after {
+      content: " \2600";
+    }
+  }
+  
