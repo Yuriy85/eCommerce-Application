@@ -11,7 +11,6 @@ import BasketPage from "./pages/basket_page/basket_page";
 import AboutPage from "./pages/about_page/about_page";
 import ErrorPage from "./pages/404_page/404_page";
 import { pagePaths } from "./routes/routes";
-import Events from "./controller/events";
 
 class App {
   body: HTMLElement;
@@ -27,7 +26,6 @@ class App {
   basketPage: HTMLElement;
   aboutPage: HTMLElement;
   errorPage: ErrorPage;
-  events: Events;
 
   constructor() {
     this.body = document.body;
@@ -43,7 +41,6 @@ class App {
     this.basketPage = new BasketPage().render();
     this.aboutPage = new AboutPage().render();
     this.errorPage = new ErrorPage();
-    this.events = new Events();
   }
 
   run(): void {
@@ -51,7 +48,6 @@ class App {
     this.main.render(this.body);
     this.footer.render(this.body);
     this.initRouter();
-    this.events.clickButtonLogin();
   }
 
   renderPage(path: string): void {
