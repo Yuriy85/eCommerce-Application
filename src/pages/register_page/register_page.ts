@@ -1,6 +1,11 @@
 import "./register_page.scss";
+import Events from "../../controller/events";
 
 class RegisterPage {
+  events: Events;
+  constructor() {
+    this.events = new Events();
+  }
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
     mainWrapper.classList.add("main__wrapper");
@@ -16,11 +21,11 @@ class RegisterPage {
     const sectionAddress: HTMLElement = document.createElement("section");
     sectionAddress.classList.add("section-address");
 
-    const btn: HTMLButtonElement = document.createElement("button");
-    btn.classList.add("btn-register");
-    btn.textContent = "Registration";
+    const registerBtn: HTMLButtonElement = document.createElement("button");
+    registerBtn.classList.add("btn-register");
+    registerBtn.textContent = "Registration";
 
-    mainWrapper.append(caption, sectionBasic, sectionAddress, btn);
+    mainWrapper.append(caption, sectionBasic, sectionAddress, registerBtn);
 
     const inputEmail: HTMLInputElement = document.createElement("input");
     inputEmail.classList.add("input-reg-email");
@@ -177,6 +182,7 @@ class RegisterPage {
       inputBillingStreet,
       wrapperBillingCheckbox,
     );
+    this.events.clickButtonRegister(registerBtn);
 
     return mainWrapper;
   }

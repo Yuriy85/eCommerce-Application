@@ -1,6 +1,7 @@
 import {
   ClientBuilder,
   type HttpMiddlewareOptions,
+  type AuthMiddlewareOptions,
   type PasswordAuthMiddlewareOptions,
 } from "@commercetools/sdk-client-v2";
 import { createApiBuilderFromCtpClient } from "@commercetools/platform-sdk";
@@ -17,6 +18,28 @@ const httpMiddlewareOptions: HttpMiddlewareOptions = {
 };
 
 class Clients {
+  getCredentialsFlowClient() {
+    const authMiddlewareOptions: AuthMiddlewareOptions = {
+      host: "https://auth.europe-west1.gcp.commercetools.com",
+      projectKey: projectKey,
+      credentials: {
+        clientId: clientId,
+        clientSecret: clientSecret,
+      },
+      scopes,
+      fetch,
+    };
+    const ctpClient = new ClientBuilder()
+      .withClientCredentialsFlow(authMiddlewareOptions)
+      .withHttpMiddleware(httpMiddlewareOptions)
+      .withLoggerMiddleware()
+      .build();
+    const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
+      projectKey: projectKey,
+    });
+    return apiRoot;
+  }
+
   getPasswordFlowClient(email: string, login: string) {
     const passwordAuthMiddlewareOptions: PasswordAuthMiddlewareOptions = {
       host: "https://auth.europe-west1.gcp.commercetools.com",
