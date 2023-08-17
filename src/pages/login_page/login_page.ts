@@ -1,6 +1,12 @@
 import "./login_page.scss";
+import Events from "../../controller/events";
 
 class LoginPage {
+  events: Events;
+  constructor() {
+    this.events = new Events();
+  }
+
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
     mainWrapper.classList.add("main__wrapper");
@@ -21,6 +27,8 @@ class LoginPage {
 
     mainWrapper.innerHTML = "";
     mainWrapper.append(caption, inputLogEmail, inputLogPassword, btnLog);
+
+    this.events.clickButtonLogin(btnLog);
     return mainWrapper;
   }
 }

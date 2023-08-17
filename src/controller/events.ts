@@ -5,10 +5,7 @@ class Events {
   constructor() {
     this.login = new Login();
   }
-  clickButtonLogin() {
-    const loginBtn: HTMLButtonElement = document.querySelector(
-      ".btn-login",
-    ) as HTMLButtonElement;
+  clickButtonLogin(loginBtn: HTMLButtonElement) {
     loginBtn.addEventListener("click", () => {
       this.login.login();
       console.log(loginBtn);
