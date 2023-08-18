@@ -1,6 +1,7 @@
 import "./login_page.scss";
 import Events from "../../controller/events";
 import Checks from "../../controller/checks";
+import { pagePaths } from "../../routes/routes";
 
 class LoginPage {
   events: Events;
@@ -12,35 +13,48 @@ class LoginPage {
 
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
-    mainWrapper.classList.add("main__wrapper");
+    mainWrapper.classList.add("login");
 
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("main__login-caption");
+    caption.classList.add("login__login-caption");
     caption.innerText = "Login page";
 
     const inputLogEmail: HTMLInputElement = document.createElement("input");
-    inputLogEmail.classList.add("input-log-email");
+    inputLogEmail.classList.add("login__input-log-email");
     inputLogEmail.placeholder = "Enter email";
 
     const emailErrorArea: HTMLElement = document.createElement("span");
-    emailErrorArea.classList.add("main__email-error");
+    emailErrorArea.classList.add("login__email-error");
 
     const inputLogPassword: HTMLInputElement = document.createElement("input");
     const inputLogOpenView: HTMLElement = document.createElement("span");
     const passwordWrapper: HTMLElement = document.createElement("div");
-    inputLogPassword.classList.add("input-log-password");
-    inputLogOpenView.classList.add("main__password-open-view");
-    passwordWrapper.classList.add("main__password-wrapper");
+    inputLogPassword.classList.add("login__input-log-password");
+    inputLogOpenView.classList.add("login__password-open-view");
+    passwordWrapper.classList.add("login__password-wrapper");
     passwordWrapper.append(inputLogPassword, inputLogOpenView);
     inputLogPassword.type = "password";
     inputLogPassword.placeholder = "Enter password";
 
     const passwordErrorArea: HTMLElement = document.createElement("span");
-    passwordErrorArea.classList.add("main__password-error");
+    passwordErrorArea.classList.add("login__password-error");
 
     const btnLog: HTMLButtonElement = document.createElement("button");
-    btnLog.classList.add("btn-login");
+    btnLog.classList.add("login__btn-login");
     btnLog.textContent = "Login";
+
+    const choice: HTMLElement = document.createElement("span");
+    choice.classList.add("login__choice");
+    choice.innerText = "or";
+
+    const btnRegister: HTMLButtonElement = document.createElement("button");
+    btnRegister.classList.add("login__btn-register");
+    btnRegister.textContent = "Go to register";
+
+    const anchorToRegister: HTMLAnchorElement = document.createElement("a");
+    anchorToRegister.href = pagePaths.registerPath;
+    anchorToRegister.append(btnRegister);
+    anchorToRegister.classList.add("login__anchor-to-register");
 
     mainWrapper.innerHTML = "";
     mainWrapper.append(
@@ -50,6 +64,8 @@ class LoginPage {
       passwordWrapper,
       passwordErrorArea,
       btnLog,
+      choice,
+      anchorToRegister,
     );
 
     this.showHidePassword(inputLogOpenView, inputLogPassword);
@@ -65,9 +81,9 @@ class LoginPage {
     inputLogPassword: HTMLInputElement,
   ) {
     inputLogOpenView.addEventListener("click", () => {
-      inputLogOpenView.classList.toggle("main__password-open-view-show");
+      inputLogOpenView.classList.toggle("login__password-open-view-show");
       if (
-        inputLogOpenView.classList.contains("main__password-open-view-show")
+        inputLogOpenView.classList.contains("login__password-open-view-show")
       ) {
         inputLogPassword.type = "text";
       } else {
