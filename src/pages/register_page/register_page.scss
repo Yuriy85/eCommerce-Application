@@ -51,13 +51,18 @@
    height: 25px;
    cursor: pointer;
    padding: 0;
+   margin: 40px 0 0 0;
 }
 
 .input-reg-date {
     width: 176px;
 }
 
-.label-checkbox {
+.label-checkbox,
+.label-shipping__default-billing,
+.label-billing__default-billing,
+.label-shipping__default-shipping,
+.label-billing__default-shipping {
     font-size: 12px;
 }
 
@@ -66,4 +71,9 @@
     display: flex;
     align-items: center;
     margin: 0 0 20px 0;
+}
+
+.shipping__wrapper-checkbox,
+.billing__wrapper-checkbox {
+    margin: 0;
 }

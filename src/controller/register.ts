@@ -2,8 +2,12 @@ import Customer from "./customer";
 
 class Register {
   customer: Customer;
+  checkedBillingDefault: number | undefined;
+  checkedShippingDefault: number | undefined;
   constructor() {
     this.customer = new Customer();
+    this.checkedBillingDefault = undefined;
+    this.checkedShippingDefault = undefined;
   }
   registration(): void {
     const email: HTMLInputElement = document.querySelector(
@@ -48,13 +52,33 @@ class Register {
       ".input-billing-postcode",
     ) as HTMLInputElement;
 
-    const inputCheckboxBilling: HTMLInputElement = document.querySelector(
-      ".checkbox-billing",
+    const checkboxBilling: HTMLInputElement = document.querySelector(
+      ".checkbox-billing_shipping",
     ) as HTMLInputElement;
 
-    const inputCheckboxShipping: HTMLInputElement = document.querySelector(
-      ".checkbox-shipping",
+    const checkboxShipping: HTMLInputElement = document.querySelector(
+      ".checkbox-shipping_billing",
     ) as HTMLInputElement;
+
+    const radioBillingForDefaultBilling: HTMLInputElement =
+      document.querySelector(
+        ".radio-billing_default-billing",
+      ) as HTMLInputElement;
+
+    const radioBillingForDefaultShipping: HTMLInputElement =
+      document.querySelector(
+        ".radio-billing_default-shipping",
+      ) as HTMLInputElement;
+
+    const radioShippingForDefaultBilling: HTMLInputElement =
+      document.querySelector(
+        ".radio-shipping_default-billing",
+      ) as HTMLInputElement;
+
+    const radioShippingForDefaultShipping: HTMLInputElement =
+      document.querySelector(
+        ".radio-shipping_default-shipping",
+      ) as HTMLInputElement;
 
     const valueEmail: string = email.value;
     const valuePassword: string = password.value;
@@ -77,12 +101,74 @@ class Register {
     const valueStreetBilling: string = streetBilling.value;
     const valuePostcodeBilling: string = postcodeBilling.value;
 
-    const checkedBilling: number | undefined = inputCheckboxBilling.checked
-      ? 0
-      : undefined;
-    const checkedSipping: number | undefined = inputCheckboxShipping.checked
-      ? 1
-      : undefined;
+    const checkedShipping: number[] | undefined = checkboxBilling.checked
+      ? [0, 1]
+      : [1];
+    const checkedBilling: number[] | undefined = checkboxShipping.checked
+      ? [0, 1]
+      : [0];
+
+    if (
+      !radioBillingForDefaultBilling.checked &&
+      !radioBillingForDefaultShipping.checked &&
+      !radioShippingForDefaultBilling.checked &&
+      !radioShippingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = undefined;
+      this.checkedShippingDefault = undefined;
+    }
+
+    if (
+      radioBillingForDefaultBilling.checked &&
+      radioBillingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = 0;
+      this.checkedShippingDefault = 0;
+    }
+
+    if (
+      radioBillingForDefaultBilling.checked &&
+      !radioBillingForDefaultShipping.checked &&
+      radioShippingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = 0;
+      this.checkedShippingDefault = 1;
+    }
+
+    if (
+      radioBillingForDefaultBilling.checked &&
+      !radioBillingForDefaultShipping.checked &&
+      !radioShippingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = 0;
+      this.checkedShippingDefault = undefined;
+    }
+
+    if (
+      radioShippingForDefaultBilling.checked &&
+      radioShippingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = 1;
+      this.checkedShippingDefault = 1;
+    }
+
+    if (
+      radioShippingForDefaultBilling.checked &&
+      !radioShippingForDefaultShipping.checked &&
+      radioBillingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = 1;
+      this.checkedShippingDefault = 0;
+    }
+
+    if (
+      radioShippingForDefaultBilling.checked &&
+      !radioShippingForDefaultShipping.checked &&
+      !radioBillingForDefaultShipping.checked
+    ) {
+      this.checkedBillingDefault = 1;
+      this.checkedShippingDefault = undefined;
+    }
 
     this.customer.getRegisterCustomer(
       valueEmail,
@@ -101,7 +187,9 @@ class Register {
       valueStreetBilling,
       valuePostcodeBilling,
       checkedBilling,
-      checkedSipping,
+      checkedShipping,
+      this.checkedBillingDefault,
+      this.checkedShippingDefault,
     );
   }
 }
