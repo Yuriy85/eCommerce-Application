@@ -7,10 +7,10 @@ class Login {
   }
   login() {
     const inputEmail: HTMLInputElement = document.querySelector(
-      ".input-log-email",
+      ".login__input-log-email",
     ) as HTMLInputElement;
     const inputPassword: HTMLInputElement = document.querySelector(
-      ".input-log-password",
+      ".login__input-log-password",
     ) as HTMLInputElement;
     const valueEmail: string = inputEmail.value;
     const valuePassword: string = inputPassword.value;

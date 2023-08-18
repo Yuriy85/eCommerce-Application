@@ -14,7 +14,21 @@ class Events {
 
   clickButtonRegister(registerBtn: HTMLButtonElement) {
     registerBtn.addEventListener("click", () => {
-      this.register.registration();
+      if (
+        // Checks.emailErrorStatus &&
+        // Checks.passwordErrorStatus &&
+        // Checks.nameErrorStatus &&
+        // Checks.surnameErrorStatus &&
+        // Checks.billingCityErrorStatus &&
+        // Checks.shippingCityErrorStatus &&
+        // Checks.dateErrorStatus &&
+        // Checks.billingStreetErrorStatus &&
+        // Checks.shippingStreetErrorStatus &&
+        // Checks.billingCodeErrorStatus &&
+        Checks.shippingCodeErrorStatus
+      ) {
+        this.register.registration();
+      }
     });
   }
 
@@ -29,7 +43,18 @@ class Events {
   inputFilling(
     input: HTMLInputElement,
     area: HTMLElement,
-    checkMethod: "email" | "password",
+    checkMethod:
+      | "email"
+      | "password"
+      | "name"
+      | "surname"
+      | "billingCity"
+      | "shippingCity"
+      | "date"
+      | "billingStreet"
+      | "shippingStreet"
+      | "billingCode"
+      | "shippingCode",
   ) {
     switch (checkMethod) {
       case "email":
@@ -42,9 +67,102 @@ class Events {
           this.checks.printErrors(area, this.checks.checkPassword(input.value));
         });
         break;
+      case "name":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkNameSurnameCity(input.value, "Name"),
+          );
+        });
+        break;
+      case "surname":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkNameSurnameCity(input.value, "Surname"),
+          );
+        });
+        break;
+      case "billingCity":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkNameSurnameCity(input.value, "Billing city"),
+          );
+        });
+        break;
+      case "shippingCity":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkNameSurnameCity(input.value, "Shipping city"),
+          );
+        });
+        break;
+      case "date":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(area, this.checks.checkDate(input.value));
+        });
+        break;
+      case "billingStreet":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkStreet(input.value, "billing"),
+          );
+        });
+        break;
+      case "shippingStreet":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkStreet(input.value, "shipping"),
+          );
+        });
+        break;
+      case "billingCode":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkPostCode(
+              input.value,
+              "billing",
+              Checks.billingCheckCountry,
+            ),
+          );
+        });
+        break;
+      case "shippingCode":
+        input.addEventListener("input", () => {
+          this.checks.printErrors(
+            area,
+            this.checks.checkPostCode(
+              input.value,
+              "shipping",
+              Checks.shippingCheckCountry,
+            ),
+          );
+        });
+        break;
       default:
         break;
     }
+  }
+
+  selectCountry(
+    select: HTMLSelectElement,
+    inputCode: HTMLInputElement,
+    type: "billing" | "shipping",
+  ) {
+    select.addEventListener("change", (event) => {
+      if (type === "billing") {
+        Checks.billingCheckCountry = (event.target as HTMLSelectElement).value;
+      }
+      if (type === "shipping") {
+        Checks.shippingCheckCountry = (event.target as HTMLSelectElement).value;
+      }
+      inputCode.value = "";
+    });
   }
 }
 

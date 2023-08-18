@@ -11,73 +11,73 @@ class Register {
   }
   registration(): void {
     const email: HTMLInputElement = document.querySelector(
-      ".input-reg-email",
+      ".register__input-reg-email",
     ) as HTMLInputElement;
     const password: HTMLInputElement = document.querySelector(
-      ".input-reg-password",
+      ".register__input-reg-password",
     ) as HTMLInputElement;
     const firstName: HTMLInputElement = document.querySelector(
-      ".input-reg-first-name",
+      ".register__input-reg-first-name",
     ) as HTMLInputElement;
     const lastName: HTMLInputElement = document.querySelector(
-      ".input-reg-last-name",
+      ".register__input-reg-last-name",
     ) as HTMLInputElement;
     const dateOfBirth: HTMLInputElement = document.querySelector(
-      ".input-reg-date",
+      ".register__input-reg-date",
     ) as HTMLInputElement;
 
     const countryShopping: HTMLInputElement = document.querySelector(
-      ".input-shipping-country",
+      ".register__input-shipping-country",
     ) as HTMLInputElement;
     const cityShopping: HTMLInputElement = document.querySelector(
-      ".input-shipping-city",
+      ".register__input-shipping-city",
     ) as HTMLInputElement;
     const streetShopping: HTMLInputElement = document.querySelector(
-      ".input-shipping-street",
+      ".register__input-shipping-street",
     ) as HTMLInputElement;
     const postcodeShopping: HTMLInputElement = document.querySelector(
-      ".input-shipping-postcode",
+      ".register__input-shipping-postcode",
     ) as HTMLInputElement;
 
     const countryBilling: HTMLInputElement = document.querySelector(
-      ".input-billing-country",
+      ".register__input-billing-country",
     ) as HTMLInputElement;
     const cityBilling: HTMLInputElement = document.querySelector(
-      ".input-billing-city",
+      ".register__input-billing-city",
     ) as HTMLInputElement;
     const streetBilling: HTMLInputElement = document.querySelector(
-      ".input-billing-street",
+      ".register__input-billing-street",
     ) as HTMLInputElement;
     const postcodeBilling: HTMLInputElement = document.querySelector(
-      ".input-billing-postcode",
+      ".register__input-billing-postcode",
     ) as HTMLInputElement;
 
     const checkboxBilling: HTMLInputElement = document.querySelector(
-      ".checkbox-billing_shipping",
+      ".register__checkbox-billing_shipping",
     ) as HTMLInputElement;
 
     const checkboxShipping: HTMLInputElement = document.querySelector(
-      ".checkbox-shipping_billing",
+      ".register__checkbox-shipping_billing",
     ) as HTMLInputElement;
 
     const radioBillingForDefaultBilling: HTMLInputElement =
       document.querySelector(
-        ".radio-billing_default-billing",
+        ".register__radio-billing_default-billing",
       ) as HTMLInputElement;
 
     const radioBillingForDefaultShipping: HTMLInputElement =
       document.querySelector(
-        ".radio-billing_default-shipping",
+        ".register__radio-billing_default-shipping",
       ) as HTMLInputElement;
 
     const radioShippingForDefaultBilling: HTMLInputElement =
       document.querySelector(
-        ".radio-shipping_default-billing",
+        ".register__radio-shipping_default-billing",
       ) as HTMLInputElement;
 
     const radioShippingForDefaultShipping: HTMLInputElement =
       document.querySelector(
-        ".radio-shipping_default-shipping",
+        ".register__radio-shipping_default-shipping",
       ) as HTMLInputElement;
 
     const valueEmail: string = email.value;
