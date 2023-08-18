@@ -1,13 +1,23 @@
 import Login from "./login";
 import Checks from "./checks";
+import Register from "./register";
 
 class Events {
+  register: Register;
   login: Login;
   checks: Checks;
   constructor() {
+    this.register = new Register();
     this.login = new Login();
     this.checks = new Checks();
   }
+
+  clickButtonRegister(registerBtn: HTMLButtonElement) {
+    registerBtn.addEventListener("click", () => {
+      this.register.registration();
+    });
+  }
+
   clickButtonLogin(loginBtn: HTMLButtonElement) {
     loginBtn.addEventListener("click", () => {
       if (Checks.emailErrorStatus && Checks.passwordErrorStatus) {
