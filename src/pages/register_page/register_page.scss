@@ -1,14 +1,15 @@
 .section-basic {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 100%;
+    max-width: 550px;
 }
 
 .section-address {
     display: flex;
     justify-content: space-between;
-    width: 50%;
-
+    width: 100%;
+    max-width: 550px;
 }
 .section-basic__billing,
 .section-basic__shopping {
