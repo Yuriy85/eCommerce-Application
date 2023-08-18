@@ -8,68 +8,88 @@ class RegisterPage {
   }
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
-    mainWrapper.classList.add("main__wrapper");
+    mainWrapper.classList.add("register");
     mainWrapper.innerHTML = "";
 
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("main__register-caption");
+    caption.classList.add("register__register-caption");
     caption.innerText = "Registration page";
 
     const sectionBasic: HTMLElement = document.createElement("section");
-    sectionBasic.classList.add("section-basic");
+    sectionBasic.classList.add("register__section-basic");
 
     const sectionAddress: HTMLElement = document.createElement("section");
-    sectionAddress.classList.add("section-address");
+    sectionAddress.classList.add("register__section-address");
 
     const registerBtn: HTMLButtonElement = document.createElement("button");
-    registerBtn.classList.add("btn-register");
+    registerBtn.classList.add("register__btn-register");
     registerBtn.textContent = "Registration";
 
     mainWrapper.append(caption, sectionBasic, sectionAddress, registerBtn);
 
     const inputEmail: HTMLInputElement = document.createElement("input");
-    inputEmail.classList.add("input-reg-email");
+    inputEmail.classList.add("register__input-reg-email");
     inputEmail.placeholder = "email";
 
+    const emailErrorArea: HTMLElement = document.createElement("span");
+    emailErrorArea.classList.add("register__email-error");
+
     const inputPassword: HTMLInputElement = document.createElement("input");
-    inputPassword.classList.add("input-reg-password");
+    inputPassword.classList.add("register__input-reg-password");
     inputPassword.placeholder = "password";
 
+    const passwordErrorArea: HTMLElement = document.createElement("span");
+    passwordErrorArea.classList.add("register__password-error");
+
     const inputFirstName: HTMLInputElement = document.createElement("input");
-    inputFirstName.classList.add("input-reg-first-name");
+    inputFirstName.classList.add("register__input-reg-first-name");
     inputFirstName.placeholder = "first name";
 
+    const firstNameErrorArea: HTMLElement = document.createElement("span");
+    firstNameErrorArea.classList.add("register__name-error");
+
     const inputLastName: HTMLInputElement = document.createElement("input");
-    inputLastName.classList.add("input-reg-last-name");
+    inputLastName.classList.add("register__input-reg-last-name");
     inputLastName.placeholder = "last name";
 
+    const lastNameErrorArea: HTMLElement = document.createElement("span");
+    lastNameErrorArea.classList.add("register__surname-error");
+
     const inputDateOfBirth: HTMLInputElement = document.createElement("input");
-    inputDateOfBirth.classList.add("input-reg-date");
+    inputDateOfBirth.classList.add("register__input-reg-date");
     inputDateOfBirth.setAttribute("type", "date");
+
+    const dateErrorArea: HTMLElement = document.createElement("span");
+    dateErrorArea.classList.add("register__date-error");
 
     sectionBasic.append(
       inputEmail,
+      emailErrorArea,
       inputPassword,
+      passwordErrorArea,
       inputFirstName,
+      firstNameErrorArea,
       inputLastName,
+      lastNameErrorArea,
       inputDateOfBirth,
+      dateErrorArea,
     );
 
     const sectionAddressBilling: HTMLElement = document.createElement("div");
-    sectionAddressBilling.classList.add("section-basic__billing");
+    sectionAddressBilling.classList.add("register__section-basic-billing");
 
     const sectionAddressShipping: HTMLElement = document.createElement("div");
-    sectionAddressShipping.classList.add("section-basic__shopping");
+    sectionAddressShipping.classList.add("register__section-basic-shopping");
 
     sectionAddress.append(sectionAddressBilling, sectionAddressShipping);
 
     const titleBilling: HTMLElement = document.createElement("h5");
-    titleBilling.classList.add("tittle__billing-address");
+    titleBilling.classList.add("register__tittle-billing-address");
     titleBilling.innerText = "Billing address";
 
     const inputBillingCountry: HTMLSelectElement =
       document.createElement("select");
-    inputBillingCountry.classList.add("input-billing-country");
+    inputBillingCountry.classList.add("register__input-billing-country");
 
     const optionBillingIt: HTMLOptionElement = document.createElement(
       "option",
@@ -84,30 +104,39 @@ class RegisterPage {
     inputBillingCountry.append(optionBillingBy, optionBillingIt);
 
     const inputBillingCity: HTMLInputElement = document.createElement("input");
-    inputBillingCity.classList.add("input-billing-city");
+    inputBillingCity.classList.add("register__input-billing-city");
     inputBillingCity.placeholder = "city";
+
+    const billingCityErrorArea: HTMLElement = document.createElement("span");
+    billingCityErrorArea.classList.add("register__billing-city-error");
 
     const inputBillingStreet: HTMLInputElement =
       document.createElement("input");
-    inputBillingStreet.classList.add("input-billing-street");
+    inputBillingStreet.classList.add("register__input-billing-street");
     inputBillingStreet.placeholder = "street";
+
+    const billingStreetErrorArea: HTMLElement = document.createElement("span");
+    billingStreetErrorArea.classList.add("register__billing-street-error");
 
     const inputBillingPostcode: HTMLInputElement =
       document.createElement("input");
-    inputBillingPostcode.classList.add("input-billing-postcode");
+    inputBillingPostcode.classList.add("register__input-billing-postcode");
     inputBillingPostcode.placeholder = "postcode";
+
+    const billingCodeErrorArea: HTMLElement = document.createElement("span");
+    billingCodeErrorArea.classList.add("register__billing-code-error");
 
     const wrapperBillingCheckbox: HTMLDivElement =
       document.createElement("div");
-    wrapperBillingCheckbox.classList.add("billing__wrapper-checkbox");
+    wrapperBillingCheckbox.classList.add("register__billing-wrapper-checkbox");
 
     const checkboxBilling: HTMLInputElement = document.createElement("input");
-    checkboxBilling.classList.add("checkbox-billing_shipping");
+    checkboxBilling.classList.add("register__checkbox-billing_shipping");
     checkboxBilling.setAttribute("id", "address-billing");
     checkboxBilling.setAttribute("type", "checkbox");
 
     const labelCheckbox: HTMLElement = document.createElement("label");
-    labelCheckbox.classList.add("label-checkbox");
+    labelCheckbox.classList.add("register__label-checkbox");
     labelCheckbox.setAttribute("for", "address");
     labelCheckbox.textContent = "Shipping";
     wrapperBillingCheckbox.append(checkboxBilling, labelCheckbox);
@@ -115,13 +144,13 @@ class RegisterPage {
     const wrapperBillingForDefaultBilling: HTMLDivElement =
       document.createElement("div");
     wrapperBillingForDefaultBilling.classList.add(
-      "wrapper__billing-default-billing",
+      "register__wrapper-billing-default-billing",
     );
 
     const radioBillingForDefaultBilling: HTMLInputElement =
       document.createElement("input");
     radioBillingForDefaultBilling.classList.add(
-      "radio-billing_default-billing",
+      "register__radio-billing_default-billing",
     );
     radioBillingForDefaultBilling.setAttribute("id", "billing_default-billing");
     radioBillingForDefaultBilling.setAttribute("type", "radio");
@@ -130,7 +159,7 @@ class RegisterPage {
     const labelBillingForDefaultBilling: HTMLElement =
       document.createElement("label");
     labelBillingForDefaultBilling.classList.add(
-      "label-shipping__default-billing",
+      "register__label-shipping-default-billing",
     );
     labelBillingForDefaultBilling.setAttribute(
       "for",
@@ -146,13 +175,13 @@ class RegisterPage {
     const wrapperBillingForDefaultShipping: HTMLDivElement =
       document.createElement("div");
     wrapperBillingForDefaultShipping.classList.add(
-      "wrapper__billing-default-shipping",
+      "register__wrapper-billing-default-shipping",
     );
 
     const radioBillingForDefaultShipping: HTMLInputElement =
       document.createElement("input");
     radioBillingForDefaultShipping.classList.add(
-      "radio-billing_default-shipping",
+      "register__radio-billing_default-shipping",
     );
     radioBillingForDefaultShipping.setAttribute(
       "id",
@@ -164,7 +193,7 @@ class RegisterPage {
     const labelBillingForDefaultShipping: HTMLElement =
       document.createElement("label");
     labelBillingForDefaultShipping.classList.add(
-      "label-billing__default-shipping",
+      "register__label-billing-default-shipping",
     );
     labelBillingForDefaultShipping.setAttribute(
       "for",
@@ -181,20 +210,23 @@ class RegisterPage {
       titleBilling,
       inputBillingCountry,
       inputBillingCity,
+      billingCityErrorArea,
       inputBillingPostcode,
+      billingCodeErrorArea,
       inputBillingStreet,
+      billingStreetErrorArea,
       wrapperBillingCheckbox,
       wrapperBillingForDefaultBilling,
       wrapperBillingForDefaultShipping,
     );
 
     const titleShipping: HTMLElement = document.createElement("h5");
-    titleShipping.classList.add("tittle__shipping-address");
+    titleShipping.classList.add("register__tittle-shipping-address");
     titleShipping.innerText = "Shipping address";
 
     const inputShippingCountry: HTMLSelectElement =
       document.createElement("select");
-    inputShippingCountry.classList.add("input-shipping-country");
+    inputShippingCountry.classList.add("register__input-shipping-country");
 
     const optionShippingIt: HTMLOptionElement = document.createElement(
       "option",
@@ -209,31 +241,42 @@ class RegisterPage {
     inputShippingCountry.append(optionShippingBy, optionShippingIt);
 
     const inputShippingCity: HTMLInputElement = document.createElement("input");
-    inputShippingCity.classList.add("input-shipping-city");
+    inputShippingCity.classList.add("register__input-shipping-city");
     inputShippingCity.placeholder = "city";
+
+    const shippingCityErrorArea: HTMLElement = document.createElement("span");
+    shippingCityErrorArea.classList.add("register__shipping-city-error");
 
     const inputShippingStreet: HTMLInputElement =
       document.createElement("input");
-    inputShippingStreet.classList.add("input-shipping-street");
+    inputShippingStreet.classList.add("register__input-shipping-street");
     inputShippingStreet.placeholder = "street";
+
+    const shippingStreetErrorArea: HTMLElement = document.createElement("span");
+    shippingStreetErrorArea.classList.add("register__shipping-street-error");
 
     const inputShippingPostcode: HTMLInputElement =
       document.createElement("input");
-    inputShippingPostcode.classList.add("input-shipping-postcode");
+    inputShippingPostcode.classList.add("register__input-shipping-postcode");
     inputShippingPostcode.placeholder = "postcode";
+
+    const shippingCodeErrorArea: HTMLElement = document.createElement("span");
+    shippingCodeErrorArea.classList.add("register__shipping-code-error");
 
     const wrapperShippingCheckbox: HTMLDivElement =
       document.createElement("div");
-    wrapperShippingCheckbox.classList.add("shipping__wrapper-checkbox");
+    wrapperShippingCheckbox.classList.add(
+      "register__shipping-wrapper-checkbox",
+    );
 
     const inputCheckboxShipping: HTMLInputElement =
       document.createElement("input");
-    inputCheckboxShipping.classList.add("checkbox-shipping_billing");
+    inputCheckboxShipping.classList.add("register__checkbox-shipping_billing");
     inputCheckboxShipping.setAttribute("id", "address-shipping");
     inputCheckboxShipping.setAttribute("type", "checkbox");
 
     const labelShipping: HTMLElement = document.createElement("label");
-    labelShipping.classList.add("label-checkbox");
+    labelShipping.classList.add("register__label-checkbox");
     labelShipping.setAttribute("for", "address-shipping");
     labelShipping.textContent = "Billing";
     wrapperShippingCheckbox.append(inputCheckboxShipping, labelShipping);
@@ -241,13 +284,13 @@ class RegisterPage {
     const wrapperShippingForDefaultBilling: HTMLDivElement =
       document.createElement("div");
     wrapperShippingForDefaultBilling.classList.add(
-      "shipping__wrapper-default-billing",
+      "register__shipping-wrapper-default-billing",
     );
 
     const radioShippingForDefaultBilling: HTMLInputElement =
       document.createElement("input");
     radioShippingForDefaultBilling.classList.add(
-      "radio-shipping_default-billing",
+      "register__radio-shipping_default-billing",
     );
     radioShippingForDefaultBilling.setAttribute(
       "id",
@@ -259,7 +302,7 @@ class RegisterPage {
     const labelShippingForDefaultBilling: HTMLElement =
       document.createElement("label");
     labelShippingForDefaultBilling.classList.add(
-      "label-shipping__default-billing",
+      "register__label-shipping-default-billing",
     );
     labelShippingForDefaultBilling.setAttribute(
       "for",
@@ -275,13 +318,13 @@ class RegisterPage {
     const wrapperShippingForDefaultShipping: HTMLDivElement =
       document.createElement("div");
     wrapperShippingForDefaultShipping.classList.add(
-      "shipping-default-shipping",
+      "register__shipping-default-shipping",
     );
 
     const radioShippingForDefaultShipping: HTMLInputElement =
       document.createElement("input");
     radioShippingForDefaultShipping.classList.add(
-      "radio-shipping_default-shipping",
+      "register__radio-shipping_default-shipping",
     );
     radioShippingForDefaultShipping.setAttribute(
       "id",
@@ -293,7 +336,7 @@ class RegisterPage {
     const labelShippingForDefaultShipping: HTMLElement =
       document.createElement("label");
     labelShippingForDefaultShipping.classList.add(
-      "label-shipping__default-shipping",
+      "register__label-shipping-default-shipping",
     );
     labelShippingForDefaultShipping.setAttribute(
       "for",
@@ -310,13 +353,61 @@ class RegisterPage {
       titleShipping,
       inputShippingCountry,
       inputShippingCity,
+      shippingCityErrorArea,
       inputShippingPostcode,
+      shippingCodeErrorArea,
       inputShippingStreet,
+      shippingStreetErrorArea,
       wrapperShippingCheckbox,
       wrapperShippingForDefaultBilling,
       wrapperShippingForDefaultShipping,
     );
     this.events.clickButtonRegister(registerBtn);
+    this.events.inputFilling(inputEmail, emailErrorArea, "email");
+    this.events.inputFilling(inputPassword, passwordErrorArea, "password");
+    this.events.inputFilling(inputFirstName, firstNameErrorArea, "name");
+    this.events.inputFilling(inputLastName, lastNameErrorArea, "surname");
+    this.events.inputFilling(
+      inputBillingCity,
+      billingCityErrorArea,
+      "billingCity",
+    );
+    this.events.inputFilling(
+      inputShippingCity,
+      shippingCityErrorArea,
+      "shippingCity",
+    );
+    this.events.inputFilling(inputDateOfBirth, dateErrorArea, "date");
+    this.events.inputFilling(
+      inputBillingStreet,
+      billingStreetErrorArea,
+      "billingStreet",
+    );
+    this.events.inputFilling(
+      inputShippingStreet,
+      shippingStreetErrorArea,
+      "shippingStreet",
+    );
+    this.events.inputFilling(
+      inputBillingPostcode,
+      billingCodeErrorArea,
+      "billingCode",
+    );
+    this.events.inputFilling(
+      inputShippingPostcode,
+      shippingCodeErrorArea,
+      "shippingCode",
+    );
+    this.events.selectCountry(
+      inputBillingCountry,
+      inputBillingPostcode,
+      "billing",
+    );
+    this.events.selectCountry(
+      inputShippingCountry,
+      inputShippingPostcode,
+      "shipping",
+    );
     return mainWrapper;
   }
 }
