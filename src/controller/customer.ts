@@ -23,8 +23,10 @@ class Customer {
     cityShipping: string,
     streetShipping: string,
     postalCodeShipping: string,
-    checkedBilling?: number | undefined,
-    checkedSipping?: number | undefined,
+    checkedBilling?: number[] | undefined,
+    checkedSipping?: number[] | undefined,
+    checkedBillingDefault?: number | undefined,
+    checkedShippingDefault?: number | undefined,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
     const customer = apiRoot
@@ -52,10 +54,10 @@ class Customer {
               postalCode: postalCodeShipping,
             },
           ],
-          billingAddresses: [0],
-          shippingAddresses: [1],
-          defaultBillingAddress: checkedBilling,
-          defaultShippingAddress: checkedSipping,
+          billingAddresses: checkedBilling,
+          shippingAddresses: checkedSipping,
+          defaultBillingAddress: checkedBillingDefault,
+          defaultShippingAddress: checkedShippingDefault,
         },
       })
       .execute();
