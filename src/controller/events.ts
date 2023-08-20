@@ -12,6 +12,21 @@ class Events {
     this.checks = new Checks();
   }
 
+  clickCheckboxUnited(
+    checkboxUnited: HTMLInputElement,
+    sectionShipping: HTMLElement,
+    sectionAddressTittle: HTMLElement,
+  ) {
+    checkboxUnited.addEventListener("click", () => {
+      checkboxUnited.checked
+        ? (sectionShipping.style.display = "none")
+        : (sectionShipping.style.display = "flex");
+      checkboxUnited.checked
+        ? (sectionAddressTittle.textContent = "Billing and shipping address")
+        : (sectionAddressTittle.textContent = "Billing address");
+    });
+  }
+
   clickButtonRegister(registerBtn: HTMLButtonElement) {
     registerBtn.addEventListener("click", () => {
       if (
@@ -24,8 +39,8 @@ class Events {
         // Checks.dateErrorStatus &&
         // Checks.billingStreetErrorStatus &&
         // Checks.shippingStreetErrorStatus &&
-        // Checks.billingCodeErrorStatus &&
-        Checks.shippingCodeErrorStatus
+        Checks.billingCodeErrorStatus
+        // Checks.shippingCodeErrorStatus
       ) {
         this.register.registration();
       }
