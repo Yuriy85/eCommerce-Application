@@ -1,6 +1,8 @@
 import Login from "./login";
 import Checks from "./checks";
 import Register from "./register";
+import { pagePaths } from "../routes/routes";
+import loginImg from "../assets/icons/login.svg";
 
 class Events {
   register: Register;
@@ -187,6 +189,26 @@ class Events {
         Checks.shippingCheckCountry = (event.target as HTMLSelectElement).value;
       }
       inputCode.value = "";
+    });
+  }
+
+  clickPageAnchor(anchor: HTMLElement, path: string) {
+    anchor.addEventListener("click", () => {
+      if (localStorage.getItem("id") && anchor.innerHTML === "Login") {
+        location.href = pagePaths.mainPath;
+      } else if (localStorage.getItem("id") && anchor.id === "log-btn") {
+        localStorage.removeItem("id");
+        location.href = path;
+        const loginImage: HTMLImageElement = document.getElementById(
+          "log-img",
+        ) as HTMLImageElement;
+        const loginTitle: HTMLElement | null =
+          document.getElementById("log-title");
+        (loginTitle as HTMLElement).innerText = "Login";
+        loginImage.src = loginImg;
+      } else {
+        location.href = path;
+      }
     });
   }
 }
