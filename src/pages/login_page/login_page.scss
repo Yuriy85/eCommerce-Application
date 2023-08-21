@@ -10,10 +10,15 @@
 }
 
 .login__email-error,
-.login__password-error {
+.login__password-error,
+.login__error {
   margin: 0 0 20px 0;
   padding: 0 10px;
   color: red;
+}
+
+.login__error {
+  margin: 0;
 }
 
 .login__btn-login,
