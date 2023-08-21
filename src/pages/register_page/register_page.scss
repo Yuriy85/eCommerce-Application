@@ -23,7 +23,7 @@
   max-width: 550px;
 }
 .register__section-basic-billing,
-.register__section-basic-shopping {
+.register__section-basic-shipping {
   display: flex;
   flex-direction: column;
   width: 45%;
@@ -69,10 +69,7 @@
 }
 
 .register__label-checkbox,
-.register__label-shipping-default-billing,
-.register__label-billing-default-billing,
-.register__label-shipping-default-shipping,
-.register__label-billing-default-shipping {
+.register__label-united {
   font-size: 12px;
 }
 

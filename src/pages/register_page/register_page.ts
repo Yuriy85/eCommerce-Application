@@ -79,7 +79,7 @@ class RegisterPage {
     sectionAddressBilling.classList.add("register__section-basic-billing");
 
     const sectionAddressShipping: HTMLElement = document.createElement("div");
-    sectionAddressShipping.classList.add("register__section-basic-shopping");
+    sectionAddressShipping.classList.add("register__section-basic-shipping");
 
     sectionAddress.append(sectionAddressBilling, sectionAddressShipping);
 
@@ -131,80 +131,30 @@ class RegisterPage {
     wrapperBillingCheckbox.classList.add("register__billing-wrapper-checkbox");
 
     const checkboxBilling: HTMLInputElement = document.createElement("input");
-    checkboxBilling.classList.add("register__checkbox-billing_shipping");
-    checkboxBilling.setAttribute("id", "address-billing");
+    checkboxBilling.classList.add("register__checkbox-billing_default");
+    checkboxBilling.setAttribute("id", "address-billing-default");
     checkboxBilling.setAttribute("type", "checkbox");
 
     const labelCheckbox: HTMLElement = document.createElement("label");
     labelCheckbox.classList.add("register__label-checkbox");
-    labelCheckbox.setAttribute("for", "address");
-    labelCheckbox.textContent = "Shipping";
+    labelCheckbox.setAttribute("for", "address-billing-default");
+    labelCheckbox.textContent = "default";
+
+    const wrapperUnitedCheckbox: HTMLDivElement = document.createElement("div");
+    wrapperUnitedCheckbox.classList.add("register__united-wrapper-checkbox");
+
+    const checkboxUnited: HTMLInputElement = document.createElement("input");
+    checkboxUnited.classList.add("register__checkbox-united");
+    checkboxUnited.setAttribute("id", "address-united");
+    checkboxUnited.setAttribute("type", "checkbox");
+
+    const labelUnited: HTMLElement = document.createElement("label");
+    labelUnited.classList.add("register__label-united");
+    labelUnited.setAttribute("for", "address-united");
+    labelUnited.textContent = "use this address for both billing and shipping";
+    wrapperUnitedCheckbox.append(checkboxUnited, labelUnited);
+
     wrapperBillingCheckbox.append(checkboxBilling, labelCheckbox);
-
-    const wrapperBillingForDefaultBilling: HTMLDivElement =
-      document.createElement("div");
-    wrapperBillingForDefaultBilling.classList.add(
-      "register__wrapper-billing-default-billing",
-    );
-
-    const radioBillingForDefaultBilling: HTMLInputElement =
-      document.createElement("input");
-    radioBillingForDefaultBilling.classList.add(
-      "register__radio-billing_default-billing",
-    );
-    radioBillingForDefaultBilling.setAttribute("id", "billing_default-billing");
-    radioBillingForDefaultBilling.setAttribute("type", "radio");
-    radioBillingForDefaultBilling.setAttribute("name", "default-billing");
-
-    const labelBillingForDefaultBilling: HTMLElement =
-      document.createElement("label");
-    labelBillingForDefaultBilling.classList.add(
-      "register__label-shipping-default-billing",
-    );
-    labelBillingForDefaultBilling.setAttribute(
-      "for",
-      "billing_default-billing",
-    );
-    labelBillingForDefaultBilling.textContent = "Default billing";
-
-    wrapperBillingForDefaultBilling.append(
-      radioBillingForDefaultBilling,
-      labelBillingForDefaultBilling,
-    );
-
-    const wrapperBillingForDefaultShipping: HTMLDivElement =
-      document.createElement("div");
-    wrapperBillingForDefaultShipping.classList.add(
-      "register__wrapper-billing-default-shipping",
-    );
-
-    const radioBillingForDefaultShipping: HTMLInputElement =
-      document.createElement("input");
-    radioBillingForDefaultShipping.classList.add(
-      "register__radio-billing_default-shipping",
-    );
-    radioBillingForDefaultShipping.setAttribute(
-      "id",
-      "billing_default-shipping",
-    );
-    radioBillingForDefaultShipping.setAttribute("type", "radio");
-    radioBillingForDefaultShipping.setAttribute("name", "default-shipping");
-
-    const labelBillingForDefaultShipping: HTMLElement =
-      document.createElement("label");
-    labelBillingForDefaultShipping.classList.add(
-      "register__label-billing-default-shipping",
-    );
-    labelBillingForDefaultShipping.setAttribute(
-      "for",
-      "billing_default-shipping",
-    );
-    labelBillingForDefaultShipping.textContent = "Default shipping";
-
-    wrapperBillingForDefaultShipping.append(
-      radioBillingForDefaultShipping,
-      labelBillingForDefaultShipping,
-    );
 
     sectionAddressBilling.append(
       titleBilling,
@@ -216,8 +166,7 @@ class RegisterPage {
       inputBillingStreet,
       billingStreetErrorArea,
       wrapperBillingCheckbox,
-      wrapperBillingForDefaultBilling,
-      wrapperBillingForDefaultShipping,
+      wrapperUnitedCheckbox,
     );
 
     const titleShipping: HTMLElement = document.createElement("h5");
@@ -271,83 +220,15 @@ class RegisterPage {
 
     const inputCheckboxShipping: HTMLInputElement =
       document.createElement("input");
-    inputCheckboxShipping.classList.add("register__checkbox-shipping_billing");
-    inputCheckboxShipping.setAttribute("id", "address-shipping");
+    inputCheckboxShipping.classList.add("register__checkbox-shipping_default");
+    inputCheckboxShipping.setAttribute("id", "address-shipping-default");
     inputCheckboxShipping.setAttribute("type", "checkbox");
 
     const labelShipping: HTMLElement = document.createElement("label");
     labelShipping.classList.add("register__label-checkbox");
-    labelShipping.setAttribute("for", "address-shipping");
-    labelShipping.textContent = "Billing";
+    labelShipping.setAttribute("for", "address-shipping-default");
+    labelShipping.textContent = "default";
     wrapperShippingCheckbox.append(inputCheckboxShipping, labelShipping);
-
-    const wrapperShippingForDefaultBilling: HTMLDivElement =
-      document.createElement("div");
-    wrapperShippingForDefaultBilling.classList.add(
-      "register__shipping-wrapper-default-billing",
-    );
-
-    const radioShippingForDefaultBilling: HTMLInputElement =
-      document.createElement("input");
-    radioShippingForDefaultBilling.classList.add(
-      "register__radio-shipping_default-billing",
-    );
-    radioShippingForDefaultBilling.setAttribute(
-      "id",
-      "sipping_default-billing",
-    );
-    radioShippingForDefaultBilling.setAttribute("type", "radio");
-    radioShippingForDefaultBilling.setAttribute("name", "default-billing");
-
-    const labelShippingForDefaultBilling: HTMLElement =
-      document.createElement("label");
-    labelShippingForDefaultBilling.classList.add(
-      "register__label-shipping-default-billing",
-    );
-    labelShippingForDefaultBilling.setAttribute(
-      "for",
-      "sipping_default-billing",
-    );
-    labelShippingForDefaultBilling.textContent = "Default-billing";
-
-    wrapperShippingForDefaultBilling.append(
-      radioShippingForDefaultBilling,
-      labelShippingForDefaultBilling,
-    );
-
-    const wrapperShippingForDefaultShipping: HTMLDivElement =
-      document.createElement("div");
-    wrapperShippingForDefaultShipping.classList.add(
-      "register__shipping-default-shipping",
-    );
-
-    const radioShippingForDefaultShipping: HTMLInputElement =
-      document.createElement("input");
-    radioShippingForDefaultShipping.classList.add(
-      "register__radio-shipping_default-shipping",
-    );
-    radioShippingForDefaultShipping.setAttribute(
-      "id",
-      "shipping_default-shipping",
-    );
-    radioShippingForDefaultShipping.setAttribute("type", "radio");
-    radioShippingForDefaultShipping.setAttribute("name", "default-shipping");
-
-    const labelShippingForDefaultShipping: HTMLElement =
-      document.createElement("label");
-    labelShippingForDefaultShipping.classList.add(
-      "register__label-shipping-default-shipping",
-    );
-    labelShippingForDefaultShipping.setAttribute(
-      "for",
-      "shipping_default-shipping",
-    );
-    labelShippingForDefaultShipping.textContent = "Default shipping";
-
-    wrapperShippingForDefaultShipping.append(
-      radioShippingForDefaultShipping,
-      labelShippingForDefaultShipping,
-    );
 
     sectionAddressShipping.append(
       titleShipping,
@@ -359,8 +240,11 @@ class RegisterPage {
       inputShippingStreet,
       shippingStreetErrorArea,
       wrapperShippingCheckbox,
-      wrapperShippingForDefaultBilling,
-      wrapperShippingForDefaultShipping,
+    );
+    this.events.clickCheckboxUnited(
+      checkboxUnited,
+      sectionAddressShipping,
+      titleBilling,
     );
     this.events.clickButtonRegister(registerBtn);
     this.events.inputFilling(inputEmail, emailErrorArea, "email");

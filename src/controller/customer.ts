@@ -23,10 +23,10 @@ class Customer {
     cityShipping: string,
     streetShipping: string,
     postalCodeShipping: string,
-    checkedBilling?: number[] | undefined,
-    checkedSipping?: number[] | undefined,
     checkedBillingDefault?: number | undefined,
     checkedShippingDefault?: number | undefined,
+    checkedBilling?: number[] | undefined,
+    checkedSipping?: number[] | undefined,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
     const customer = apiRoot
@@ -56,6 +56,49 @@ class Customer {
           ],
           billingAddresses: checkedBilling,
           shippingAddresses: checkedSipping,
+          defaultBillingAddress: checkedBillingDefault,
+          defaultShippingAddress: checkedShippingDefault,
+        },
+      })
+      .execute();
+    return customer;
+  }
+
+  getRegisterCustomerForUnitedAddress(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+    keyBilling: string,
+    countryBilling: string,
+    cityBilling: string,
+    streetNameBilling: string,
+    postalCodeBilling: string,
+    checkedBillingDefault?: number | undefined,
+    checkedShippingDefault?: number | undefined,
+  ) {
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    const customer = apiRoot
+      .customers()
+      .post({
+        body: {
+          email: email,
+          password: password,
+          firstName: firstName,
+          lastName: lastName,
+          dateOfBirth: dateOfBirth,
+          addresses: [
+            {
+              key: keyBilling,
+              country: countryBilling,
+              city: cityBilling,
+              streetName: streetNameBilling,
+              postalCode: postalCodeBilling,
+            },
+          ],
+          billingAddresses: [0],
+          shippingAddresses: [0],
           defaultBillingAddress: checkedBillingDefault,
           defaultShippingAddress: checkedShippingDefault,
         },
