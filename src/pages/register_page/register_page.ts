@@ -12,7 +12,7 @@ class RegisterPage {
     mainWrapper.innerHTML = "";
 
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("register__register-caption");
+    caption.classList.add("register__caption");
     caption.innerText = "Registration page";
 
     const sectionBasic: HTMLElement = document.createElement("section");

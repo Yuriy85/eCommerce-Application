@@ -4,9 +4,9 @@ class RegisterPage {
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
 
-    mainWrapper.classList.add("main__wrapper");
+    mainWrapper.classList.add("basket");
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("main__basket-caption");
+    caption.classList.add("basket__caption");
     mainWrapper.innerHTML = "";
     mainWrapper.appendChild(caption);
     caption.innerText = "Basket page";
