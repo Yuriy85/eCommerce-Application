@@ -14,7 +14,12 @@ class Header {
     this.header = document.createElement("header");
   }
 
-  createButton(imgSvg: string, name: string, href: string): HTMLAnchorElement {
+  createButton(
+    imgSvg: string,
+    name: string,
+    href: string,
+    id?: string,
+  ): HTMLAnchorElement {
     const button = document.createElement("a");
     const buttonImg = document.createElement("img");
     const buttonTitle = document.createElement("span");
@@ -24,7 +29,9 @@ class Header {
     button.appendChild(buttonImg);
     button.appendChild(buttonTitle);
     buttonImg.src = imgSvg;
+    buttonImg.id = id ? `${id}-img` : "";
     buttonTitle.innerText = name;
+    buttonTitle.id = id ? `${id}-title` : "";
     button.href = href;
     return button;
   }
@@ -40,25 +47,13 @@ class Header {
     caption.innerText = "eCommerce";
     wrapper.appendChild(caption);
     wrapper.appendChild(userMenu);
-    userMenu.appendChild(
+    userMenu.append(
       this.createButton(catalogImg, "Catalog", pagePaths.catalogPath),
-    );
-    userMenu.appendChild(
       this.createButton(detailedImg, "Detailed", pagePaths.detailedPath),
-    );
-    userMenu.appendChild(
       this.createButton(profileImg, "Profile", pagePaths.profilePath),
-    );
-    userMenu.appendChild(
-      this.createButton(loginImg, "Login", pagePaths.loginPath),
-    );
-    userMenu.appendChild(
+      this.createButton(loginImg, "Login", pagePaths.loginPath, "log"),
       this.createButton(registerImg, "Register", pagePaths.registerPath),
-    );
-    userMenu.appendChild(
       this.createButton(basketImg, "Basket", pagePaths.basketPath),
-    );
-    userMenu.appendChild(
       this.createButton(aboutImg, "About Us", pagePaths.aboutPath),
     );
     this.header.classList.add("header");

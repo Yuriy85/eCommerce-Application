@@ -1,4 +1,7 @@
 import Clients from "./client";
+import { pagePaths } from "../routes/routes";
+import loginImg from "../assets/icons/login.svg";
+import logoutImg from "../assets/icons/logout.svg";
 
 class Customer {
   clients: Clients;
@@ -63,9 +66,16 @@ class Customer {
         })
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
+      this.changeLoginIcon("in");
+      location.href = pagePaths.mainPath;
       return customer;
     } catch (error) {
-      console.log(`Error: ${(error as Error).message}`);
+      const errorArea: HTMLSpanElement = document.querySelector(
+        ".register__error",
+      ) as HTMLSpanElement;
+      errorArea.innerText = `You already registered! Notice: ${
+        (error as Error).message
+      }`;
     }
   }
 
@@ -111,6 +121,8 @@ class Customer {
         })
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
+      this.changeLoginIcon("in");
+      location.href = pagePaths.mainPath;
       return customer;
     } catch (error) {
       const errorArea: HTMLSpanElement = document.querySelector(
@@ -129,6 +141,8 @@ class Customer {
         .post({ body: { email: email, password: login } })
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
+      this.changeLoginIcon("in");
+      location.href = pagePaths.mainPath;
       return customer;
     } catch (error) {
       const errorArea: HTMLSpanElement = document.querySelector(
@@ -138,6 +152,17 @@ class Customer {
         (error as Error).message
       }`;
     }
+  }
+
+  changeLoginIcon(method?: "in") {
+    const loginImage: HTMLImageElement = document.getElementById(
+      "log-img",
+    ) as HTMLImageElement;
+    const loginTitle: HTMLSpanElement = document.getElementById(
+      "log-title",
+    ) as HTMLSpanElement;
+    loginTitle.innerText = method ? "Logout" : "login";
+    loginImage.src = method ? logoutImg : loginImg;
   }
 }
 export default Customer;
