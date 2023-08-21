@@ -4,6 +4,8 @@
   "description": "eCommerce-Application",
   "main": "index.js",
   "devDependencies": {
+    "@commercetools/platform-sdk": "^5.0.0",
+    "@commercetools/sdk-client-v2": "^2.2.0",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.8",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
@@ -13,6 +15,7 @@
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "html-loader": "^4.2.0",
     "html-webpack-plugin": "^5.5.3",
     "husky": "^8.0.3",
     "jest": "^29.6.2",
@@ -30,7 +33,7 @@
   "scripts": {
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
-    "start": "webpack serve",
+    "start": "webpack serve --history-api-fallback",
     "test": "jest",
     "lint": "eslint .",
     "fix": "eslint . --fix",

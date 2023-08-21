@@ -11,6 +11,7 @@ const config = {
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
+    assetModuleFilename: 'assets/[hash][ext]',
   },
   devServer: {
     open: true,
@@ -18,7 +19,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "index.html",
+      template: "./index.html",
     }),
 
     // Add your plugins here
@@ -26,6 +27,15 @@ const config = {
   ],
   module: {
     rules: [
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: { minimize: true }
+          }
+        ]
+      },
       {
         test: /\.(ts|tsx)$/i,
         loader: "ts-loader",
