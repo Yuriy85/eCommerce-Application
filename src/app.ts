@@ -11,10 +11,8 @@ import BasketPage from "./pages/basket_page/basket_page";
 import AboutPage from "./pages/about_page/about_page";
 import ErrorPage from "./pages/404_page/404_page";
 import { pagePaths } from "./routes/routes";
-import { MainData } from "./core/types/types";
 
 class App {
-  static mainData: MainData;
   body: HTMLElement;
   header: Header;
   main: Main;
@@ -30,9 +28,6 @@ class App {
   errorPage: ErrorPage;
 
   constructor() {
-    App.mainData = {
-      loginStatus: false,
-    };
     this.body = document.body;
     this.header = new Header();
     this.main = new Main();

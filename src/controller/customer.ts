@@ -1,4 +1,3 @@
-import App from "../app";
 import Clients from "./client";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
@@ -33,6 +32,10 @@ class Customer {
     checkedSipping?: number[] | undefined,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
+    const errorArea: HTMLSpanElement = document.querySelector(
+      ".register__error",
+    ) as HTMLSpanElement;
+
     try {
       const customer = await apiRoot
         .customers()
@@ -68,13 +71,10 @@ class Customer {
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       this.changeLoginIcon("in");
-      App.mainData.loginStatus = true;
       location.href = pagePaths.mainPath;
+      errorArea.innerText = "";
       return customer;
     } catch (error) {
-      const errorArea: HTMLSpanElement = document.querySelector(
-        ".register__error",
-      ) as HTMLSpanElement;
       errorArea.innerText = `You already registered! Notice: ${
         (error as Error).message
       }`;
@@ -96,6 +96,10 @@ class Customer {
     checkedShippingDefault?: number | undefined,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
+    const errorArea: HTMLSpanElement = document.querySelector(
+      ".register__error",
+    ) as HTMLSpanElement;
+
     try {
       const customer = await apiRoot
         .customers()
@@ -124,19 +128,19 @@ class Customer {
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       this.changeLoginIcon("in");
-      App.mainData.loginStatus = true;
       location.href = pagePaths.mainPath;
+      errorArea.innerText = "";
       return customer;
     } catch (error) {
-      const errorArea: HTMLSpanElement = document.querySelector(
-        ".register__error",
-      ) as HTMLSpanElement;
       errorArea.innerText = `You already registered! Notice: ${
         (error as Error).message
       }`;
     }
   }
   async getLoginCustomer(email: string, login: string) {
+    const errorArea: HTMLSpanElement = document.querySelector(
+      ".login__error",
+    ) as HTMLSpanElement;
     try {
       const apiRoot = this.clients.getPasswordFlowClient(email, login);
       const customer = await apiRoot
@@ -145,13 +149,10 @@ class Customer {
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       this.changeLoginIcon("in");
-      App.mainData.loginStatus = true;
       location.href = pagePaths.mainPath;
+      errorArea.innerHTML = "";
       return customer;
     } catch (error) {
-      const errorArea: HTMLSpanElement = document.querySelector(
-        ".login__error",
-      ) as HTMLSpanElement;
       errorArea.innerHTML = `You are not registered yet! Notice: ${
         (error as Error).message
       }`;
