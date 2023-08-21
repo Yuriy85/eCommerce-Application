@@ -113,7 +113,12 @@ class Customer {
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       return customer;
     } catch (error) {
-      console.log(`Error: ${(error as Error).message}`);
+      const errorArea: HTMLSpanElement = document.querySelector(
+        ".register__error",
+      ) as HTMLSpanElement;
+      errorArea.innerText = `You already registered! Notice: ${
+        (error as Error).message
+      }`;
     }
   }
   async getLoginCustomer(email: string, login: string) {
@@ -126,7 +131,12 @@ class Customer {
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       return customer;
     } catch (error) {
-      console.log(`Error: ${(error as Error).message}`);
+      const errorArea: HTMLSpanElement = document.querySelector(
+        ".login__error",
+      ) as HTMLSpanElement;
+      errorArea.innerHTML = `You are not registered yet! Notice: ${
+        (error as Error).message
+      }`;
     }
   }
 }

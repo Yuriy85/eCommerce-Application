@@ -45,7 +45,10 @@ class LoginPage {
 
     const choice: HTMLElement = document.createElement("span");
     choice.classList.add("login__choice");
-    choice.innerText = "or";
+    choice.innerText = "If you are not registered";
+
+    const loginError: HTMLElement = document.createElement("span");
+    loginError.classList.add("login__error");
 
     const btnRegister: HTMLButtonElement = document.createElement("button");
     btnRegister.classList.add("login__btn-register");
@@ -64,6 +67,7 @@ class LoginPage {
       passwordWrapper,
       passwordErrorArea,
       btnLog,
+      loginError,
       choice,
       anchorToRegister,
     );

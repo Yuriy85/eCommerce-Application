@@ -52,7 +52,8 @@
   height: 30px;
 }
 
-.register__btn-register {
+.register__btn-register,
+.register__btn-login {
   background: #1d41b5;
   color: beige;
   border: none;
@@ -61,7 +62,7 @@
   height: 25px;
   cursor: pointer;
   padding: 0;
-  margin: 40px 0 0 0;
+  margin: 10px;
 }
 
 .register__input-reg-date {
@@ -96,7 +97,8 @@
 .register__billing-street-error,
 .register__shipping-street-error,
 .register__shipping-code-error,
-.register__billing-code-error {
+.register__billing-code-error,
+.register__error {
   padding: 0 10px;
   color: red;
 }

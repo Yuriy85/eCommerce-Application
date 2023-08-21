@@ -1,5 +1,6 @@
 import "./register_page.scss";
 import Events from "../../controller/events";
+import { pagePaths } from "../../routes/routes";
 
 class RegisterPage {
   events: Events;
@@ -25,7 +26,31 @@ class RegisterPage {
     registerBtn.classList.add("register__btn-register");
     registerBtn.textContent = "Registration";
 
-    mainWrapper.append(caption, sectionBasic, sectionAddress, registerBtn);
+    const registerError: HTMLElement = document.createElement("span");
+    registerError.classList.add("register__error");
+
+    const anchorToLogin: HTMLAnchorElement = document.createElement("a");
+    anchorToLogin.href = pagePaths.loginPath;
+
+    const choice: HTMLElement = document.createElement("span");
+    choice.classList.add("register__choice");
+    choice.innerText = "If you are already registered";
+
+    const loginBtn: HTMLButtonElement = document.createElement("button");
+    loginBtn.classList.add("register__btn-login");
+    loginBtn.textContent = "Go to login";
+
+    anchorToLogin.append(loginBtn);
+
+    mainWrapper.append(
+      caption,
+      sectionBasic,
+      sectionAddress,
+      registerBtn,
+      registerError,
+      choice,
+      anchorToLogin,
+    );
 
     const inputEmail: HTMLInputElement = document.createElement("input");
     inputEmail.classList.add("register__input-reg-email");
