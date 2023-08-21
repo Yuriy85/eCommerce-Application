@@ -4,9 +4,9 @@ class AboutPage {
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
 
-    mainWrapper.classList.add("main__wrapper");
+    mainWrapper.classList.add("about");
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("main__about-caption");
+    caption.classList.add("about__caption");
     mainWrapper.innerHTML = "";
     mainWrapper.appendChild(caption);
     caption.innerText = "About Us page";

@@ -4,9 +4,9 @@ class DetailPage {
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
 
-    mainWrapper.classList.add("main__wrapper");
+    mainWrapper.classList.add("detail");
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("main__detail-caption");
+    caption.classList.add("detail__caption");
     mainWrapper.innerHTML = "";
     mainWrapper.appendChild(caption);
     caption.innerText = "Detailed Product page";

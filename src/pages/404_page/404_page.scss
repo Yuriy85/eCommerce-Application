@@ -1,12 +1,20 @@
-.main__wrapper--404 {
+.error {
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 200px);
+  margin: auto;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: center / contain no-repeat url("../../assets/images/404.png");
 }
 
-.main__anchor-to-main {
+.error__anchor-to-main {
   color: #1d41b5;
   font-size: 1.5em;
   font-weight: bold;
-  transition: all .3s;
+  transition: all 0.3s;
   &:hover {
     color: #571db5;
   }

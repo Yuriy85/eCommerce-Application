@@ -3,7 +3,7 @@
   max-width: 1200px;
   min-height: calc(100vh - 200px);
   margin: auto;
-  padding: 2y5px;
+  padding: 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,6 +37,7 @@
 .login__password-open-view {
   position: absolute;
   margin: 3px;
+  right: 0;
   &:hover {
     cursor: pointer;
   }

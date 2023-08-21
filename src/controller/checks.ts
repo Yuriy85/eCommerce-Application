@@ -36,12 +36,15 @@ class Checks {
       Checks.emailErrorStatus = false;
       return "Email address must not contain leading or trailing whitespace.";
     }
-    if (testEmailChars.test(String(email).toLowerCase())) {
+    if (
+      testEmailChars.test(String(email).toLowerCase()) &&
+      !email.includes(" ")
+    ) {
       Checks.emailErrorStatus = true;
       return true;
     } else {
       Checks.emailErrorStatus = false;
-      return "Email not valid!";
+      return "Email: A properly formatted email address (e.g., example@email.com)!";
     }
   }
 
@@ -59,13 +62,14 @@ class Checks {
       password.match(lowerCaseLetters) &&
       password.match(upperCaseLetters) &&
       password.match(numbers) &&
-      password.length >= minPasswordLength
+      password.length >= minPasswordLength &&
+      !password.includes(" ")
     ) {
       Checks.passwordErrorStatus = true;
       return true;
     } else {
       Checks.passwordErrorStatus = false;
-      return "Password not valid!";
+      return "Password: Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number!";
     }
   }
 
@@ -129,7 +133,7 @@ class Checks {
           Checks.shippingCityErrorStatus = false;
           break;
       }
-      return `${type} not valid!`;
+      return `${type}: Must contain at least one character and no special characters or numbers!`;
     }
   }
 
@@ -167,7 +171,7 @@ class Checks {
           Checks.shippingStreetErrorStatus = false;
           break;
       }
-      return `Street not valid!`;
+      return `Street: Must contain at least one character!`;
     }
   }
 
@@ -191,7 +195,11 @@ class Checks {
       return `Post code must not contain leading or trailing whitespace.`;
     }
 
-    if (word.length === numbersLength && word.match(numbers)) {
+    if (
+      word.length === numbersLength &&
+      word.match(numbers) &&
+      !word.includes(" ")
+    ) {
       switch (type) {
         case "billing":
           Checks.billingCodeErrorStatus = true;
@@ -210,7 +218,7 @@ class Checks {
           Checks.shippingCodeErrorStatus = false;
           break;
       }
-      return `Post code not valid!`;
+      return `Post code: Must follow the format for the country (e.g., 212029 or 00199 for the Belarus and Italy, respectively)!`;
     }
   }
 

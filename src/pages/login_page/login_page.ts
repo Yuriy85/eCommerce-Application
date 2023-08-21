@@ -16,7 +16,7 @@ class LoginPage {
     mainWrapper.classList.add("login");
 
     const caption: HTMLElement = document.createElement("h2");
-    caption.classList.add("login__login-caption");
+    caption.classList.add("login__caption");
     caption.innerText = "Login page";
 
     const inputLogEmail: HTMLInputElement = document.createElement("input");

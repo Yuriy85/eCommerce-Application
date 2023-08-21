@@ -29,20 +29,30 @@ class Events {
 
   clickButtonRegister(registerBtn: HTMLButtonElement) {
     registerBtn.addEventListener("click", () => {
+      const bothAddressCheckbox: HTMLInputElement = document.querySelector(
+        ".register__checkbox-united",
+      ) as HTMLInputElement;
       if (
-        // Checks.emailErrorStatus &&
-        // Checks.passwordErrorStatus &&
-        // Checks.nameErrorStatus &&
-        // Checks.surnameErrorStatus &&
-        // Checks.billingCityErrorStatus &&
-        // Checks.shippingCityErrorStatus &&
-        // Checks.dateErrorStatus &&
-        // Checks.billingStreetErrorStatus &&
-        // Checks.shippingStreetErrorStatus &&
+        Checks.emailErrorStatus &&
+        Checks.passwordErrorStatus &&
+        Checks.nameErrorStatus &&
+        Checks.surnameErrorStatus &&
+        Checks.billingCityErrorStatus &&
+        Checks.dateErrorStatus &&
+        Checks.billingStreetErrorStatus &&
         Checks.billingCodeErrorStatus
-        // Checks.shippingCodeErrorStatus
       ) {
-        this.register.registration();
+        if (bothAddressCheckbox.checked) {
+          this.register.registration();
+        } else {
+          if (
+            Checks.shippingCityErrorStatus &&
+            Checks.shippingStreetErrorStatus &&
+            Checks.shippingCodeErrorStatus
+          ) {
+            this.register.registration();
+          }
+        }
       }
     });
   }
