@@ -1,7 +1,14 @@
 import "./main_page.scss";
+import Events from "../../controller/events";
 import { pagePaths } from "../../routes/routes";
 
 class MainPage {
+  events: Events;
+
+  constructor() {
+    this.events = new Events();
+  }
+
   render(): HTMLElement {
     const mainWrapper: HTMLElement = document.createElement("div");
     mainWrapper.classList.add("main-page");
@@ -16,31 +23,38 @@ class MainPage {
 
     const linkToCatalog: HTMLLIElement = document.createElement("li");
     linkToCatalog.classList.add("main-page__link");
-    linkToCatalog.innerHTML = `<a href = "${pagePaths.catalogPath}" title="Go to catalog">Catalog</a>`;
+    linkToCatalog.title = "Go to catalog";
+    linkToCatalog.innerHTML = "Catalog";
 
     const linkToDetail: HTMLLIElement = document.createElement("li");
     linkToDetail.classList.add("main-page__link");
-    linkToDetail.innerHTML = `<a href = "${pagePaths.detailedPath}" title="Go to detailed">Detailed</a>`;
+    linkToDetail.title = "Go to detailed";
+    linkToDetail.innerHTML = "Detailed";
 
     const linkToProfile: HTMLLIElement = document.createElement("li");
     linkToProfile.classList.add("main-page__link");
-    linkToProfile.innerHTML = `<a href = "${pagePaths.profilePath}" title="Go to profile">Profile</a>`;
+    linkToProfile.title = "Go to profile";
+    linkToProfile.innerHTML = "Profile";
 
     const linkToLogin: HTMLLIElement = document.createElement("li");
     linkToLogin.classList.add("main-page__link");
-    linkToLogin.innerHTML = `<a href = "${pagePaths.loginPath}" title="Go to login">Login</a>`;
+    linkToLogin.title = "Go to login";
+    linkToLogin.innerHTML = "Login";
 
     const linkToRegister: HTMLLIElement = document.createElement("li");
     linkToRegister.classList.add("main-page__link");
-    linkToRegister.innerHTML = `<a href = "${pagePaths.registerPath}" title="Go to register">Register</a>`;
+    linkToRegister.title = "Go to register";
+    linkToRegister.innerHTML = "Register";
 
     const linkToBasket: HTMLLIElement = document.createElement("li");
     linkToBasket.classList.add("main-page__link");
-    linkToBasket.innerHTML = `<a href = "${pagePaths.basketPath}" title="Go to basket">Basket</a>`;
+    linkToBasket.title = "Go to basket";
+    linkToBasket.innerHTML = "Basket";
 
     const linkToAbout: HTMLLIElement = document.createElement("li");
     linkToAbout.classList.add("main-page__link");
-    linkToAbout.innerHTML = `<a href = "${pagePaths.aboutPath}" title="Go to about us">About Us</a>`;
+    linkToAbout.title = "Go to about";
+    linkToAbout.innerHTML = "About Us";
 
     linksToPages.append(
       linkToCatalog,
@@ -52,6 +66,15 @@ class MainPage {
       linkToAbout,
     );
     mainWrapper.append(caption, linksToPages);
+
+    this.events.clickPageAnchor(linkToCatalog, pagePaths.catalogPath);
+    this.events.clickPageAnchor(linkToDetail, pagePaths.detailedPath);
+    this.events.clickPageAnchor(linkToProfile, pagePaths.profilePath);
+    this.events.clickPageAnchor(linkToLogin, pagePaths.loginPath);
+    this.events.clickPageAnchor(linkToRegister, pagePaths.registerPath);
+    this.events.clickPageAnchor(linkToBasket, pagePaths.basketPath);
+    this.events.clickPageAnchor(linkToAbout, pagePaths.aboutPath);
+
     return mainWrapper;
   }
 }

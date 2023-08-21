@@ -1,6 +1,8 @@
 import Login from "./login";
 import Checks from "./checks";
 import Register from "./register";
+import App from "../app";
+import { pagePaths } from "../routes/routes";
 
 class Events {
   register: Register;
@@ -187,6 +189,16 @@ class Events {
         Checks.shippingCheckCountry = (event.target as HTMLSelectElement).value;
       }
       inputCode.value = "";
+    });
+  }
+
+  clickPageAnchor(anchor: HTMLElement, path: string) {
+    anchor.addEventListener("click", () => {
+      if (App.mainData.loginStatus && anchor.innerHTML === "Login") {
+        location.href = pagePaths.mainPath;
+      } else {
+        location.href = path;
+      }
     });
   }
 }

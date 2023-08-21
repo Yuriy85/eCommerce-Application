@@ -17,3 +17,11 @@
   flex-direction: column;
   justify-content: space-between;
 }
+
+.main-page__link {
+  transition: all .3s;
+  &:hover {
+    cursor: pointer;
+    text-shadow: 0px 0px 10px;
+  }
+}

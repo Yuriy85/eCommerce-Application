@@ -1,3 +1,4 @@
+import App from "../app";
 import Clients from "./client";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
@@ -67,6 +68,7 @@ class Customer {
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       this.changeLoginIcon("in");
+      App.mainData.loginStatus = true;
       location.href = pagePaths.mainPath;
       return customer;
     } catch (error) {
@@ -122,6 +124,7 @@ class Customer {
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       this.changeLoginIcon("in");
+      App.mainData.loginStatus = true;
       location.href = pagePaths.mainPath;
       return customer;
     } catch (error) {
@@ -142,6 +145,7 @@ class Customer {
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
       this.changeLoginIcon("in");
+      App.mainData.loginStatus = true;
       location.href = pagePaths.mainPath;
       return customer;
     } catch (error) {
