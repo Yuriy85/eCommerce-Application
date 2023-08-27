@@ -8,3 +8,32 @@
   flex-direction: column;
   align-items: center;
 }
+
+.card{
+  width: 20%;
+  height: 330px;
+  background: url('../../assets/images/board.jpg');
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+}
+.card__img {
+  width: 100px;
+  height: 100px;
+  background-size: 100px 100px;
+}
+
+.card__title,
+.card__subtitle,
+.card__price{
+  color: #fafae5;
+}
+
+.card__subtitle{
+  text-align: center;
+}
+
+.card__price{
+  margin: 0;
+}

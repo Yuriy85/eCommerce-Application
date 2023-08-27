@@ -11,6 +11,7 @@ import BasketPage from "./pages/basket_page/basket_page";
 import AboutPage from "./pages/about_page/about_page";
 import ErrorPage from "./pages/404_page/404_page";
 import { pagePaths } from "./routes/routes";
+import Products from "./controller/products";
 
 class App {
   body: HTMLElement;
@@ -18,7 +19,7 @@ class App {
   main: Main;
   footer: Footer;
   mainPage: HTMLElement;
-  catalogPage: HTMLElement;
+  catalogPage: Promise<HTMLElement>;
   detailPage: HTMLElement;
   profilePage: HTMLElement;
   loginPage: HTMLElement;
@@ -26,6 +27,7 @@ class App {
   basketPage: HTMLElement;
   aboutPage: HTMLElement;
   errorPage: ErrorPage;
+  products: Products;
 
   constructor() {
     this.body = document.body;
@@ -41,6 +43,7 @@ class App {
     this.basketPage = new BasketPage().render();
     this.aboutPage = new AboutPage().render();
     this.errorPage = new ErrorPage();
+    this.products = new Products();
   }
 
   run(): void {
@@ -48,14 +51,16 @@ class App {
     this.main.render(this.body);
     this.footer.render(this.body);
     this.initRouter();
+    this.products.search();
   }
 
-  renderPage(path: string): void {
-    let pageInnerData: HTMLElement = this.errorPage.render();
+  async renderPage(path: string): Promise<void> {
+    let pageInnerData: HTMLElement | Promise<HTMLElement> =
+      this.errorPage.render();
     if (path === pagePaths.mainPath || path === "") {
       pageInnerData = this.mainPage;
     } else if (path === pagePaths.catalogPath) {
-      pageInnerData = this.catalogPage;
+      pageInnerData = await this.catalogPage;
     } else if (path === pagePaths.detailedPath) {
       pageInnerData = this.detailPage;
     } else if (path === pagePaths.profilePath) {
@@ -69,8 +74,9 @@ class App {
     } else if (path === pagePaths.aboutPath) {
       pageInnerData = this.aboutPage;
     }
-    (document.querySelector(".main") as HTMLElement).innerHTML = "";
-    (document.querySelector(".main") as HTMLElement).appendChild(pageInnerData);
+    const main = document.querySelector(".main") as HTMLElement;
+    main.innerHTML = "";
+    main.append(pageInnerData);
   }
 
   goToPage(path: string): void {
