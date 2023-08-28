@@ -1,6 +1,6 @@
 import "./catalog_page.scss";
 import Products from "../../controller/products";
-import { ProductProjection } from "@commercetools/platform-sdk";
+import { ProductProjection, ProductVariant } from "@commercetools/platform-sdk";
 
 class CatalogPage {
   products: Products;
@@ -44,29 +44,75 @@ class CatalogPage {
     subtitle.classList.add("catalog__card-subtitle");
     image.classList.add("catalog__card-img");
     priceWrapper.classList.add("catalog__price-wrapper");
-    price.classList.add("catalog__card-price");
-    priceVariant.classList.add("catalog__card-price");
-    priceVariantTwo.classList.add("catalog__card-price");
+    price.classList.add("catalog__card-first-price");
+    priceVariant.classList.add("catalog__card-second-price");
+    priceVariantTwo.classList.add("catalog__card-third-price");
 
     title.innerText = product.name["en-US"];
     image.style.backgroundImage = `url(${product.masterVariant.images?.[0].url})`;
     subtitle.innerText = product.description?.["en-US"] as string;
     const separator = product.masterVariant.sku?.indexOf("-");
-    price.innerText = `${(
-      (product.masterVariant.prices?.[0].value.centAmount as number) / 100
-    ).toFixed(2)} EUR ${product.masterVariant.sku?.substring(
-      separator as number,
-    )}`;
-    priceVariant.innerText = `${(
-      (product.variants[0].prices?.[0].value.centAmount as number) / 100
-    ).toFixed(2)} EUR ${product.variants[0].sku?.substring(
-      separator as number,
-    )}`;
-    priceVariantTwo.innerText = `${(
-      (product.variants[1].prices?.[0].value.centAmount as number) / 100
-    ).toFixed(2)} EUR ${product.variants[1].sku?.substring(
-      separator as number,
-    )}`;
+    const firstProductData: ProductVariant = product.masterVariant;
+    const secondProductData: ProductVariant = product.variants[0];
+    const thirdProductData: ProductVariant = product.variants[1];
+
+    if (firstProductData.prices?.[0].discounted) {
+      price.classList.add("catalog__card--discount");
+      price.innerHTML = `${(
+        (firstProductData.prices?.[0].value.centAmount as number) / 100
+      )
+        .toFixed(2)
+        .strike()} ${(
+        (firstProductData.prices?.[0].discounted.value.centAmount as number) /
+        100
+      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
+        separator as number,
+      )}`;
+    } else {
+      price.innerHTML = `${(
+        (firstProductData.prices?.[0].value.centAmount as number) / 100
+      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
+        separator as number,
+      )}`;
+    }
+    if (secondProductData.prices?.[0].discounted) {
+      priceVariant.classList.add("catalog__card--discount");
+      priceVariant.innerHTML = `${(
+        (secondProductData.prices?.[0].value.centAmount as number) / 100
+      )
+        .toFixed(2)
+        .strike()} ${(
+        (secondProductData.prices?.[0].discounted.value.centAmount as number) /
+        100
+      ).toFixed(2)} EUR ${secondProductData.sku?.substring(
+        separator as number,
+      )}`;
+    } else {
+      priceVariant.innerHTML = `${(
+        (secondProductData.prices?.[0].value.centAmount as number) / 100
+      ).toFixed(2)} EUR ${secondProductData.sku?.substring(
+        separator as number,
+      )}`;
+    }
+    if (thirdProductData.prices?.[0].discounted) {
+      priceVariantTwo.classList.add("catalog__card--discount");
+      priceVariantTwo.innerHTML = `${(
+        (thirdProductData.prices?.[0].value.centAmount as number) / 100
+      )
+        .toFixed(2)
+        .strike()} ${(
+        (thirdProductData.prices?.[0].discounted.value.centAmount as number) /
+        100
+      ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
+        separator as number,
+      )}`;
+    } else {
+      priceVariantTwo.innerHTML = `${(
+        (thirdProductData.prices?.[0].value.centAmount as number) / 100
+      ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
+        separator as number,
+      )}`;
+    }
 
     priceWrapper.append(price, priceVariant, priceVariantTwo);
 

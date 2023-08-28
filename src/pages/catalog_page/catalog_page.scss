@@ -37,16 +37,27 @@
   background-repeat: no-repeat;
 }
 
-.catalog__card-title,
-.catalog__card-subtitle,
-.catalog__card-price {
-  color: #fafae5;
-}
-
 .catalog__card-subtitle {
   text-align: center;
 }
 
-.catalog__card-price {
+.catalog__card-first-price,
+.catalog__card-second-price,
+.catalog__card-third-price {
   margin: 0;
+}
+
+.catalog__card--discount {
+  color: #6aff00;
+  text-shadow: 0 0 10px #000000;
+  & strike {
+    color: #fafae5;
+    text-shadow: none;
+  }
+}
+
+.catalog__price-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
