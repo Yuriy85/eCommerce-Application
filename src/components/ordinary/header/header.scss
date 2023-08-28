@@ -1,8 +1,8 @@
 .header {
   width: 100%;
   min-height: 100px;
-  color: rgb(197, 226, 226);
-  background: linear-gradient(90deg, #00d69f, #1e1173);
+  // color: rgb(197, 226, 226);
+  background: linear-gradient(90deg, #00d6a0af, #1e1173af);
   border-radius: 0 0 15px 15px;
 }
 
@@ -20,7 +20,7 @@
 .header__button {
   margin: 3px;
   text-align: center;
-  color: rgb(197, 226, 226);
+  color: inherit;
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 1px;
@@ -30,6 +30,7 @@
   transition: all 0.3s;
   &:hover {
     color: #edf8f6;
+    scale: 1.3;
     cursor: pointer;
   }
 }
