@@ -58,7 +58,7 @@ class Header {
     wrapper.classList.add("header__wrapper");
     caption.classList.add("header__caption");
     userMenu.classList.add("header__user-menu");
-    caption.innerText = "eCommerce";
+    caption.innerText = "eSushi";
     wrapper.appendChild(caption);
     wrapper.appendChild(userMenu);
     userMenu.append(

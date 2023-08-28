@@ -46,8 +46,6 @@
   padding: 0 10px;
   border: 0;
   border-bottom: 1px solid rgb(0, 0, 0);
-  background: #d8fdf6;
-  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
   border-radius: 10px;
   height: 30px;
 }
@@ -71,7 +69,7 @@
 
 .register__label-checkbox,
 .register__label-united {
-  font-size: 12px;
+  font-size: 0.83em;
 }
 
 .register__billing-wrapper-checkbox,
@@ -79,7 +77,13 @@
   display: flex;
   align-items: center;
   margin: 0 0 20px 0;
-}
+  }
+
+  .register__checkbox-billing_default,
+  .register__checkbox-united,
+  .register__checkbox-shipping_default {
+    box-shadow: none;
+  }
 
 .register__shipping-wrapper-checkbox,
 .register__billing-wrapper-checkbox {

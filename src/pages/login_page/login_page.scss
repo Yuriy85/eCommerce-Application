@@ -41,7 +41,6 @@
 
 .login__password-open-view {
   position: absolute;
-  margin: 3px;
   right: 0;
   &:hover {
     cursor: pointer;
@@ -64,8 +63,6 @@
   padding: 0 10px;
   border: 0;
   border-bottom: 1px solid rgb(0, 0, 0);
-  background: #d8fdf6;
-  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
   border-radius: 10px;
   height: 30px;
   width: 100%;
