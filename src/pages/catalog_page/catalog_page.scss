@@ -28,6 +28,16 @@
   box-shadow: 0 0 10px black;
   padding: 5px;
   justify-content: space-between;
+  transition: all 0.1s;
+  &:hover {
+    box-shadow: 0 0 20px black;
+    scale: 1.05;
+    background: #77777736;
+  }
+}
+
+.catalog__card-title {
+  text-align: center;
 }
 .catalog__card-img {
   width: 150px;
