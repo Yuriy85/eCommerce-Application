@@ -30,9 +30,14 @@
   justify-content: space-between;
   transition: all 0.1s;
   &:hover {
+    cursor: pointer;
     box-shadow: 0 0 20px black;
     scale: 1.05;
     background: #77777736;
+  }
+  &:active {
+    box-shadow: 0 0 10px black;
+    scale: 1.03;
   }
 }
 

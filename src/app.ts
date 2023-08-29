@@ -61,7 +61,7 @@ class App {
       pageInnerData = this.mainPage;
     } else if (path === pagePaths.catalogPath) {
       pageInnerData = await this.catalogPage;
-    } else if (path === pagePaths.detailedPath) {
+    } else if (path.split("?")[0] === pagePaths.detailedPath) {
       pageInnerData = this.detailPage;
     } else if (path === pagePaths.profilePath) {
       pageInnerData = this.profilePage;

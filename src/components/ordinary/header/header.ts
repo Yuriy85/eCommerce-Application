@@ -1,6 +1,5 @@
 import "./header.scss";
 import catalogImg from "../../../assets/icons/catalog.svg";
-import detailedImg from "../../../assets/icons/detailed.svg";
 import profileImg from "../../../assets/icons/profile.svg";
 import loginImg from "../../../assets/icons/login.svg";
 import logoutImg from "../../../assets/icons/logout.svg";
@@ -63,7 +62,6 @@ class Header {
     wrapper.appendChild(userMenu);
     userMenu.append(
       this.createButton(catalogImg, "Catalog", pagePaths.catalogPath),
-      this.createButton(detailedImg, "Detailed", pagePaths.detailedPath),
       this.createButton(profileImg, "Profile", pagePaths.profilePath),
       loginButton,
       this.createButton(registerImg, "Register", pagePaths.registerPath),

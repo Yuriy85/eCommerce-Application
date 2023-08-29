@@ -211,6 +211,12 @@ class Events {
       }
     });
   }
+
+  clickProductCard(card: HTMLElement): void {
+    card.addEventListener("click", () => {
+      location.href = `${pagePaths.detailedPath}?${card.id}`;
+    });
+  }
 }
 
 export default Events;

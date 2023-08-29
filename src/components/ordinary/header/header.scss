@@ -18,7 +18,8 @@
 }
 
 .header__button {
-  margin: 3px;
+  min-width: 90px;
+  margin: 3px 0 3px 20px;
   text-align: center;
   color: inherit;
   font-size: 0.9rem;
@@ -39,7 +40,7 @@
   flex-wrap: wrap;
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: flex-end;
 }
 
 .header__button {
