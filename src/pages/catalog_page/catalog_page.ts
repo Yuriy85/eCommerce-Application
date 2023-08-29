@@ -1,11 +1,15 @@
 import "./catalog_page.scss";
 import Products from "../../controller/products";
 import { ProductProjection, ProductVariant } from "@commercetools/platform-sdk";
+import Events from "../../controller/events";
 
 class CatalogPage {
   products: Products;
+  events: Events;
+
   constructor() {
     this.products = new Products();
+    this.events = new Events();
   }
   async render(): Promise<HTMLElement> {
     const mainWrapper: HTMLElement = document.createElement("div");
@@ -19,16 +23,18 @@ class CatalogPage {
     const cardProducts: ProductProjection[] = (await this.products.getProduct())
       .body.results;
 
-    cardProducts.forEach((product) =>
-      productWrapper.append(this.createCardProduct(product)),
-    );
+    cardProducts.forEach((product) => {
+      const productCard = this.createCardProduct(product);
+      productWrapper.append(productCard);
+      this.events.clickProductCard(productCard);
+    });
 
     mainWrapper.append(caption, productWrapper);
 
     return mainWrapper;
   }
 
-  createCardProduct(product: ProductProjection) {
+  createCardProduct(product: ProductProjection): HTMLElement {
     const card: HTMLElement = document.createElement("div");
     const title: HTMLElement = document.createElement("h2");
     const subtitle: HTMLElement = document.createElement("h4");
@@ -39,7 +45,7 @@ class CatalogPage {
     const priceVariantTwo: HTMLElement = document.createElement("h4");
 
     card.classList.add("catalog__card");
-    card.setAttribute("id", `card-${product.id}`);
+    card.setAttribute("id", product.id);
     title.classList.add("catalog__card-title");
     subtitle.classList.add("catalog__card-subtitle");
     image.classList.add("catalog__card-img");
@@ -75,43 +81,47 @@ class CatalogPage {
         separator as number,
       )}`;
     }
-    if (secondProductData.prices?.[0].discounted) {
-      priceVariant.classList.add("catalog__card--discount");
-      priceVariant.innerHTML = `${(
-        (secondProductData.prices?.[0].value.centAmount as number) / 100
-      )
-        .toFixed(2)
-        .strike()} ${(
-        (secondProductData.prices?.[0].discounted.value.centAmount as number) /
-        100
-      ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-        separator as number,
-      )}`;
-    } else {
-      priceVariant.innerHTML = `${(
-        (secondProductData.prices?.[0].value.centAmount as number) / 100
-      ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-        separator as number,
-      )}`;
+    if (secondProductData) {
+      if (secondProductData.prices?.[0].discounted) {
+        priceVariant.classList.add("catalog__card--discount");
+        priceVariant.innerHTML = `${(
+          (secondProductData.prices?.[0].value.centAmount as number) / 100
+        )
+          .toFixed(2)
+          .strike()} ${(
+          (secondProductData.prices?.[0].discounted.value
+            .centAmount as number) / 100
+        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
+          separator as number,
+        )}`;
+      } else {
+        priceVariant.innerHTML = `${(
+          (secondProductData.prices?.[0].value.centAmount as number) / 100
+        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
+          separator as number,
+        )}`;
+      }
     }
-    if (thirdProductData.prices?.[0].discounted) {
-      priceVariantTwo.classList.add("catalog__card--discount");
-      priceVariantTwo.innerHTML = `${(
-        (thirdProductData.prices?.[0].value.centAmount as number) / 100
-      )
-        .toFixed(2)
-        .strike()} ${(
-        (thirdProductData.prices?.[0].discounted.value.centAmount as number) /
-        100
-      ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-        separator as number,
-      )}`;
-    } else {
-      priceVariantTwo.innerHTML = `${(
-        (thirdProductData.prices?.[0].value.centAmount as number) / 100
-      ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-        separator as number,
-      )}`;
+    if (thirdProductData) {
+      if (thirdProductData.prices?.[0].discounted) {
+        priceVariantTwo.classList.add("catalog__card--discount");
+        priceVariantTwo.innerHTML = `${(
+          (thirdProductData.prices?.[0].value.centAmount as number) / 100
+        )
+          .toFixed(2)
+          .strike()} ${(
+          (thirdProductData.prices?.[0].discounted.value.centAmount as number) /
+          100
+        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
+          separator as number,
+        )}`;
+      } else {
+        priceVariantTwo.innerHTML = `${(
+          (thirdProductData.prices?.[0].value.centAmount as number) / 100
+        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
+          separator as number,
+        )}`;
+      }
     }
 
     priceWrapper.append(price, priceVariant, priceVariantTwo);
