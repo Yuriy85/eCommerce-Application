@@ -39,21 +39,21 @@ class CatalogPage {
 
     filter?.addEventListener("change", () => {
       productWrapper.innerHTML = "";
-      if (filter.options[filter.selectedIndex].text === "All") {
+      if (filter.options[filter.selectedIndex].text === "Reset filter") {
         cardProductsFilterAll.forEach((product) => {
           const productCard = this.createCardProduct(product);
           productWrapper.append(productCard);
           this.events.clickProductCard(productCard);
         });
       }
-      if (filter.options[filter.selectedIndex].text === "No Lactose") {
+      if (filter.options[filter.selectedIndex].text === "Lactose free") {
         cardProductsFilterNo.forEach((product) => {
           const productCard = this.createCardProduct(product);
           productWrapper.append(productCard);
           this.events.clickProductCard(productCard);
         });
       }
-      if (filter.options[filter.selectedIndex].text === "Lactose") {
+      if (filter.options[filter.selectedIndex].text === "With lactose") {
         cardProductsFilterYes.forEach((product) => {
           const productCard = this.createCardProduct(product);
           productWrapper.append(productCard);
@@ -74,9 +74,9 @@ class CatalogPage {
     lactoseAll.classList.add("catalog__filter-all");
     lactoseYes.classList.add("catalog__filter-yes");
     lactoseNo.classList.add("catalog__filter-no");
-    lactoseAll.innerText = "All";
-    lactoseYes.innerText = "Lactose";
-    lactoseNo.innerText = "No Lactose";
+    lactoseAll.innerText = "Reset filter";
+    lactoseYes.innerText = "With lactose";
+    lactoseNo.innerText = "Lactose free";
     filter.append(lactoseAll, lactoseYes, lactoseNo);
     return filter;
   }
