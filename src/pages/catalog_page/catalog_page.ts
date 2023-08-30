@@ -14,71 +14,188 @@ class CatalogPage {
   async render(): Promise<HTMLElement> {
     const mainWrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h2");
+    const selectWrapper: HTMLElement = document.createElement("div");
+    const filterWrapper: HTMLElement = document.createElement("div");
+    const sortWrapper: HTMLElement = document.createElement("div");
+    const filterTitle: HTMLElement = document.createElement("p");
+    const sortTitle: HTMLElement = document.createElement("p");
+    const filterElement: HTMLSelectElement = this.createSelectFilterElement();
+    const sortElement: HTMLSelectElement = this.createSelectSortElement();
     const productWrapper: HTMLElement = document.createElement("div");
     mainWrapper.classList.add("catalog");
-    productWrapper.classList.add("catalog__products");
     caption.classList.add("catalog__caption");
+
+    selectWrapper.classList.add("catalog__select-wrapper");
+    filterWrapper.classList.add("catalog__filter-wrapper");
+    sortWrapper.classList.add("catalog__sort-wrapper");
+    productWrapper.classList.add("catalog__products");
+    filterTitle.classList.add("catalog__filter-title");
+    sortTitle.classList.add("catalog__sort-title");
+    filterTitle.innerText = "Filter:";
+    sortTitle.innerText = "Sort:";
     mainWrapper.innerHTML = "";
     caption.innerText = "Catalog Product page";
-    const cardProductsFilterAll: ProductProjection[] = (
-      await this.products.getProduct()
-    ).body.results;
-    const cardProductsFilterYes: ProductProjection[] = (
-      await this.products.getProductFilter("yes")
-    ).body.results;
-    const cardProductsFilterNo: ProductProjection[] = (
-      await this.products.getProductFilter("no")
-    ).body.results;
-    const filter: HTMLSelectElement = this.filterCard();
 
-    cardProductsFilterAll.forEach((product) => {
+    const cardProducts: ProductProjection[] = (await this.products.getProduct())
+      .body.results;
+
+    cardProducts.forEach((product) => {
       const productCard = this.createCardProduct(product);
       productWrapper.append(productCard);
       this.events.clickProductCard(productCard);
     });
 
-    filter?.addEventListener("change", () => {
+    filterElement?.addEventListener("change", async () => {
       productWrapper.innerHTML = "";
-      if (filter.options[filter.selectedIndex].text === "Reset filter") {
+      const sortReset: HTMLOptionElement = document.querySelector(
+        ".catalog__sort-reset",
+      ) as HTMLOptionElement;
+      sortReset.selected = true;
+      if (
+        filterElement.options[filterElement.selectedIndex].text ===
+        "Reset filter"
+      ) {
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProduct()
+        ).body.results;
         cardProductsFilterAll.forEach((product) => {
           const productCard = this.createCardProduct(product);
           productWrapper.append(productCard);
           this.events.clickProductCard(productCard);
         });
       }
-      if (filter.options[filter.selectedIndex].text === "Lactose free") {
-        cardProductsFilterNo.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
-      }
-      if (filter.options[filter.selectedIndex].text === "With lactose") {
+      if (
+        filterElement.options[filterElement.selectedIndex].text ===
+        "Lactose free"
+      ) {
+        const cardProductsFilterYes: ProductProjection[] = (
+          await this.products.getProductFilter("yes")
+        ).body.results;
         cardProductsFilterYes.forEach((product) => {
           const productCard = this.createCardProduct(product);
           productWrapper.append(productCard);
           this.events.clickProductCard(productCard);
         });
       }
+      if (
+        filterElement.options[filterElement.selectedIndex].text ===
+        "With lactose"
+      ) {
+        const cardProductsFilterNo: ProductProjection[] = (
+          await this.products.getProductFilter("no")
+        ).body.results;
+        cardProductsFilterNo.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
     });
-    mainWrapper.append(caption, filter, productWrapper);
+
+    sortElement?.addEventListener("change", async () => {
+      productWrapper.innerHTML = "";
+      const filterReset: HTMLOptionElement = document.querySelector(
+        ".catalog__filter-reset",
+      ) as HTMLOptionElement;
+      filterReset.selected = true;
+      if (
+        sortElement.options[sortElement.selectedIndex].text === "Reset sort"
+      ) {
+        const sortReset: ProductProjection[] = (
+          await this.products.getProduct()
+        ).body.results;
+        sortReset.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+      if (sortElement.options[sortElement.selectedIndex].text === "A-Z") {
+        const cardSortAlphabetically: ProductProjection[] = (
+          await this.products.getProductSort("name.en-US asc")
+        ).body.results;
+        cardSortAlphabetically.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+      if (
+        sortElement.options[sortElement.selectedIndex].text ===
+        "Price ascending"
+      ) {
+        const cardSortPriceAscending: ProductProjection[] = (
+          await this.products.getProductSort("price asc")
+        ).body.results;
+        cardSortPriceAscending.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+      if (
+        sortElement.options[sortElement.selectedIndex].text ===
+        "Price descending"
+      ) {
+        const cardSortPriceDescending: ProductProjection[] = (
+          await this.products.getProductSort("price desc")
+        ).body.results;
+        cardSortPriceDescending.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+    });
+    filterWrapper.append(filterTitle, filterElement);
+    sortWrapper.append(sortTitle, sortElement);
+    selectWrapper.append(filterWrapper, sortWrapper);
+
+    mainWrapper.append(caption, selectWrapper, productWrapper);
     return mainWrapper;
   }
 
-  filterCard() {
+  createSelectFilterElement() {
     const filter: HTMLSelectElement = document.createElement("select");
+    const resetFilter = document.createElement("option");
     const lactoseYes: HTMLOptionElement = document.createElement("option");
-    const lactoseAll: HTMLOptionElement = document.createElement("option");
     const lactoseNo: HTMLOptionElement = document.createElement("option");
     filter.classList.add("catalog__filter-select");
-    lactoseAll.classList.add("catalog__filter-all");
+    resetFilter.classList.add("catalog__filter-reset");
     lactoseYes.classList.add("catalog__filter-yes");
     lactoseNo.classList.add("catalog__filter-no");
-    lactoseAll.innerText = "Reset filter";
+    resetFilter.innerText = "Reset filter";
     lactoseYes.innerText = "With lactose";
     lactoseNo.innerText = "Lactose free";
-    filter.append(lactoseAll, lactoseYes, lactoseNo);
+    filter.append(resetFilter, lactoseYes, lactoseNo);
     return filter;
+  }
+
+  createSelectSortElement() {
+    const sort: HTMLSelectElement = document.createElement("select");
+    const sortReset: HTMLOptionElement = document.createElement("option");
+    const sortAlphabetically: HTMLOptionElement =
+      document.createElement("option");
+    const sortPriceAscending: HTMLOptionElement =
+      document.createElement("option");
+    const sortPriceDescending: HTMLOptionElement =
+      document.createElement("option");
+    sort.classList.add("catalog__sort-select");
+    sortReset.classList.add("catalog__sort-reset");
+    sortAlphabetically.classList.add("catalog__sort-alphabetically");
+    sortPriceAscending.classList.add("catalog__sort-ascending");
+    sortPriceDescending.classList.add("catalog__sort-descending");
+    sortReset.innerText = "Reset sort";
+    sortAlphabetically.innerText = "A-Z";
+    sortPriceAscending.innerText = "Price ascending";
+    sortPriceDescending.innerText = "Price descending";
+    sort.append(
+      sortReset,
+      sortAlphabetically,
+      sortPriceAscending,
+      sortPriceDescending,
+    );
+    return sort;
   }
 
   createCardProduct(product: ProductProjection): HTMLElement {
