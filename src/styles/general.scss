@@ -53,9 +53,16 @@ select {
 button {
   font-size: inherit;
   box-shadow: 0 0 10px rgb(0 0 0);
-  transition: box-shadow .2s;
+  background: #1d41b5;
+  color: beige;
+  border: none;
+  border-radius: 13px;
+  min-width: 176px;
+  height: 25px;
+  cursor: pointer;
+  padding: 0 15px 0 15px;
+  transition: box-shadow 0.2s;
   &:active {
     box-shadow: none;
   }
-
 }

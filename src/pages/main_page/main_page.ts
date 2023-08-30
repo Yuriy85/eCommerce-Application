@@ -26,11 +26,6 @@ class MainPage {
     linkToCatalog.title = "Go to catalog";
     linkToCatalog.innerHTML = "Catalog";
 
-    const linkToDetail: HTMLLIElement = document.createElement("li");
-    linkToDetail.classList.add("main-page__link");
-    linkToDetail.title = "Go to detailed";
-    linkToDetail.innerHTML = "Detailed";
-
     const linkToProfile: HTMLLIElement = document.createElement("li");
     linkToProfile.classList.add("main-page__link");
     linkToProfile.title = "Go to profile";
@@ -58,7 +53,6 @@ class MainPage {
 
     linksToPages.append(
       linkToCatalog,
-      linkToDetail,
       linkToProfile,
       linkToLogin,
       linkToRegister,
@@ -68,7 +62,6 @@ class MainPage {
     mainWrapper.append(caption, linksToPages);
 
     this.events.clickPageAnchor(linkToCatalog, pagePaths.catalogPath);
-    this.events.clickPageAnchor(linkToDetail, pagePaths.detailedPath);
     this.events.clickPageAnchor(linkToProfile, pagePaths.profilePath);
     this.events.clickPageAnchor(linkToLogin, pagePaths.loginPath);
     this.events.clickPageAnchor(linkToRegister, pagePaths.registerPath);
