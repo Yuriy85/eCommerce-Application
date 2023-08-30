@@ -3,6 +3,7 @@ import Checks from "./checks";
 import Register from "./register";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
+import { SimpleSlider } from "simple-slider-ts";
 
 class Events {
   register: Register;
@@ -195,10 +196,10 @@ class Events {
   clickPageAnchor(anchor: HTMLElement, path: string) {
     anchor.addEventListener("click", () => {
       if (localStorage.getItem("id") && anchor.innerHTML === "Login") {
-        location.href = pagePaths.mainPath;
+        window.location.href = pagePaths.mainPath;
       } else if (localStorage.getItem("id") && anchor.id === "log-btn") {
         localStorage.removeItem("id");
-        location.href = path;
+        window.location.href = path;
         const loginImage: HTMLImageElement = document.getElementById(
           "log-img",
         ) as HTMLImageElement;
@@ -207,14 +208,45 @@ class Events {
         (loginTitle as HTMLElement).innerText = "Login";
         loginImage.src = loginImg;
       } else {
-        location.href = path;
+        window.location.href = path;
       }
     });
   }
 
   clickProductCard(card: HTMLElement): void {
     card.addEventListener("click", () => {
-      location.href = `${pagePaths.detailedPath}?${card.id}`;
+      window.location.href = `${pagePaths.detailedPath}?${card.id}`;
+    });
+  }
+
+  clickToCatalogButton(button: HTMLButtonElement): void {
+    button.addEventListener("click", () => {
+      window.location.href = pagePaths.catalogPath;
+    });
+  }
+
+  clickSliderButton(
+    btn: HTMLButtonElement,
+    slider: SimpleSlider,
+    revers: boolean,
+    type: "next" | "prev",
+  ): void {
+    btn.addEventListener("click", () => {
+      if (type === "next") {
+        if (revers) {
+          slider.reverse();
+          revers = false;
+        }
+        slider.next();
+      } else {
+        slider.reverse();
+        slider.next();
+      }
+      slider.pause();
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.disabled = false;
+      }, 1500);
     });
   }
 }

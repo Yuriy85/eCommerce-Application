@@ -20,7 +20,7 @@ class App {
   footer: Footer;
   mainPage: HTMLElement;
   catalogPage: Promise<HTMLElement>;
-  detailPage: HTMLElement;
+  detailPage: DetailPage;
   profilePage: HTMLElement;
   loginPage: HTMLElement;
   registerPage: HTMLElement;
@@ -36,7 +36,7 @@ class App {
     this.footer = new Footer();
     this.mainPage = new MainPage().render();
     this.catalogPage = new CatalogPage().render();
-    this.detailPage = new DetailPage().render();
+    this.detailPage = new DetailPage();
     this.profilePage = new ProfilePage().render();
     this.loginPage = new LoginPage().render();
     this.registerPage = new RegisterPage().render();
@@ -54,23 +54,34 @@ class App {
   }
 
   async renderPage(path: string): Promise<void> {
+    const headerButtons: NodeListOf<Element> =
+      document.querySelectorAll(".header__button");
     let pageInnerData: HTMLElement | Promise<HTMLElement> =
       this.errorPage.render();
+    headerButtons.forEach((button) =>
+      button.classList.remove("header__button--active"),
+    );
     if (path === pagePaths.mainPath || path === "") {
       pageInnerData = this.mainPage;
     } else if (path === pagePaths.catalogPath) {
+      headerButtons[0]?.classList.add("header__button--active");
       pageInnerData = await this.catalogPage;
     } else if (path.split("?")[0] === pagePaths.detailedPath) {
-      pageInnerData = this.detailPage;
+      pageInnerData = await this.detailPage.render();
     } else if (path === pagePaths.profilePath) {
+      headerButtons[1]?.classList.add("header__button--active");
       pageInnerData = this.profilePage;
     } else if (path === pagePaths.loginPath) {
+      headerButtons[2]?.classList.add("header__button--active");
       pageInnerData = this.loginPage;
     } else if (path === pagePaths.registerPath) {
+      headerButtons[3]?.classList.add("header__button--active");
       pageInnerData = this.registerPage;
     } else if (path === pagePaths.basketPath) {
+      headerButtons[4]?.classList.add("header__button--active");
       pageInnerData = this.basketPage;
     } else if (path === pagePaths.aboutPath) {
+      headerButtons[5]?.classList.add("header__button--active");
       pageInnerData = this.aboutPage;
     }
     const main = document.querySelector(".main") as HTMLElement;
@@ -78,21 +89,51 @@ class App {
     main.append(pageInnerData);
   }
 
-  goToPage(path: string): void {
-    window.history.pushState({ path }, path, path);
+  goToPage(path: string, type?: "replace"): void {
+    if (type) {
+      window.history.replaceState({ path }, "", path);
+    } else {
+      window.history.pushState({ path }, "", path);
+    }
     this.renderPage(path);
   }
 
   initRouter() {
     window.addEventListener("popstate", () => {
-      this.renderPage(new URL(window.location.href).hash);
+      if (
+        !localStorage.getItem("id") &&
+        new URL(window.location.href).hash.split("?")[0] ===
+          pagePaths.profilePath
+      ) {
+        this.goToPage(pagePaths.mainPath, "replace");
+      } else if (
+        localStorage.getItem("id") &&
+        new URL(window.location.href).hash === pagePaths.loginPath
+      ) {
+        this.goToPage(pagePaths.mainPath, "replace");
+      } else {
+        this.renderPage(new URL(window.location.href).hash);
+      }
     });
     document
       .querySelector(".header__caption")
       ?.addEventListener("click", () => {
         this.goToPage(pagePaths.mainPath);
       });
-    this.renderPage(new URL(window.location.href).hash);
+
+    if (
+      !localStorage.getItem("id") &&
+      new URL(window.location.href).hash.split("?")[0] === pagePaths.profilePath
+    ) {
+      this.goToPage(pagePaths.mainPath, "replace");
+    } else if (
+      localStorage.getItem("id") &&
+      new URL(window.location.href).hash === pagePaths.loginPath
+    ) {
+      this.goToPage(pagePaths.mainPath, "replace");
+    } else {
+      this.renderPage(new URL(window.location.href).hash);
+    }
   }
 }
 
