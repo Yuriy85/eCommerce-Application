@@ -28,6 +28,22 @@ class Products {
     console.log(product);
     return product;
   }
+
+  async getProductSort(value: string) {
+    const apiRoot: ByProjectKeyRequestBuilder =
+      this.clients.getCredentialsFlowClient();
+    const productSort = await apiRoot
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: {
+          sort: [`${value}`],
+          limit: 25,
+        },
+      })
+      .execute();
+    return productSort;
+  }
 }
 
 export default Products;
