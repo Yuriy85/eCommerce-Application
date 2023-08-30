@@ -20,18 +20,65 @@ class CatalogPage {
     caption.classList.add("catalog__caption");
     mainWrapper.innerHTML = "";
     caption.innerText = "Catalog Product page";
-    const cardProducts: ProductProjection[] = (await this.products.getProduct())
-      .body.results;
+    const cardProductsFilterAll: ProductProjection[] = (
+      await this.products.getProduct()
+    ).body.results;
+    const cardProductsFilterYes: ProductProjection[] = (
+      await this.products.getProductFilter("yes")
+    ).body.results;
+    const cardProductsFilterNo: ProductProjection[] = (
+      await this.products.getProductFilter("no")
+    ).body.results;
+    const filter: HTMLSelectElement = this.filterCard();
 
-    cardProducts.forEach((product) => {
+    cardProductsFilterAll.forEach((product) => {
       const productCard = this.createCardProduct(product);
       productWrapper.append(productCard);
       this.events.clickProductCard(productCard);
     });
 
-    mainWrapper.append(caption, productWrapper);
-
+    filter?.addEventListener("change", () => {
+      productWrapper.innerHTML = "";
+      if (filter.options[filter.selectedIndex].text === "Reset filter") {
+        cardProductsFilterAll.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+      if (filter.options[filter.selectedIndex].text === "Lactose free") {
+        cardProductsFilterNo.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+      if (filter.options[filter.selectedIndex].text === "With lactose") {
+        cardProductsFilterYes.forEach((product) => {
+          const productCard = this.createCardProduct(product);
+          productWrapper.append(productCard);
+          this.events.clickProductCard(productCard);
+        });
+      }
+    });
+    mainWrapper.append(caption, filter, productWrapper);
     return mainWrapper;
+  }
+
+  filterCard() {
+    const filter: HTMLSelectElement = document.createElement("select");
+    const lactoseYes: HTMLOptionElement = document.createElement("option");
+    const lactoseAll: HTMLOptionElement = document.createElement("option");
+    const lactoseNo: HTMLOptionElement = document.createElement("option");
+    filter.classList.add("catalog__filter-select");
+    lactoseAll.classList.add("catalog__filter-all");
+    lactoseYes.classList.add("catalog__filter-yes");
+    lactoseNo.classList.add("catalog__filter-no");
+    lactoseAll.innerText = "Reset filter";
+    lactoseYes.innerText = "With lactose";
+    lactoseNo.innerText = "Lactose free";
+    filter.append(lactoseAll, lactoseYes, lactoseNo);
+    return filter;
   }
 
   createCardProduct(product: ProductProjection): HTMLElement {
@@ -56,7 +103,9 @@ class CatalogPage {
 
     title.innerText = product.name["en-US"];
     image.style.backgroundImage = `url(${product.masterVariant.images?.[0].url})`;
-    subtitle.innerText = product.description?.["en-US"] as string;
+    subtitle.innerText = (product.description?.["en-US"] as string).split(
+      "#",
+    )[0];
     const separator = product.masterVariant.sku?.indexOf("-");
     const firstProductData: ProductVariant = product.masterVariant;
     const secondProductData: ProductVariant = product.variants[0];

@@ -51,7 +51,6 @@ class App {
     this.main.render(this.body);
     this.footer.render(this.body);
     this.initRouter();
-    // this.products.search();
   }
 
   async renderPage(path: string): Promise<void> {
