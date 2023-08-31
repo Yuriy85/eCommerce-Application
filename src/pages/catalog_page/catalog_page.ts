@@ -6,10 +6,16 @@ import Events from "../../controller/events";
 class CatalogPage {
   products: Products;
   events: Events;
+  buttonSearch: HTMLButtonElement;
+  inputSearch: HTMLInputElement;
+  closeSearch: HTMLDivElement;
 
   constructor() {
     this.products = new Products();
     this.events = new Events();
+    this.buttonSearch = document.createElement("button");
+    this.inputSearch = document.createElement("input");
+    this.closeSearch = document.createElement("div");
   }
   async render(): Promise<HTMLElement> {
     const mainWrapper: HTMLElement = document.createElement("div");
@@ -21,11 +27,14 @@ class CatalogPage {
     const sortTitle: HTMLElement = document.createElement("p");
     const filterElement: HTMLSelectElement = this.createSelectFilterElement();
     const sortElement: HTMLSelectElement = this.createSelectSortElement();
+    const searchElement: HTMLElement = this.createSelectSearchElement();
+    const btnSearch: HTMLButtonElement = this.buttonSearch;
+    const closeSearch: HTMLDivElement = this.closeSearch;
     const productWrapper: HTMLElement = document.createElement("div");
+
     mainWrapper.classList.add("catalog");
     caption.classList.add("catalog__caption");
-
-    selectWrapper.classList.add("catalog__select-wrapper");
+    selectWrapper.classList.add("catalog__menu-wrapper");
     filterWrapper.classList.add("catalog__filter-wrapper");
     sortWrapper.classList.add("catalog__sort-wrapper");
     productWrapper.classList.add("catalog__products");
@@ -66,7 +75,7 @@ class CatalogPage {
       }
       if (
         filterElement.options[filterElement.selectedIndex].text ===
-        "Lactose free"
+        "With lactose"
       ) {
         const cardProductsFilterYes: ProductProjection[] = (
           await this.products.getProductFilter("yes")
@@ -79,7 +88,7 @@ class CatalogPage {
       }
       if (
         filterElement.options[filterElement.selectedIndex].text ===
-        "With lactose"
+        "Lactose free"
       ) {
         const cardProductsFilterNo: ProductProjection[] = (
           await this.products.getProductFilter("no")
@@ -147,15 +156,44 @@ class CatalogPage {
         });
       }
     });
+
+    btnSearch?.addEventListener("click", async () => {
+      productWrapper.innerHTML = "";
+      const inputValue = this.inputSearch.value;
+      const cardSearch: ProductProjection[] = (
+        await this.products.getProductSearch(`${inputValue}`)
+      ).body.results;
+
+      cardSearch.forEach((product) => {
+        const productCard = this.createCardProduct(product);
+        productWrapper.append(productCard);
+        this.events.clickProductCard(productCard);
+      });
+    });
+
+    closeSearch?.addEventListener("click", async () => {
+      productWrapper.innerHTML = "";
+      this.inputSearch.value = "";
+      const cardProducts: ProductProjection[] = (
+        await this.products.getProduct()
+      ).body.results;
+
+      cardProducts.forEach((product) => {
+        const productCard = this.createCardProduct(product);
+        productWrapper.append(productCard);
+        this.events.clickProductCard(productCard);
+      });
+    });
+
     filterWrapper.append(filterTitle, filterElement);
     sortWrapper.append(sortTitle, sortElement);
-    selectWrapper.append(filterWrapper, sortWrapper);
+    selectWrapper.append(searchElement, filterWrapper, sortWrapper);
 
     mainWrapper.append(caption, selectWrapper, productWrapper);
     return mainWrapper;
   }
 
-  createSelectFilterElement() {
+  createSelectFilterElement(): HTMLSelectElement {
     const filter: HTMLSelectElement = document.createElement("select");
     const resetFilter = document.createElement("option");
     const lactoseYes: HTMLOptionElement = document.createElement("option");
@@ -171,7 +209,7 @@ class CatalogPage {
     return filter;
   }
 
-  createSelectSortElement() {
+  createSelectSortElement(): HTMLSelectElement {
     const sort: HTMLSelectElement = document.createElement("select");
     const sortReset: HTMLOptionElement = document.createElement("option");
     const sortAlphabetically: HTMLOptionElement =
@@ -196,6 +234,24 @@ class CatalogPage {
       sortPriceDescending,
     );
     return sort;
+  }
+
+  createSelectSearchElement(): HTMLElement {
+    const labelSearch: HTMLElement = document.createElement("div");
+    const inputSearch = this.inputSearch;
+    const btnSearch = this.buttonSearch;
+    const closeSearch = this.closeSearch;
+    labelSearch.classList.add("catalog__search-wrapper");
+    inputSearch.classList.add("catalog__search-select");
+    btnSearch.classList.add("catalog__search-button");
+    closeSearch.classList.add("catalog__search-close");
+    inputSearch.setAttribute("type", "text");
+    inputSearch.setAttribute("type", "text");
+    btnSearch.textContent = "ок";
+    labelSearch.textContent = "Search:";
+    closeSearch.innerHTML = "&#128473;";
+    labelSearch.append(inputSearch, closeSearch, btnSearch);
+    return labelSearch;
   }
 
   createCardProduct(product: ProductProjection): HTMLElement {
