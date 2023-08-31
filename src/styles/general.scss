@@ -1,0 +1,68 @@
+@font-face {
+  font-family: "IrishGrover";
+  src: url("../assets/fonts/IrishGrover-Regular.ttf");
+}
+
+* {
+  font-family: IrishGrover, Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  font-weight: normal;
+  letter-spacing: 2px;
+}
+
+html {
+  font-size: 20px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #fafae5;
+  min-width: 320px;
+  background: center/cover, rgba(0, 0, 0, 0.5);
+  // background-blend-mode: multiply;
+  background-image: url("../assets/images/background.png");
+}
+
+h1,
+h2 {
+  text-shadow: 0 0 10px black;
+}
+
+a {
+  text-shadow: 0 0 10px black;
+}
+
+input {
+  font-size: inherit;
+  color: inherit;
+  background: inherit;
+  box-shadow: 0 0 10px rgb(0 0 0);
+  &::placeholder {
+    color: #d8fdf680;
+  }
+}
+
+select {
+  background: inherit;
+  color: inherit;
+  font-size: inherit;
+  box-shadow: 0 0 10px rgb(0 0 0);
+}
+
+button {
+  font-size: inherit;
+  box-shadow: 0 0 10px rgb(0 0 0);
+  background: #1d41b5;
+  color: beige;
+  border: none;
+  border-radius: 13px;
+  min-width: 176px;
+  height: 25px;
+  cursor: pointer;
+  padding: 0 15px 0 15px;
+  transition: box-shadow 0.2s;
+  &:active {
+    box-shadow: none;
+  }
+}

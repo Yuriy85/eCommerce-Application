@@ -1,0 +1,105 @@
+.register {
+  width: 100%;
+  max-width: 1200px;
+  min-height: calc(100vh - 200px);
+  margin: auto;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.register__section-basic {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 550px;
+}
+
+.register__section-address {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 550px;
+}
+.register__section-basic-billing,
+.register__section-basic-shipping {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+}
+
+.register__input-reg-email,
+.register__input-reg-password,
+.register__input-reg-first-name,
+.register__input-reg-last-name,
+.register__input-shipping-country,
+.register__input-shipping-city,
+.register__input-shipping-street,
+.register__input-shipping-postcode,
+.register__input-billing-country,
+.register__input-billing-city,
+.register__input-billing-street,
+.register__input-billing-postcode,
+.register__input-reg-date {
+  margin: 20px 0 0 0;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid rgb(0, 0, 0);
+  border-radius: 10px;
+  height: 30px;
+}
+
+.register__btn-register,
+.register__btn-login {
+  margin: 10px;
+}
+
+.register__input-reg-date {
+  width: 176px;
+}
+
+.register__label-checkbox,
+.register__label-united {
+  font-size: 0.83em;
+}
+
+.register__billing-wrapper-checkbox,
+.register__shipping-wrapper-checkbox {
+  display: flex;
+  align-items: center;
+  margin: 0 0 20px 0;
+}
+
+.register__checkbox-billing_default,
+.register__checkbox-united,
+.register__checkbox-shipping_default {
+  box-shadow: none;
+}
+
+.register__shipping-wrapper-checkbox,
+.register__billing-wrapper-checkbox {
+  margin: 0;
+  margin-top: 10px;
+}
+
+.register__email-error,
+.register__password-error,
+.register__name-error,
+.register__surname-error,
+.register__billing-city-error,
+.register__shipping-city-error,
+.register__date-error,
+.register__billing-street-error,
+.register__shipping-street-error,
+.register__shipping-code-error,
+.register__billing-code-error,
+.register__error {
+  padding: 0 10px;
+  color: #ffd400;
+}
+
+.register__tittle-billing-address,
+.register__tittle-shipping-address {
+  margin-bottom: 0;
+}
