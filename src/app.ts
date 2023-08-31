@@ -105,7 +105,7 @@ class App {
         new URL(window.location.href).hash.split("?")[0] ===
           pagePaths.profilePath
       ) {
-        this.goToPage(pagePaths.mainPath, "replace");
+        this.goToPage(pagePaths.loginPath, "replace");
       } else if (
         localStorage.getItem("id") &&
         new URL(window.location.href).hash === pagePaths.loginPath
@@ -125,7 +125,7 @@ class App {
       !localStorage.getItem("id") &&
       new URL(window.location.href).hash.split("?")[0] === pagePaths.profilePath
     ) {
-      this.goToPage(pagePaths.mainPath, "replace");
+      this.goToPage(pagePaths.loginPath, "replace");
     } else if (
       localStorage.getItem("id") &&
       new URL(window.location.href).hash === pagePaths.loginPath
