@@ -18,7 +18,10 @@ class Products {
   async getProduct() {
     const apiRoot: ByProjectKeyRequestBuilder =
       this.clients.getCredentialsFlowClient();
-    const product = await apiRoot.productProjections().get().execute();
+    const product = await apiRoot
+      .productProjections()
+      .get({ queryArgs: { limit: 21 } })
+      .execute();
     return product;
   }
 
