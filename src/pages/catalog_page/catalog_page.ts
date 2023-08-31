@@ -220,9 +220,7 @@ class CatalogPage {
 
     title.innerText = product.name["en-US"];
     image.style.backgroundImage = `url(${product.masterVariant.images?.[0].url})`;
-    subtitle.innerText = (product.description?.["en-US"] as string).split(
-      "#",
-    )[0];
+    subtitle.innerText = product.description?.["en-US"] as string;
     const separator = product.masterVariant.sku?.indexOf("-");
     const firstProductData: ProductVariant = product.masterVariant;
     const secondProductData: ProductVariant = product.variants[0];
