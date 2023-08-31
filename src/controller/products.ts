@@ -36,24 +36,6 @@ class Products {
     return product.body.masterData.current;
   }
 
-  // async getCustomerObject() {
-  //   const customerId: string = localStorage.getItem("id") as string;
-
-  //   const apiRoot = this.clients.getCredentialsFlowClient();
-
-  //   const customer = await apiRoot
-  //     .customers()
-  //     .withId({ ID: "907b157d-48f4-487f-b31d-176ec4da6a35" })
-  //     .get()
-  //     .execute();
-
-  //   const customer_1 = await apiRoot
-  //     .customers()
-  //     .withId({ ID: `${customerId}` })
-  //     .get()
-  //     .execute();
-  // }
-
   async getProductFilter(value: string) {
     const apiRoot: ByProjectKeyRequestBuilder =
       this.clients.getCredentialsFlowClient();
@@ -80,6 +62,22 @@ class Products {
         queryArgs: {
           sort: [`${value}`],
           limit: 25,
+        },
+      })
+      .execute();
+    return productSort;
+  }
+
+  async getProductSearch(text: string) {
+    const apiRoot: ByProjectKeyRequestBuilder =
+      this.clients.getCredentialsFlowClient();
+    const productSort = await apiRoot
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: {
+          ["text.en-US"]: `"${text}"`,
+          fuzzy: true,
         },
       })
       .execute();
