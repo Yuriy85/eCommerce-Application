@@ -35,8 +35,14 @@ class DetailPage {
     const btnLeft: HTMLButtonElement = document.createElement("button");
     btnLeft.classList.add("detail__left-slider");
 
+    const btnClose: HTMLButtonElement = document.createElement("button");
+    btnClose.classList.add("detail__close-modal");
+
     const btnRight: HTMLButtonElement = document.createElement("button");
     btnRight.classList.add("detail__right-slider");
+
+    const imageButtonWrapper: HTMLElement = document.createElement("div");
+    imageButtonWrapper.classList.add("detail__img-button-wrapper");
 
     const imageWrapper: HTMLElement = document.createElement("div");
     imageWrapper.classList.add("detail__image-wrapper");
@@ -128,6 +134,7 @@ class DetailPage {
         )}`;
       }
     }
+
     if (thirdProductData) {
       if (thirdProductData.prices?.[0].discounted) {
         thirdVariantPrice.classList.add("detail__price--discount");
@@ -150,6 +157,18 @@ class DetailPage {
       }
     }
 
+    mainWrapper.append(
+      caption,
+      wrapper,
+      btnToCatalog,
+      this.showModalWindow(
+        imageWrapper,
+        imageSlider,
+        imageButtonWrapper,
+        btnClose,
+        btnLeft,
+      ),
+    );
     wrapper.append(imageSlider, description);
     description.append(
       mainDescription,
@@ -158,10 +177,50 @@ class DetailPage {
       secondVariantPrice,
       thirdVariantPrice,
     );
-    imageSlider.append(btnLeft, imageWrapper, btnRight);
+    imageButtonWrapper.append(imageWrapper, btnClose);
+    imageSlider.append(btnLeft, imageButtonWrapper, btnRight);
     imageWrapper.append(imageOne);
-    mainWrapper.append(caption, wrapper, btnToCatalog);
 
+    this.showSlider(imageWrapper, btnLeft, btnRight);
+    this.events.clickToCatalogButton(btnToCatalog);
+    return mainWrapper;
+  }
+
+  showModalWindow(
+    imageWrapper: HTMLElement,
+    imageSlider: HTMLElement,
+    imageButtonWrapper: HTMLElement,
+    btnClose: HTMLButtonElement,
+    btnLeft: HTMLButtonElement,
+  ) {
+    const modalWindow = document.createElement("div");
+    modalWindow.classList.add("detail__modal");
+
+    imageWrapper.addEventListener("click", () => {
+      modalWindow.style.display = "table";
+      imageSlider.style.position = "absolute";
+      imageButtonWrapper.style.maxWidth = "700px";
+      btnClose.style.display = "block";
+      btnLeft.style.order = "1";
+      imageSlider.style.flexDirection = "column";
+    });
+
+    btnClose.addEventListener("click", () => {
+      modalWindow.style.display = "none";
+      imageSlider.style.position = "unset";
+      imageButtonWrapper.style.maxWidth = "300px";
+      btnClose.style.display = "none";
+      btnLeft.style.order = "unset";
+      imageSlider.style.flexDirection = "unset";
+    });
+    return modalWindow;
+  }
+
+  showSlider(
+    imageWrapper: HTMLElement,
+    btnLeft: HTMLButtonElement,
+    btnRight: HTMLButtonElement,
+  ): void {
     if (imageWrapper.children.length === 1) {
       btnRight.style.display = "none";
       btnLeft.style.display = "none";
@@ -207,8 +266,7 @@ class DetailPage {
       }, 1500);
     });
 
-    this.events.clickToCatalogButton(btnToCatalog);
-    return mainWrapper;
+    imageWrapper.addEventListener("click", () => slider.pause());
   }
 }
 
