@@ -24,15 +24,27 @@
   padding: 15px;
 }
 
+.detail__img-button-wrapper {
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column-reverse;
+  transition: max-width .3s;
+}
+
 .detail__image-slider {
   display: flex;
-  width: 100%;
+  max-width: inherit;
+  width: inherit;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 }
 
 .detail__right-slider,
-.detail__left-slider {
+.detail__left-slider,
+.detail__close-modal {
   width: 32px;
   height: 32px;
   background-size: 32px 32px;
@@ -40,9 +52,10 @@
   background-repeat: no-repeat;
   background-color: transparent;
   box-shadow: none;
-  margin: 15px;
+  margin: 5px;
   min-width: auto;
-  transition: all 0.3s;
+  transition: opacity 0.3s;
+  z-index: 1;
   &:hover {
     cursor: pointer;
     opacity: 0.8;
@@ -57,21 +70,34 @@
 .detail__left-slider {
   background-image: url("../../assets/icons/slider-prev.svg");
 }
+.detail__close-modal {
+  display: none;
+  background-image: url("../../assets/icons/modal-close.svg");
+  width: 100px;
+  height: 100px;
+  background-size: 100px 100px;
+  margin-top: 190px;
+  margin-bottom: 0;
+
+}
 
 .detail__image-wrapper {
-  max-width: 300px;
-  width: 100%;
+  max-width: inherit;
+  width: inherit;
   aspect-ratio: 1;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .detail__image-one,
 .detail__image-two,
 .detail__image-three {
-  max-width: 300px;
-  width: 100%;
+  max-width: inherit;
+  width: inherit;
   aspect-ratio: 1;
   background-size: contain;
-  // margin: 15px;
+  z-index: 1;
 }
 
 .detail__description {
@@ -93,11 +119,31 @@
   }
 }
 
+.detail__modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
 @media screen and (max-width: 750px) {
   .detail__wrapper {
     flex-direction: column;
+    // justify-content: flex-start;
   }
   .detail__description {
     max-width: 100%;
+  }
+}
+
+
+@media screen and (max-width: 570px) {
+  .detail__close-modal {
+    margin: 0;
   }
 }
