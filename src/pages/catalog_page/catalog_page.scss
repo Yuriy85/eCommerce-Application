@@ -9,6 +9,24 @@
   align-items: center;
 }
 
+.catalog__categories-wrapper{
+  display: flex;
+  margin: 0  0 20px 0;
+  border-radius: 10px;
+  background: #00000036;
+  box-shadow: 0 0 10px black;
+  padding: 5px 10px;
+  justify-content: space-between;
+  transition: all 0.1s;
+}
+
+.catalog__categories-sushi-wrapper p,
+.catalog__categories-desserts-wrapper p,
+.catalog__categories-drinks-wrapper p,
+.catalog__categories-wrapper p{
+  margin: 0;
+  padding: 0 10px;
+}
 .catalog__menu-wrapper{
   width: 100%;
   display: flex;
@@ -17,10 +35,14 @@
   margin: 0 0 40px;
 }
 
+.catalog__categories-sushi-wrapper,
+.catalog__categories-desserts-wrapper,
+.catalog__categories-drinks-wrapper,
 .catalog__filter-wrapper,
 .catalog__sort-wrapper,
 .catalog__search-wrapper {
   display: flex;
+  margin: 0 20px 0 0;
   border-radius: 10px;
   background: #00000036;
   box-shadow: 0 0 10px black;
@@ -35,6 +57,13 @@
   }
 }
 
+.catalog__categories-wrapper {
+  margin: 0 0 20px 0;
+}
+
+.catalog__categories-sushi-select,
+.catalog__categories-dessert-select,
+.catalog__categories-drinks-select,
 .catalog__filter-select,
 .catalog__sort-select,
 .catalog__search-select {
@@ -43,11 +72,23 @@
   color: #fafae5;
   border: none;
   border-radius: 10px;
-  padding: 0 10px;
+  padding: 0 0 0 5px;
+}
+
+.catalog__categories-drinks-select {
+  width: 180px;
+}
+
+.catalog__categories-dessert-select {
+  width: 195px;
+}
+
+.catalog__categories-sushi-select{
+  width: 120px;
 }
 
 .catalog__search-select {
-  width: 150px;
+  width: 170px;
   margin: 0 10px;
 }
 
@@ -152,13 +193,20 @@
   align-items: center;
 }
 
-@media (max-width: 1065px) {
+@media (max-width: 1120px) {
   .catalog__menu-wrapper {
     flex-direction: column;
   }
+
+  .catalog__categories-wrapper{
+    flex-direction: column;
+  }
+  .catalog__categories-sushi-wrapper,
+  .catalog__categories-desserts-wrapper,
+  .catalog__categories-drinks-wrapper,
   .catalog__filter-wrapper,
   .catalog__sort-wrapper,
   .catalog__search-wrapper {
-    margin: 0 0 20px 0;
+    margin: 20px 0 0 0;
   }
 }

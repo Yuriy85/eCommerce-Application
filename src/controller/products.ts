@@ -1,4 +1,5 @@
 import {
+  CategoryPagedQueryResponse,
   ClientResponse,
   Product,
   ProductData,
@@ -9,18 +10,22 @@ import { ByProjectKeyRequestBuilder } from "@commercetools/platform-sdk/dist/dec
 //   Product,
 // } from "@commercetools/platform-sdk/dist/declarations/src/index";
 import Clients from "./client";
+import { paramQueryArgs } from "../core/types/types";
 
 class Products {
   clients: Clients;
   constructor() {
     this.clients = new Clients();
   }
-  async getProduct() {
+  async getProducts(queryArgs: paramQueryArgs) {
     const apiRoot: ByProjectKeyRequestBuilder =
       this.clients.getCredentialsFlowClient();
     const product = await apiRoot
       .productProjections()
-      .get({ queryArgs: { limit: 21 } })
+      .search()
+      .get({
+        queryArgs: queryArgs,
+      })
       .execute();
     return product;
   }
@@ -36,52 +41,15 @@ class Products {
     return product.body.masterData.current;
   }
 
-  async getProductFilter(value: string) {
+  async getCategoriesId(index: number): Promise<string> {
     const apiRoot: ByProjectKeyRequestBuilder =
       this.clients.getCredentialsFlowClient();
-    const product = await apiRoot
-      .productProjections()
-      .search()
-      .get({
-        queryArgs: {
-          filter: [`variants.attributes.lactose:"${value}"`],
-        },
-      })
+    const categories: ClientResponse<CategoryPagedQueryResponse> = await apiRoot
+      .categories()
+      .get()
       .execute();
-    console.log(product);
-    return product;
-  }
-
-  async getProductSort(value: string) {
-    const apiRoot: ByProjectKeyRequestBuilder =
-      this.clients.getCredentialsFlowClient();
-    const productSort = await apiRoot
-      .productProjections()
-      .search()
-      .get({
-        queryArgs: {
-          sort: [`${value}`],
-          limit: 25,
-        },
-      })
-      .execute();
-    return productSort;
-  }
-
-  async getProductSearch(text: string) {
-    const apiRoot: ByProjectKeyRequestBuilder =
-      this.clients.getCredentialsFlowClient();
-    const productSort = await apiRoot
-      .productProjections()
-      .search()
-      .get({
-        queryArgs: {
-          ["text.en-US"]: `"${text}"`,
-          fuzzy: true,
-        },
-      })
-      .execute();
-    return productSort;
+    const id: string = categories.body.results[index].id;
+    return id;
   }
 }
 
