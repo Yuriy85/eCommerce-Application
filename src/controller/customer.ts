@@ -169,5 +169,18 @@ class Customer {
     loginTitle.innerText = method ? "Logout" : "login";
     loginImage.src = method ? logoutImg : loginImg;
   }
+
+  async getCustomerObject(id: string) {
+    const apiRoot = this.clients.getCredentialsFlowClient();
+
+    const customer = await apiRoot
+      .customers()
+      .withId({ ID: id })
+      .get()
+      .execute();
+
+    console.log(customer);
+    return customer;
+  }
 }
 export default Customer;
