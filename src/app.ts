@@ -21,7 +21,7 @@ class App {
   mainPage: HTMLElement;
   catalogPage: Promise<HTMLElement>;
   detailPage: DetailPage;
-  profilePage: HTMLElement;
+  profilePage: ProfilePage;
   loginPage: HTMLElement;
   registerPage: HTMLElement;
   basketPage: HTMLElement;
@@ -37,7 +37,7 @@ class App {
     this.mainPage = new MainPage().render();
     this.catalogPage = new CatalogPage().render();
     this.detailPage = new DetailPage();
-    this.profilePage = new ProfilePage().render();
+    this.profilePage = new ProfilePage();
     this.loginPage = new LoginPage().render();
     this.registerPage = new RegisterPage().render();
     this.basketPage = new BasketPage().render();
@@ -70,7 +70,7 @@ class App {
       pageInnerData = await this.detailPage.render();
     } else if (path === pagePaths.profilePath) {
       headerButtons[1]?.classList.add("header__button--active");
-      pageInnerData = this.profilePage;
+      pageInnerData = await this.profilePage.render();
     } else if (path === pagePaths.loginPath) {
       headerButtons[2]?.classList.add("header__button--active");
       pageInnerData = this.loginPage;

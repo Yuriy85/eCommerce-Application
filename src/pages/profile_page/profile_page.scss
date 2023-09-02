@@ -8,3 +8,94 @@
   flex-direction: column;
   align-items: center;
 }
+.profile__wrapper-addresses {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 40rem;
+    column-gap: 4rem;
+    margin-top: 2rem;
+}
+.profile__title-billing-address,
+.profile__title-shipping-address {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.profile__first-name,
+.profile__last-name,
+.profile__birth-date,
+.profile__email,
+.profile__billing-country,
+.profile__billing-city,
+.profile__billing-postcode,
+.profile__billing-street,
+.profile__shipping-country,
+.profile__shipping-city,
+.profile__shipping-postcode,
+.profile__shipping-street {
+    margin: 20px 0 0 0;
+    padding: 0 10px;
+    border: 0;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    height: 30px;
+}
+.profile__email {
+    width: 17rem;
+}
+.profile__title-first-name,
+.profile__title-last-name,
+.profile__title-birth-date,
+.profile__title-email,
+.profile__title-billing-country,
+.profile__title-billing-city,
+.profile__title-billing-postcode,
+.profile__title-billing-street,
+.profile__title-shipping-country,
+.profile__title-shipping-city,
+.profile__title-shipping-postcode,
+.profile__title-shipping-street,
+.profile__title-default-billing-address,
+.profile__title-default-shipping-address {
+    margin-bottom: 0;
+}
+.profile__wrapper-first-name,
+.profile__wrapper-last-name,
+.profile__wrapper-birth-date,
+.profile__wrapper-email,
+.profile__wrapper-billing-country,
+.profile__wrapper-billing-city,
+.profile__wrapper-billing-postcode,
+.profile__wrapper-billing-street,
+.profile__wrapper-shipping-country,
+.profile__wrapper-shipping-city,
+.profile__wrapper-shipping-postcode,
+.profile__wrapper-shipping-street,
+.profile__wrapper-default-billing-address,
+.profile__wrapper-default-shipping-address {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    width: 100%;
+    max-width: 22rem;
+    justify-content: space-between;
+}
+.profile__wrapper-birth-date {
+    justify-content: center;
+}
+.profile__wrapper-default-billing-address,
+.profile__wrapper-default-shipping-address {
+    justify-content: flex-end;
+    align-items: baseline;
+    column-gap: 2rem;
+}
+.profile__label-default-billing-address,
+.profile__label-default-shipping-address {
+    box-shadow: none;
+    scale: 1.5;
+}
+input.profile__email::value {
+    font-size: .8rem;
+    text-align: center;
+}
