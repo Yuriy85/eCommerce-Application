@@ -2,6 +2,9 @@ import "./catalog_page.scss";
 import Products from "../../controller/products";
 import { ProductProjection, ProductVariant } from "@commercetools/platform-sdk";
 import Events from "../../controller/events";
+import { indexCategories } from "../data/index-categories";
+import QueryArgs from "../data/query-arguments";
+// import { queryArgs } from "../data/query-arguments";
 
 class CatalogPage {
   products: Products;
@@ -9,35 +12,61 @@ class CatalogPage {
   buttonSearch: HTMLButtonElement;
   inputSearch: HTMLInputElement;
   closeSearch: HTMLDivElement;
+  sushiSelectElement: HTMLSelectElement;
+  dessertsSelectElement: HTMLSelectElement;
+  drinksSelectElement: HTMLSelectElement;
+  productWrapper: HTMLElement;
+  queryArgs: QueryArgs;
+  optionDessertsReset: HTMLOptionElement;
+  optionSushiReset: HTMLOptionElement;
+  optionDrinksReset: HTMLOptionElement;
+  optionSortReset: HTMLOptionElement;
+  optionFilterReset: HTMLOptionElement;
 
   constructor() {
     this.products = new Products();
     this.events = new Events();
+    this.queryArgs = new QueryArgs();
     this.buttonSearch = document.createElement("button");
     this.inputSearch = document.createElement("input");
     this.closeSearch = document.createElement("div");
+    this.sushiSelectElement = document.createElement("select");
+    this.dessertsSelectElement = document.createElement("select");
+    this.drinksSelectElement = document.createElement("select");
+    this.productWrapper = document.createElement("div");
+    this.optionSushiReset = document.createElement("option");
+    this.optionDessertsReset = document.createElement("option");
+    this.optionDrinksReset = document.createElement("option");
+    this.optionSortReset = document.createElement("option");
+    this.optionFilterReset = document.createElement("option");
   }
+
   async render(): Promise<HTMLElement> {
     const mainWrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h2");
-    const selectWrapper: HTMLElement = document.createElement("div");
+    const categoriesWrapper: HTMLElement = this.createMenuCategoriesElement();
+
+    const menuWrapper: HTMLElement = document.createElement("div");
     const filterWrapper: HTMLElement = document.createElement("div");
     const sortWrapper: HTMLElement = document.createElement("div");
     const filterTitle: HTMLElement = document.createElement("p");
     const sortTitle: HTMLElement = document.createElement("p");
-    const filterElement: HTMLSelectElement = this.createSelectFilterElement();
-    const sortElement: HTMLSelectElement = this.createSelectSortElement();
-    const searchElement: HTMLElement = this.createSelectSearchElement();
+    const filterElement: HTMLSelectElement = this.createMenuFilterElement();
+    const sortElement: HTMLSelectElement = this.createMenuSortElement();
+    const searchElement: HTMLElement = this.createMenuSearchElement();
     const btnSearch: HTMLButtonElement = this.buttonSearch;
     const closeSearch: HTMLDivElement = this.closeSearch;
-    const productWrapper: HTMLElement = document.createElement("div");
+    const categoriesSushi: HTMLSelectElement = this.sushiSelectElement;
+    const dessertSelectElement: HTMLSelectElement = this.dessertsSelectElement;
+    const drinksSelectElement: HTMLSelectElement = this.drinksSelectElement;
 
     mainWrapper.classList.add("catalog");
     caption.classList.add("catalog__caption");
-    selectWrapper.classList.add("catalog__menu-wrapper");
+    categoriesWrapper.classList.add("catalog__categories-wrapper");
+    menuWrapper.classList.add("catalog__menu-wrapper");
     filterWrapper.classList.add("catalog__filter-wrapper");
     sortWrapper.classList.add("catalog__sort-wrapper");
-    productWrapper.classList.add("catalog__products");
+    this.productWrapper.classList.add("catalog__products");
     filterTitle.classList.add("catalog__filter-title");
     sortTitle.classList.add("catalog__sort-title");
     filterTitle.innerText = "Filter:";
@@ -45,157 +74,376 @@ class CatalogPage {
     mainWrapper.innerHTML = "";
     caption.innerText = "Catalog Product page";
 
-    const cardProducts: ProductProjection[] = (await this.products.getProduct())
-      .body.results;
-
-    cardProducts.forEach((product) => {
-      const productCard = this.createCardProduct(product);
-      productWrapper.append(productCard);
-      this.events.clickProductCard(productCard);
-    });
+    const cardProducts: ProductProjection[] = (
+      await this.products.getProducts(this.queryArgs.getQueryArgs().productsAll)
+    ).body.results;
+    this.addCardProductsToPage(cardProducts);
 
     filterElement?.addEventListener("change", async () => {
-      productWrapper.innerHTML = "";
-      const sortReset: HTMLOptionElement = document.querySelector(
-        ".catalog__sort-reset",
-      ) as HTMLOptionElement;
-      sortReset.selected = true;
-      if (
-        filterElement.options[filterElement.selectedIndex].text ===
-        "Reset filter"
-      ) {
+      this.productWrapper.innerHTML = "";
+      const filterItem: HTMLOptionElement =
+        filterElement.options[filterElement.selectedIndex];
+      this.optionSortReset.selected = true;
+      if (filterItem.text === "Reset filter") {
         const cardProductsFilterAll: ProductProjection[] = (
-          await this.products.getProduct()
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().productsAll,
+          )
         ).body.results;
-        cardProductsFilterAll.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsFilterAll);
       }
-      if (
-        filterElement.options[filterElement.selectedIndex].text ===
-        "With lactose"
-      ) {
-        const cardProductsFilterYes: ProductProjection[] = (
-          await this.products.getProductFilter("yes")
+      if (filterItem.text === "With lactose") {
+        const cardProductsFilterLactoseYes: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().filterLactoseYes,
+          )
         ).body.results;
-        cardProductsFilterYes.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsFilterLactoseYes);
       }
-      if (
-        filterElement.options[filterElement.selectedIndex].text ===
-        "Lactose free"
-      ) {
-        const cardProductsFilterNo: ProductProjection[] = (
-          await this.products.getProductFilter("no")
+      if (filterItem.text === "Lactose free") {
+        const cardProductsFilterLactoseNo: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().filterLactoseNo,
+          )
         ).body.results;
-        cardProductsFilterNo.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsFilterLactoseNo);
       }
     });
 
     sortElement?.addEventListener("change", async () => {
-      productWrapper.innerHTML = "";
-      const filterReset: HTMLOptionElement = document.querySelector(
-        ".catalog__filter-reset",
-      ) as HTMLOptionElement;
-      filterReset.selected = true;
-      if (
-        sortElement.options[sortElement.selectedIndex].text === "Reset sort"
-      ) {
-        const sortReset: ProductProjection[] = (
-          await this.products.getProduct()
+      this.productWrapper.innerHTML = "";
+      const sortItem: HTMLOptionElement =
+        sortElement.options[sortElement.selectedIndex];
+      this.optionFilterReset.selected = true;
+      if (sortItem.text === "Reset sort") {
+        const cardProductsSortReset: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().productsAll,
+          )
         ).body.results;
-        sortReset.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsSortReset);
       }
-      if (sortElement.options[sortElement.selectedIndex].text === "A-Z") {
-        const cardSortAlphabetically: ProductProjection[] = (
-          await this.products.getProductSort("name.en-US asc")
+      if (sortItem.text === "A-Z") {
+        const cardProductsSortAz: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().sortAlphabetically,
+          )
         ).body.results;
-        cardSortAlphabetically.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsSortAz);
       }
-      if (
-        sortElement.options[sortElement.selectedIndex].text ===
-        "Price ascending"
-      ) {
-        const cardSortPriceAscending: ProductProjection[] = (
-          await this.products.getProductSort("price asc")
+      if (sortItem.text === "Price ascending") {
+        const cardProductsSortAz: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().sortAscending,
+          )
         ).body.results;
-        cardSortPriceAscending.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsSortAz);
       }
-      if (
-        sortElement.options[sortElement.selectedIndex].text ===
-        "Price descending"
-      ) {
-        const cardSortPriceDescending: ProductProjection[] = (
-          await this.products.getProductSort("price desc")
+      if (sortItem.text === "Price descending") {
+        const cardProductsSortAz: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().sortDescending,
+          )
         ).body.results;
-        cardSortPriceDescending.forEach((product) => {
-          const productCard = this.createCardProduct(product);
-          productWrapper.append(productCard);
-          this.events.clickProductCard(productCard);
-        });
+        this.addCardProductsToPage(cardProductsSortAz);
       }
     });
 
     btnSearch?.addEventListener("click", async () => {
-      productWrapper.innerHTML = "";
+      this.productWrapper.innerHTML = "";
       const inputValue = this.inputSearch.value;
       const cardSearch: ProductProjection[] = (
-        await this.products.getProductSearch(`${inputValue}`)
+        await this.products.getProducts(
+          this.queryArgs.getQueryArgs(inputValue).searchText,
+        )
       ).body.results;
-
-      cardSearch.forEach((product) => {
-        const productCard = this.createCardProduct(product);
-        productWrapper.append(productCard);
-        this.events.clickProductCard(productCard);
-      });
+      this.addCardProductsToPage(cardSearch);
     });
 
     closeSearch?.addEventListener("click", async () => {
-      productWrapper.innerHTML = "";
+      this.productWrapper.innerHTML = "";
       this.inputSearch.value = "";
-      const cardProducts: ProductProjection[] = (
-        await this.products.getProduct()
+      const cardProductsCloseSearch: ProductProjection[] = (
+        await this.products.getProducts(
+          this.queryArgs.getQueryArgs().productsAll,
+        )
       ).body.results;
+      this.addCardProductsToPage(cardProductsCloseSearch);
+    });
 
-      cardProducts.forEach((product) => {
-        const productCard = this.createCardProduct(product);
-        productWrapper.append(productCard);
-        this.events.clickProductCard(productCard);
-      });
+    categoriesSushi?.addEventListener("change", async () => {
+      this.optionDrinksReset.selected = true;
+      this.optionDessertsReset.selected = true;
+      this.productWrapper.innerHTML = "";
+      const categoriesSushiItem =
+        categoriesSushi.options[categoriesSushi.selectedIndex];
+      if (categoriesSushiItem.text === "") {
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll);
+      }
+      if (categoriesSushiItem.text === "Sushi") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories.sushi))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (categoriesSushiItem.text === " > Roll") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories.rolls))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (categoriesSushiItem.text === " > Set") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories.set))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+    });
+    dessertSelectElement?.addEventListener("change", async () => {
+      this.productWrapper.innerHTML = "";
+      this.optionDrinksReset.selected = true;
+      this.optionSushiReset.selected = true;
+      const categoriesDessertsItem =
+        dessertSelectElement.options[dessertSelectElement.selectedIndex];
+      if (categoriesDessertsItem.text === "") {
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll);
+      }
+      if (categoriesDessertsItem.text === "Desserts") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.desserts,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (categoriesDessertsItem.text === " > Healthy food") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.healthyFood,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (categoriesDessertsItem.text === " > Usual dessert") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.usualDessert,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+    });
+    drinksSelectElement?.addEventListener("change", async () => {
+      this.productWrapper.innerHTML = "";
+      this.optionDessertsReset.selected = true;
+      this.optionSushiReset.selected = true;
+      const categoriesDrinksItem =
+        drinksSelectElement.options[drinksSelectElement.selectedIndex];
+      if (categoriesDrinksItem.text === "") {
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll);
+      }
+      if (categoriesDrinksItem.text === "Drinks") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.drinks,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (categoriesDrinksItem.text === " > Soft drinks") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.softDrinks,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (categoriesDrinksItem.text === " > Hot drinks") {
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.hotDrinks,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
     });
 
     filterWrapper.append(filterTitle, filterElement);
     sortWrapper.append(sortTitle, sortElement);
-    selectWrapper.append(searchElement, filterWrapper, sortWrapper);
-
-    mainWrapper.append(caption, selectWrapper, productWrapper);
+    menuWrapper.append(searchElement, filterWrapper, sortWrapper);
+    mainWrapper.append(
+      caption,
+      categoriesWrapper,
+      menuWrapper,
+      this.productWrapper,
+    );
     return mainWrapper;
   }
 
-  createSelectFilterElement(): HTMLSelectElement {
+  addCardProductsToPage(cardProducts: ProductProjection[]) {
+    cardProducts.forEach((product) => {
+      const productCard = this.createCardProduct(product);
+      this.productWrapper.append(productCard);
+      this.events.clickProductCard(productCard);
+    });
+  }
+
+  createMenuCategoriesElement(): HTMLElement {
+    const categoriesWrapper: HTMLElement = document.createElement("div");
+    const categoriesSushiWrapper: HTMLElement = document.createElement("div");
+    const categoriesDessertsWrapper: HTMLElement =
+      document.createElement("div");
+    const categoriesDrinksWrapper: HTMLElement = document.createElement("div");
+    const categoriesTitle: HTMLElement = document.createElement("p");
+    const categoriesTitleSushi: HTMLElement = document.createElement("p");
+    const categoriesTitleDesserts: HTMLElement = document.createElement("p");
+    const categoriesTitleDrinks: HTMLElement = document.createElement("p");
+
+    const sushiSelectElement: HTMLSelectElement = this.sushiSelectElement;
+    const dessertSelectElement: HTMLSelectElement = this.dessertsSelectElement;
+    const drinksSelectElement: HTMLSelectElement = this.drinksSelectElement;
+
+    const optionSushi: HTMLOptionElement = document.createElement("option");
+    const optionDesserts: HTMLOptionElement = document.createElement("option");
+    const optionDrinks: HTMLOptionElement = document.createElement("option");
+
+    const optionSushiRolls: HTMLOptionElement =
+      document.createElement("option");
+    const optionSushiSet: HTMLOptionElement = document.createElement("option");
+
+    const optionDessertsHealthy: HTMLOptionElement =
+      document.createElement("option");
+    const optionDessertsUsual: HTMLOptionElement =
+      document.createElement("option");
+
+    const optionDrinksSoft: HTMLOptionElement =
+      document.createElement("option");
+    const optionDrinksHot: HTMLOptionElement = document.createElement("option");
+
+    this.optionSushiReset.classList.add("catalog__categories-sushi-reset");
+    this.optionDrinksReset.classList.add("catalog__categories-dessert-reset");
+    this.optionDessertsReset.classList.add("catalog__categories-drinks-reset");
+
+    sushiSelectElement.classList.add("catalog__categories-sushi-select");
+    dessertSelectElement.classList.add("catalog__categories-dessert-select");
+    drinksSelectElement.classList.add("catalog__categories-drinks-select");
+
+    categoriesSushiWrapper.classList.add("catalog__categories-sushi-wrapper");
+    categoriesDessertsWrapper.classList.add(
+      "catalog__categories-desserts-wrapper",
+    );
+    categoriesDrinksWrapper.classList.add("catalog__categories-drinks-wrapper");
+
+    categoriesTitle.innerText = "Categories:";
+    categoriesTitleSushi.innerText = "Sushi:";
+    categoriesTitleDesserts.innerText = "Desserts:";
+    categoriesTitleDrinks.innerText = "Drinks:";
+
+    sushiSelectElement.innerText = "Reset filter";
+    dessertSelectElement.innerText = "With lactose";
+    drinksSelectElement.innerText = "Lactose free";
+
+    this.optionSushiReset.innerHTML = "";
+    optionSushi.innerHTML = "Sushi";
+    optionSushiRolls.innerHTML = "&nbsp;> Roll";
+    optionSushiSet.innerHTML = "&nbsp;> Set";
+
+    this.optionDessertsReset.innerHTML = "";
+    optionDesserts.innerHTML = "Desserts";
+    optionDessertsHealthy.innerHTML = "&nbsp;> Healthy food";
+    optionDessertsUsual.innerHTML = "&nbsp;> Usual dessert";
+
+    this.optionDrinksReset.innerHTML = "";
+    optionDrinks.innerHTML = "Drinks";
+    optionDrinksSoft.innerHTML = "&nbsp;> Soft drinks";
+    optionDrinksHot.innerHTML = "&nbsp;> Hot drinks";
+
+    sushiSelectElement.append(
+      this.optionSushiReset,
+      optionSushi,
+      optionSushiRolls,
+      optionSushiSet,
+    );
+    dessertSelectElement.append(
+      this.optionDessertsReset,
+      optionDesserts,
+      optionDessertsHealthy,
+      optionDessertsUsual,
+    );
+    drinksSelectElement.append(
+      this.optionDrinksReset,
+      optionDrinks,
+      optionDrinksSoft,
+      optionDrinksHot,
+    );
+
+    categoriesSushiWrapper.append(categoriesTitleSushi, sushiSelectElement);
+    categoriesDessertsWrapper.append(
+      categoriesTitleDesserts,
+      dessertSelectElement,
+    );
+    categoriesDrinksWrapper.append(categoriesTitleDrinks, drinksSelectElement);
+
+    categoriesWrapper.append(
+      categoriesTitle,
+      categoriesSushiWrapper,
+      categoriesDessertsWrapper,
+      categoriesDrinksWrapper,
+    );
+    return categoriesWrapper;
+  }
+
+  createMenuFilterElement(): HTMLSelectElement {
     const filter: HTMLSelectElement = document.createElement("select");
-    const resetFilter = document.createElement("option");
+    const resetFilter = this.optionFilterReset;
     const lactoseYes: HTMLOptionElement = document.createElement("option");
     const lactoseNo: HTMLOptionElement = document.createElement("option");
     filter.classList.add("catalog__filter-select");
@@ -209,9 +457,9 @@ class CatalogPage {
     return filter;
   }
 
-  createSelectSortElement(): HTMLSelectElement {
+  createMenuSortElement(): HTMLSelectElement {
     const sort: HTMLSelectElement = document.createElement("select");
-    const sortReset: HTMLOptionElement = document.createElement("option");
+    const sortReset: HTMLOptionElement = this.optionSortReset;
     const sortAlphabetically: HTMLOptionElement =
       document.createElement("option");
     const sortPriceAscending: HTMLOptionElement =
@@ -236,7 +484,7 @@ class CatalogPage {
     return sort;
   }
 
-  createSelectSearchElement(): HTMLElement {
+  createMenuSearchElement(): HTMLElement {
     const labelSearch: HTMLElement = document.createElement("div");
     const inputSearch = this.inputSearch;
     const btnSearch = this.buttonSearch;
