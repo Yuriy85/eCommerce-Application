@@ -96,7 +96,10 @@ class ProfilePage {
 
     const billingCountry: HTMLInputElement = document.createElement("input");
     billingCountry.classList.add("profile__billing-country");
-    billingCountry.value = customer.body.addresses[0].country;
+    billingCountry.value =
+      customer.body.addresses.length > 1
+        ? customer.body.addresses[1].country
+        : customer.body.addresses[0].country;
     billingCountry.disabled = true;
 
     wrapperBillingCountry.append(titleBillingCountry, billingCountry);
@@ -110,7 +113,11 @@ class ProfilePage {
 
     const billingCity: HTMLInputElement = document.createElement("input");
     billingCity.classList.add("profile__billing-city");
-    billingCity.value = customer.body.addresses[0].city as string;
+    billingCity.value = (
+      customer.body.addresses.length > 1
+        ? customer.body.addresses[1].city
+        : customer.body.addresses[0].city
+    ) as string;
     billingCity.disabled = true;
 
     wrapperBillingCity.append(titleBillingCity, billingCity);
@@ -124,7 +131,11 @@ class ProfilePage {
 
     const billingPostcode: HTMLInputElement = document.createElement("input");
     billingPostcode.classList.add("profile__billing-postcode");
-    billingPostcode.value = customer.body.addresses[0].postalCode as string;
+    billingPostcode.value = (
+      customer.body.addresses.length > 1
+        ? customer.body.addresses[1].postalCode
+        : customer.body.addresses[0].postalCode
+    ) as string;
     billingPostcode.disabled = true;
 
     wrapperBillingPostcode.append(titleBillingPostcode, billingPostcode);
@@ -138,7 +149,11 @@ class ProfilePage {
 
     const billingStreet: HTMLInputElement = document.createElement("input");
     billingStreet.classList.add("profile__billing-street");
-    billingStreet.value = customer.body.addresses[0].streetName as string;
+    billingStreet.value = (
+      customer.body.addresses.length > 1
+        ? customer.body.addresses[1].streetName
+        : customer.body.addresses[0].streetName
+    ) as string;
     billingStreet.disabled = true;
 
     wrapperBillingStreet.append(titleBillingStreet, billingStreet);
@@ -162,7 +177,9 @@ class ProfilePage {
     labelDefaultBillingAddress.classList.add(
       "profile__label-default-billing-address",
     );
-    labelDefaultBillingAddress.checked = true;
+    customer.body.defaultBillingAddressId
+      ? (labelDefaultBillingAddress.checked = true)
+      : null;
     labelDefaultBillingAddress.disabled = true;
 
     wrapperDefaultBillingAddress.append(
@@ -197,10 +214,8 @@ class ProfilePage {
 
     const shippingCountry: HTMLInputElement = document.createElement("input");
     shippingCountry.classList.add("profile__shipping-country");
-    shippingCountry.value =
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].country
-        : customer.body.addresses[0].country;
+    shippingCountry.value = customer.body.addresses[0].country;
+
     shippingCountry.disabled = true;
 
     wrapperShippingCountry.append(titleShippingCountry, shippingCountry);
@@ -214,11 +229,8 @@ class ProfilePage {
 
     const shippingCity: HTMLInputElement = document.createElement("input");
     shippingCity.classList.add("profile__shipping-city");
-    shippingCity.value = (
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].city
-        : customer.body.addresses[0].city
-    ) as string;
+    shippingCity.value = customer.body.addresses[0].city as string;
+
     shippingCity.disabled = true;
 
     wrapperShippingCity.append(titleShippingCity, shippingCity);
@@ -232,11 +244,8 @@ class ProfilePage {
 
     const shippingPostcode: HTMLInputElement = document.createElement("input");
     shippingPostcode.classList.add("profile__shipping-postcode");
-    shippingPostcode.value = (
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].postalCode
-        : customer.body.addresses[0].postalCode
-    ) as string;
+    shippingPostcode.value = customer.body.addresses[0].postalCode as string;
+
     shippingPostcode.disabled = true;
 
     wrapperShippingPostcode.append(titleShippingPostcode, shippingPostcode);
@@ -250,11 +259,8 @@ class ProfilePage {
 
     const shippingStreet: HTMLInputElement = document.createElement("input");
     shippingStreet.classList.add("profile__shipping-street");
-    shippingStreet.value = (
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].streetName
-        : customer.body.addresses[0].streetName
-    ) as string;
+    shippingStreet.value = customer.body.addresses[0].streetName as string;
+
     shippingStreet.disabled = true;
 
     wrapperShippingStreet.append(titleShippingStreet, shippingStreet);
@@ -278,7 +284,9 @@ class ProfilePage {
     labelDefaultShippingAddress.classList.add(
       "profile__label-default-shipping-address",
     );
-    labelDefaultShippingAddress.checked = true;
+    customer.body.defaultShippingAddressId
+      ? (labelDefaultShippingAddress.checked = true)
+      : null;
     labelDefaultShippingAddress.disabled = true;
 
     wrapperDefaultShippingAddress.append(
@@ -297,6 +305,23 @@ class ProfilePage {
 
     wrapperAddresses.append(wrapperBillingAddress, wrapperShippingAddress);
 
+    const wrapperEditSaveButtons: HTMLElement = document.createElement("div");
+    wrapperEditSaveButtons.classList.add("profile__wrapper-edit-save");
+
+    const editButton: HTMLButtonElement = document.createElement("button");
+    editButton.classList.add("profile__edit-button");
+    editButton.innerText = "Edit";
+
+    const saveButton: HTMLButtonElement = document.createElement("button");
+    saveButton.classList.add("profile__save-button");
+    saveButton.innerText = "Save";
+
+    const savedMessage: HTMLElement = document.createElement("div");
+    savedMessage.classList.add("profile__data-profile-saved");
+    savedMessage.innerText = "Personal data has been changed";
+
+    wrapperEditSaveButtons.append(editButton, saveButton, savedMessage);
+
     mainWrapper.append(
       caption,
       wrapperFirstName,
@@ -304,9 +329,60 @@ class ProfilePage {
       wrapperBirthDate,
       wrapperEmail,
       wrapperAddresses,
+      wrapperEditSaveButtons,
     );
+    const disabledInputs: HTMLInputElement[] = [
+      firstName,
+      lastName,
+      birthDate,
+      email,
+      billingCountry,
+      billingCity,
+      billingPostcode,
+      billingStreet,
+      shippingCountry,
+      shippingCity,
+      shippingPostcode,
+      shippingStreet,
+      labelDefaultBillingAddress,
+      labelDefaultShippingAddress,
+    ];
+
+    this.clickButtonEdit(editButton, disabledInputs);
+    this.clickButtonSave(saveButton, savedMessage, firstName, disabledInputs);
 
     return mainWrapper;
+  }
+
+  clickButtonEdit(button: HTMLButtonElement, fieldsArray: HTMLInputElement[]) {
+    button.addEventListener("click", () => {
+      fieldsArray.forEach((field) => {
+        if (field.disabled === true) {
+          field.disabled = false;
+          field.style.opacity = "1";
+        }
+      });
+    });
+  }
+
+  clickButtonSave(
+    button: HTMLButtonElement,
+    message: HTMLElement,
+    field: HTMLInputElement,
+    fieldsArray: HTMLInputElement[],
+  ) {
+    button.addEventListener("click", () => {
+      if (field.disabled === false) {
+        fieldsArray.forEach((field) => {
+          field.disabled = true;
+          field.style.opacity = ".6";
+        });
+        message.style.scale = "1";
+        setTimeout(() => {
+          message.style.scale = "0";
+        }, 2000);
+      }
+    });
   }
 }
 
