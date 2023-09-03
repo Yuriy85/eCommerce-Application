@@ -70,7 +70,7 @@ class Customer {
         })
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
-      this.changeLoginIcon("in");
+      this.changeLoginProfileIcon("in");
       location.href = pagePaths.mainPath;
       errorArea.innerText = "";
       return customer;
@@ -127,7 +127,7 @@ class Customer {
         })
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
-      this.changeLoginIcon("in");
+      this.changeLoginProfileIcon("in");
       location.href = pagePaths.mainPath;
       errorArea.innerText = "";
       return customer;
@@ -148,7 +148,7 @@ class Customer {
         .post({ body: { email: email, password: login } })
         .execute();
       localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
-      this.changeLoginIcon("in");
+      this.changeLoginProfileIcon("in");
       location.href = pagePaths.mainPath;
       errorArea.innerHTML = "";
       return customer;
@@ -159,7 +159,10 @@ class Customer {
     }
   }
 
-  changeLoginIcon(method?: "in") {
+  changeLoginProfileIcon(method?: "in") {
+    const profileButton: HTMLAnchorElement = document.querySelectorAll(
+      ".header__button",
+    )[1] as HTMLAnchorElement;
     const loginImage: HTMLImageElement = document.getElementById(
       "log-img",
     ) as HTMLImageElement;
@@ -168,6 +171,7 @@ class Customer {
     ) as HTMLSpanElement;
     loginTitle.innerText = method ? "Logout" : "login";
     loginImage.src = method ? logoutImg : loginImg;
+    profileButton.classList.remove("header__hide-element");
   }
 
   async getCustomerObject(id: string) {

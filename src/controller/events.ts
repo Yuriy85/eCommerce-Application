@@ -193,7 +193,11 @@ class Events {
     });
   }
 
-  clickPageAnchor(anchor: HTMLElement, path: string) {
+  clickPageAnchor(
+    anchor: HTMLElement,
+    path: string,
+    profileButton?: HTMLElement,
+  ) {
     anchor.addEventListener("click", () => {
       if (localStorage.getItem("id") && anchor.innerHTML === "Login") {
         window.location.href = pagePaths.mainPath;
@@ -207,6 +211,7 @@ class Events {
           document.getElementById("log-title");
         (loginTitle as HTMLElement).innerText = "Login";
         loginImage.src = loginImg;
+        profileButton?.classList.add("header__hide-element");
       } else {
         window.location.href = path;
       }
