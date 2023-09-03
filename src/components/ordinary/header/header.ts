@@ -47,6 +47,11 @@ class Header {
     const wrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h1");
     const userMenu: HTMLElement = document.createElement("div");
+    const profileButton = this.createButton(
+      profileImg,
+      "Profile",
+      pagePaths.profilePath,
+    );
     const loginButton = this.createButton(
       loginImg,
       "Login",
@@ -62,7 +67,7 @@ class Header {
     wrapper.appendChild(userMenu);
     userMenu.append(
       this.createButton(catalogImg, "Catalog", pagePaths.catalogPath),
-      this.createButton(profileImg, "Profile", pagePaths.profilePath),
+      profileButton,
       loginButton,
       this.createButton(registerImg, "Register", pagePaths.registerPath),
       this.createButton(basketImg, "Basket", pagePaths.basketPath),
@@ -72,10 +77,16 @@ class Header {
     this.header.appendChild(wrapper);
     parentNode.appendChild(this.header);
 
-    this.events.clickPageAnchor(loginButton, pagePaths.loginPath);
+    this.events.clickPageAnchor(
+      loginButton,
+      pagePaths.loginPath,
+      profileButton,
+    );
 
     if (localStorage.getItem("id")) {
       this.changeLoginIcon("in");
+    } else {
+      profileButton.classList.add("header__hide-element");
     }
   }
 
