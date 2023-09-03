@@ -4,39 +4,52 @@ import { ProductProjection, ProductVariant } from "@commercetools/platform-sdk";
 import Events from "../../controller/events";
 import { indexCategories } from "../data/index-categories";
 import QueryArgs from "../data/query-arguments";
-// import { queryArgs } from "../data/query-arguments";
 
 class CatalogPage {
   products: Products;
   events: Events;
+  queryArgs: QueryArgs;
+  navigationWrapper: HTMLUListElement;
+  productWrapper: HTMLElement;
+  catalogLiElement: HTMLLIElement;
+  categoriesLiElement: HTMLLIElement;
+  subcategoriesLiElement: HTMLLIElement;
   buttonSearch: HTMLButtonElement;
   inputSearch: HTMLInputElement;
   closeSearch: HTMLDivElement;
   sushiSelectElement: HTMLSelectElement;
   dessertsSelectElement: HTMLSelectElement;
   drinksSelectElement: HTMLSelectElement;
-  productWrapper: HTMLElement;
-  queryArgs: QueryArgs;
   optionDessertsReset: HTMLOptionElement;
   optionSushiReset: HTMLOptionElement;
   optionDrinksReset: HTMLOptionElement;
+  optionSushi: HTMLOptionElement;
   optionSortReset: HTMLOptionElement;
   optionFilterReset: HTMLOptionElement;
+  optionDesserts: HTMLOptionElement;
+  optionDrinks: HTMLOptionElement;
 
   constructor() {
     this.products = new Products();
     this.events = new Events();
     this.queryArgs = new QueryArgs();
+    this.navigationWrapper = document.createElement("ul");
+    this.productWrapper = document.createElement("div");
+    this.catalogLiElement = document.createElement("li");
+    this.categoriesLiElement = document.createElement("li");
+    this.subcategoriesLiElement = document.createElement("li");
     this.buttonSearch = document.createElement("button");
     this.inputSearch = document.createElement("input");
     this.closeSearch = document.createElement("div");
     this.sushiSelectElement = document.createElement("select");
     this.dessertsSelectElement = document.createElement("select");
     this.drinksSelectElement = document.createElement("select");
-    this.productWrapper = document.createElement("div");
     this.optionSushiReset = document.createElement("option");
     this.optionDessertsReset = document.createElement("option");
     this.optionDrinksReset = document.createElement("option");
+    this.optionSushi = document.createElement("option");
+    this.optionDesserts = document.createElement("option");
+    this.optionDrinks = document.createElement("option");
     this.optionSortReset = document.createElement("option");
     this.optionFilterReset = document.createElement("option");
   }
@@ -45,7 +58,6 @@ class CatalogPage {
     const mainWrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h2");
     const categoriesWrapper: HTMLElement = this.createMenuCategoriesElement();
-
     const menuWrapper: HTMLElement = document.createElement("div");
     const filterWrapper: HTMLElement = document.createElement("div");
     const sortWrapper: HTMLElement = document.createElement("div");
@@ -59,7 +71,6 @@ class CatalogPage {
     const categoriesSushi: HTMLSelectElement = this.sushiSelectElement;
     const dessertSelectElement: HTMLSelectElement = this.dessertsSelectElement;
     const drinksSelectElement: HTMLSelectElement = this.drinksSelectElement;
-
     mainWrapper.classList.add("catalog");
     caption.classList.add("catalog__caption");
     categoriesWrapper.classList.add("catalog__categories-wrapper");
@@ -78,6 +89,67 @@ class CatalogPage {
       await this.products.getProducts(this.queryArgs.getQueryArgs().productsAll)
     ).body.results;
     this.addCardProductsToPage(cardProducts);
+
+    this.navigationWrapper.addEventListener("click", async (event) => {
+      const currentElement: HTMLElement = event.target as HTMLElement;
+      if (currentElement.textContent === "Catalog") {
+        this.productWrapper.innerHTML = "";
+        this.optionDrinksReset.selected = true;
+        this.optionDessertsReset.selected = true;
+        this.optionSushiReset.selected = true;
+        this.categoriesLiElement.textContent = "";
+        this.subcategoriesLiElement.textContent = "";
+        const cardProductsAll: ProductProjection[] = (
+          await this.products.getProducts(
+            this.queryArgs.getQueryArgs().productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsAll);
+      }
+      if (currentElement.textContent === "/ Sushi") {
+        this.productWrapper.innerHTML = "";
+        this.optionSushi.selected = true;
+        this.subcategoriesLiElement.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories.sushi))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+      if (currentElement.textContent === "/ Desserts") {
+        this.productWrapper.innerHTML = "";
+        this.optionDesserts.selected = true;
+        this.subcategoriesLiElement.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.desserts,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+
+      if (currentElement.textContent === "/ Drinks") {
+        this.productWrapper.innerHTML = "";
+        this.optionDrinks.selected = true;
+        this.subcategoriesLiElement.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories.drinks,
+              )
+            ).categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories);
+      }
+    });
 
     filterElement?.addEventListener("change", async () => {
       this.productWrapper.innerHTML = "";
@@ -178,6 +250,8 @@ class CatalogPage {
       const categoriesSushiItem =
         categoriesSushi.options[categoriesSushi.selectedIndex];
       if (categoriesSushiItem.text === "") {
+        this.categoriesLiElement.textContent = "";
+        this.subcategoriesLiElement.textContent = "";
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
             this.queryArgs.getQueryArgs().productsAll,
@@ -186,6 +260,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardProductsFilterAll);
       }
       if (categoriesSushiItem.text === "Sushi") {
+        this.categoriesLiElement.textContent = "/ Sushi";
+        this.subcategoriesLiElement.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (await this.queryArgs.getQueryArgsCategories(indexCategories.sushi))
@@ -195,6 +271,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardCategories);
       }
       if (categoriesSushiItem.text === " > Roll") {
+        this.categoriesLiElement.textContent = "/ Sushi";
+        this.subcategoriesLiElement.textContent = "/ Roll";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (await this.queryArgs.getQueryArgsCategories(indexCategories.rolls))
@@ -204,6 +282,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardCategories);
       }
       if (categoriesSushiItem.text === " > Set") {
+        this.categoriesLiElement.textContent = "/ Sushi";
+        this.subcategoriesLiElement.textContent = "/ Set";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (await this.queryArgs.getQueryArgsCategories(indexCategories.set))
@@ -220,6 +300,8 @@ class CatalogPage {
       const categoriesDessertsItem =
         dessertSelectElement.options[dessertSelectElement.selectedIndex];
       if (categoriesDessertsItem.text === "") {
+        this.categoriesLiElement.textContent = "";
+        this.subcategoriesLiElement.textContent = "";
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
             this.queryArgs.getQueryArgs().productsAll,
@@ -228,6 +310,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardProductsFilterAll);
       }
       if (categoriesDessertsItem.text === "Desserts") {
+        this.categoriesLiElement.textContent = "/ Desserts";
+        this.subcategoriesLiElement.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (
@@ -240,6 +324,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardCategories);
       }
       if (categoriesDessertsItem.text === " > Healthy food") {
+        this.categoriesLiElement.textContent = "/ Desserts";
+        this.subcategoriesLiElement.textContent = "/ Healthy food";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (
@@ -252,6 +338,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardCategories);
       }
       if (categoriesDessertsItem.text === " > Usual dessert") {
+        this.categoriesLiElement.textContent = "/ Desserts";
+        this.subcategoriesLiElement.textContent = "/ Usual dessert";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (
@@ -271,6 +359,8 @@ class CatalogPage {
       const categoriesDrinksItem =
         drinksSelectElement.options[drinksSelectElement.selectedIndex];
       if (categoriesDrinksItem.text === "") {
+        this.categoriesLiElement.textContent = "";
+        this.subcategoriesLiElement.textContent = "";
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
             this.queryArgs.getQueryArgs().productsAll,
@@ -279,6 +369,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardProductsFilterAll);
       }
       if (categoriesDrinksItem.text === "Drinks") {
+        this.categoriesLiElement.textContent = "/ Drinks";
+        this.subcategoriesLiElement.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (
@@ -291,6 +383,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardCategories);
       }
       if (categoriesDrinksItem.text === " > Soft drinks") {
+        this.categoriesLiElement.textContent = "/ Drinks";
+        this.subcategoriesLiElement.textContent = "/ Soft drinks";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (
@@ -303,6 +397,8 @@ class CatalogPage {
         this.addCardProductsToPage(cardCategories);
       }
       if (categoriesDrinksItem.text === " > Hot drinks") {
+        this.categoriesLiElement.textContent = "/ Drinks";
+        this.subcategoriesLiElement.textContent = "/ Hot drinks";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
             (
@@ -321,6 +417,7 @@ class CatalogPage {
     menuWrapper.append(searchElement, filterWrapper, sortWrapper);
     mainWrapper.append(
       caption,
+      this.createNavigationElement(),
       categoriesWrapper,
       menuWrapper,
       this.productWrapper,
@@ -336,6 +433,26 @@ class CatalogPage {
     });
   }
 
+  createNavigationElement() {
+    const navigationWrapper: HTMLUListElement = this.navigationWrapper;
+    const catalogLiElement: HTMLLIElement = this.catalogLiElement;
+    const categoriesLiElement: HTMLLIElement = this.categoriesLiElement;
+    const subcategoriesLiElement: HTMLLIElement = this.subcategoriesLiElement;
+    navigationWrapper.classList.add("catalog__nav-wrapper");
+    catalogLiElement.classList.add("catalog__nav-catalog");
+    categoriesLiElement.classList.add("catalog__nav-categories");
+    subcategoriesLiElement.classList.add("catalog__nav-subcategories");
+    catalogLiElement.textContent = "Catalog";
+    categoriesLiElement.textContent = "";
+    subcategoriesLiElement.textContent = "";
+    navigationWrapper.append(
+      catalogLiElement,
+      categoriesLiElement,
+      subcategoriesLiElement,
+    );
+    return navigationWrapper;
+  }
+
   createMenuCategoriesElement(): HTMLElement {
     const categoriesWrapper: HTMLElement = document.createElement("div");
     const categoriesSushiWrapper: HTMLElement = document.createElement("div");
@@ -346,66 +463,52 @@ class CatalogPage {
     const categoriesTitleSushi: HTMLElement = document.createElement("p");
     const categoriesTitleDesserts: HTMLElement = document.createElement("p");
     const categoriesTitleDrinks: HTMLElement = document.createElement("p");
-
     const sushiSelectElement: HTMLSelectElement = this.sushiSelectElement;
     const dessertSelectElement: HTMLSelectElement = this.dessertsSelectElement;
     const drinksSelectElement: HTMLSelectElement = this.drinksSelectElement;
-
-    const optionSushi: HTMLOptionElement = document.createElement("option");
-    const optionDesserts: HTMLOptionElement = document.createElement("option");
-    const optionDrinks: HTMLOptionElement = document.createElement("option");
-
+    const optionSushi: HTMLOptionElement = this.optionSushi;
+    const optionDesserts: HTMLOptionElement = this.optionDesserts;
+    const optionDrinks: HTMLOptionElement = this.optionDrinks;
     const optionSushiRolls: HTMLOptionElement =
       document.createElement("option");
     const optionSushiSet: HTMLOptionElement = document.createElement("option");
-
     const optionDessertsHealthy: HTMLOptionElement =
       document.createElement("option");
     const optionDessertsUsual: HTMLOptionElement =
       document.createElement("option");
-
     const optionDrinksSoft: HTMLOptionElement =
       document.createElement("option");
     const optionDrinksHot: HTMLOptionElement = document.createElement("option");
-
     this.optionSushiReset.classList.add("catalog__categories-sushi-reset");
     this.optionDrinksReset.classList.add("catalog__categories-dessert-reset");
     this.optionDessertsReset.classList.add("catalog__categories-drinks-reset");
-
     sushiSelectElement.classList.add("catalog__categories-sushi-select");
     dessertSelectElement.classList.add("catalog__categories-dessert-select");
     drinksSelectElement.classList.add("catalog__categories-drinks-select");
-
     categoriesSushiWrapper.classList.add("catalog__categories-sushi-wrapper");
     categoriesDessertsWrapper.classList.add(
       "catalog__categories-desserts-wrapper",
     );
     categoriesDrinksWrapper.classList.add("catalog__categories-drinks-wrapper");
-
     categoriesTitle.innerText = "Categories:";
     categoriesTitleSushi.innerText = "Sushi:";
     categoriesTitleDesserts.innerText = "Desserts:";
     categoriesTitleDrinks.innerText = "Drinks:";
-
     sushiSelectElement.innerText = "Reset filter";
     dessertSelectElement.innerText = "With lactose";
     drinksSelectElement.innerText = "Lactose free";
-
     this.optionSushiReset.innerHTML = "";
     optionSushi.innerHTML = "Sushi";
     optionSushiRolls.innerHTML = "&nbsp;> Roll";
     optionSushiSet.innerHTML = "&nbsp;> Set";
-
     this.optionDessertsReset.innerHTML = "";
     optionDesserts.innerHTML = "Desserts";
     optionDessertsHealthy.innerHTML = "&nbsp;> Healthy food";
     optionDessertsUsual.innerHTML = "&nbsp;> Usual dessert";
-
     this.optionDrinksReset.innerHTML = "";
     optionDrinks.innerHTML = "Drinks";
     optionDrinksSoft.innerHTML = "&nbsp;> Soft drinks";
     optionDrinksHot.innerHTML = "&nbsp;> Hot drinks";
-
     sushiSelectElement.append(
       this.optionSushiReset,
       optionSushi,
@@ -424,14 +527,12 @@ class CatalogPage {
       optionDrinksSoft,
       optionDrinksHot,
     );
-
     categoriesSushiWrapper.append(categoriesTitleSushi, sushiSelectElement);
     categoriesDessertsWrapper.append(
       categoriesTitleDesserts,
       dessertSelectElement,
     );
     categoriesDrinksWrapper.append(categoriesTitleDrinks, drinksSelectElement);
-
     categoriesWrapper.append(
       categoriesTitle,
       categoriesSushiWrapper,
@@ -511,7 +612,6 @@ class CatalogPage {
     const price: HTMLElement = document.createElement("h4");
     const priceVariant: HTMLElement = document.createElement("h4");
     const priceVariantTwo: HTMLElement = document.createElement("h4");
-
     card.classList.add("catalog__card");
     card.setAttribute("id", product.id);
     title.classList.add("catalog__card-title");
@@ -521,7 +621,6 @@ class CatalogPage {
     price.classList.add("catalog__card-first-price");
     priceVariant.classList.add("catalog__card-second-price");
     priceVariantTwo.classList.add("catalog__card-third-price");
-
     title.innerText = product.name["en-US"];
     image.style.backgroundImage = `url(${product.masterVariant.images?.[0].url})`;
     subtitle.innerText = product.description?.["en-US"] as string;
@@ -591,11 +690,8 @@ class CatalogPage {
         )}`;
       }
     }
-
     priceWrapper.append(price, priceVariant, priceVariantTwo);
-
     card.append(title, image, subtitle, priceWrapper);
-
     return card;
   }
 }
