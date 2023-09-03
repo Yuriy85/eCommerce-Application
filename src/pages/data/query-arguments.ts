@@ -25,11 +25,11 @@ class QueryArgs {
       },
       sortAscending: {
         limit: 21,
-        sort: [`name.en-US asc`],
+        sort: [`price asc`],
       },
       sortDescending: {
         limit: 21,
-        sort: [`name.en-US desc`],
+        sort: [`price desc`],
       },
       searchText: {
         limit: 21,
