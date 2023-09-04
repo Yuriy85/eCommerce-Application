@@ -6,33 +6,41 @@ class QueryArgs {
   constructor() {
     this.products = new Products();
   }
-  getQueryArgs(text?: string): IParamsQueryArgs {
+
+  async getQueryArgs(index: number, text?: string) {
+    const id: string = await this.products.getCategoriesId(index);
+
     const queryArgs: IParamsQueryArgs = {
       productsAll: {
         limit: 21,
+        filter: [`categories.id:"${id}"`],
       },
       filterLactoseYes: {
         limit: 21,
-        filter: [`variants.attributes.lactose:"yes"`],
+        filter: [`categories.id:"${id}"`, `variants.attributes.lactose:"yes"`],
       },
       filterLactoseNo: {
         limit: 21,
-        filter: [`variants.attributes.lactose:"no"`],
+        filter: [`categories.id:"${id}"`, `variants.attributes.lactose:"no"`],
       },
       sortAlphabetically: {
         limit: 21,
         sort: [`name.en-US asc`],
+        filter: [`categories.id:"${id}"`],
       },
       sortAscending: {
         limit: 21,
         sort: [`price asc`],
+        filter: [`categories.id:"${id}"`],
       },
       sortDescending: {
         limit: 21,
         sort: [`price desc`],
+        filter: [`categories.id:"${id}"`],
       },
       searchText: {
         limit: 21,
+        filter: [`categories.id:"${id}"`],
         ["text.en-US"]: `"${text}"`,
         fuzzy: true,
       },
