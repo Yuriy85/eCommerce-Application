@@ -1,15 +1,20 @@
 import Customer from "../../controller/customer";
 import "./profile_page.scss";
+// import "../../controller/events";
+import Events from "../../controller/events";
 
 class ProfilePage {
   customer: Customer;
+  events: Events;
   constructor() {
     this.customer = new Customer();
+    this.events = new Events();
   }
   async render(): Promise<HTMLElement> {
-    const customer = await this.customer.getCustomerObject(
-      localStorage.getItem("id")?.slice(1, -1) as string,
-    );
+    const customerId: string = localStorage
+      .getItem("id")
+      ?.slice(1, -1) as string;
+    const customer = await this.customer.getCustomerObject(customerId);
 
     const mainWrapper: HTMLElement = document.createElement("div");
 
@@ -31,7 +36,10 @@ class ProfilePage {
     firstName.value = customer.body.firstName as string;
     firstName.disabled = true;
 
-    wrapperFirstName.append(titleFirstName, firstName);
+    const firstNameEditError: HTMLElement = document.createElement("span");
+    firstNameEditError.classList.add("profile__first-name-error");
+
+    wrapperFirstName.append(titleFirstName, firstName, firstNameEditError);
 
     const wrapperLastName: HTMLElement = document.createElement("div");
     wrapperLastName.classList.add("profile__wrapper-last-name");
@@ -45,7 +53,10 @@ class ProfilePage {
     lastName.value = customer.body.lastName as string;
     lastName.disabled = true;
 
-    wrapperLastName.append(titleLastName, lastName);
+    const lastNameEditError: HTMLElement = document.createElement("span");
+    lastNameEditError.classList.add("profile__last-name-error");
+
+    wrapperLastName.append(titleLastName, lastName, lastNameEditError);
 
     const wrapperBirthDate: HTMLElement = document.createElement("div");
     wrapperBirthDate.classList.add("profile__wrapper-last-name");
@@ -56,10 +67,14 @@ class ProfilePage {
 
     const birthDate: HTMLInputElement = document.createElement("input");
     birthDate.classList.add("profile__birth-date");
+    birthDate.setAttribute("type", "date");
     birthDate.value = customer.body.dateOfBirth as string;
     birthDate.disabled = true;
 
-    wrapperBirthDate.append(titleBirthDate, birthDate);
+    const birthDateEditError: HTMLElement = document.createElement("span");
+    birthDateEditError.classList.add("profile__birth-date-error");
+
+    wrapperBirthDate.append(titleBirthDate, birthDate, birthDateEditError);
 
     const wrapperEmail: HTMLElement = document.createElement("div");
     wrapperEmail.classList.add("profile__wrapper-email");
@@ -73,7 +88,10 @@ class ProfilePage {
     email.value = customer.body.email;
     email.disabled = true;
 
-    wrapperEmail.append(titleEmail, email);
+    const emailEditError: HTMLElement = document.createElement("span");
+    emailEditError.classList.add("profile__email-error");
+
+    wrapperEmail.append(titleEmail, email, emailEditError);
 
     const wrapperAddresses: HTMLElement = document.createElement("div");
     wrapperAddresses.classList.add("profile__wrapper-addresses");
@@ -349,7 +367,23 @@ class ProfilePage {
     ];
 
     this.clickButtonEdit(editButton, disabledInputs);
-    this.clickButtonSave(saveButton, savedMessage, firstName, disabledInputs);
+    this.clickButtonSave(
+      saveButton,
+      savedMessage,
+      firstName,
+      disabledInputs,
+      customerId,
+      customer.body.version,
+      email,
+      firstName,
+      lastName,
+      birthDate,
+    );
+
+    this.events.inputFilling(firstName, firstNameEditError, "name");
+    this.events.inputFilling(lastName, lastNameEditError, "surname");
+    this.events.inputFilling(birthDate, birthDateEditError, "date");
+    this.events.inputFilling(email, emailEditError, "email");
 
     return mainWrapper;
   }
@@ -370,9 +404,23 @@ class ProfilePage {
     message: HTMLElement,
     field: HTMLInputElement,
     fieldsArray: HTMLInputElement[],
+    customerId: string,
+    version: number,
+    email: HTMLInputElement,
+    firstName: HTMLInputElement,
+    lastName: HTMLInputElement,
+    dateOfBirth: HTMLInputElement,
   ) {
     button.addEventListener("click", () => {
       if (field.disabled === false) {
+        this.customer.updateCustomer(
+          customerId,
+          version,
+          email.value,
+          firstName.value,
+          lastName.value,
+          dateOfBirth.value,
+        );
         fieldsArray.forEach((field) => {
           field.disabled = true;
           field.style.opacity = ".6";

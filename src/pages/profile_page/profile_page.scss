@@ -127,3 +127,14 @@ input.profile__email::value {
     opacity: 1;
     transition: .25s;
 }
+.profile__first-name-error,
+.profile__last-name-error,
+.profile__birth-date-error,
+.profile__email-error {
+    padding: 0 10px;
+    color: #ffd400;
+}
+.profile__wrapper-billing-address,
+.profile__wrapper-shipping-address {
+    display: none;
+}

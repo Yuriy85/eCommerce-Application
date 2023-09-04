@@ -186,5 +186,44 @@ class Customer {
     console.log(customer);
     return customer;
   }
+  updateCustomer(
+    id: string,
+    version: number,
+    email: string,
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+  ) {
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    const customer = apiRoot
+      .customers()
+      .withId({ ID: id })
+      .post({
+        body: {
+          version: version,
+          actions: [
+            {
+              action: "changeEmail",
+              email: email,
+            },
+            {
+              action: "setFirstName",
+              firstName: firstName,
+            },
+            {
+              action: "setLastName",
+              lastName: lastName,
+            },
+            {
+              action: "setDateOfBirth",
+              dateOfBirth: dateOfBirth,
+            },
+          ],
+        },
+      })
+      .execute();
+    console.log(customer);
+    return customer;
+  }
 }
 export default Customer;
