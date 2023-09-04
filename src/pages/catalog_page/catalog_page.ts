@@ -2,458 +2,46 @@ import "./catalog_page.scss";
 import Products from "../../controller/products";
 import { ProductProjection, ProductVariant } from "@commercetools/platform-sdk";
 import Events from "../../controller/events";
-import { indexCategories } from "../data/index-categories";
 import QueryArgs from "../data/query-arguments";
 
 class CatalogPage {
   products: Products;
   events: Events;
   queryArgs: QueryArgs;
-  navigationWrapper: HTMLUListElement;
-  productWrapper: HTMLElement;
-  catalogLiElement: HTMLLIElement;
-  categoriesLiElement: HTMLLIElement;
-  subcategoriesLiElement: HTMLLIElement;
-  buttonSearch: HTMLButtonElement;
-  inputSearch: HTMLInputElement;
-  closeSearch: HTMLDivElement;
-  sushiSelectElement: HTMLSelectElement;
-  dessertsSelectElement: HTMLSelectElement;
-  drinksSelectElement: HTMLSelectElement;
-  optionDessertsReset: HTMLOptionElement;
-  optionSushiReset: HTMLOptionElement;
-  optionDrinksReset: HTMLOptionElement;
-  optionSushi: HTMLOptionElement;
-  optionSortReset: HTMLOptionElement;
-  optionFilterReset: HTMLOptionElement;
-  optionDesserts: HTMLOptionElement;
-  optionDrinks: HTMLOptionElement;
 
   constructor() {
     this.products = new Products();
     this.events = new Events();
     this.queryArgs = new QueryArgs();
-    this.navigationWrapper = document.createElement("ul");
-    this.productWrapper = document.createElement("div");
-    this.catalogLiElement = document.createElement("li");
-    this.categoriesLiElement = document.createElement("li");
-    this.subcategoriesLiElement = document.createElement("li");
-    this.buttonSearch = document.createElement("button");
-    this.inputSearch = document.createElement("input");
-    this.closeSearch = document.createElement("div");
-    this.sushiSelectElement = document.createElement("select");
-    this.dessertsSelectElement = document.createElement("select");
-    this.drinksSelectElement = document.createElement("select");
-    this.optionSushiReset = document.createElement("option");
-    this.optionDessertsReset = document.createElement("option");
-    this.optionDrinksReset = document.createElement("option");
-    this.optionSushi = document.createElement("option");
-    this.optionDesserts = document.createElement("option");
-    this.optionDrinks = document.createElement("option");
-    this.optionSortReset = document.createElement("option");
-    this.optionFilterReset = document.createElement("option");
   }
 
   async render(): Promise<HTMLElement> {
     const mainWrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h2");
-    const categoriesWrapper: HTMLElement = this.createMenuCategoriesElement();
-    const menuWrapper: HTMLElement = document.createElement("div");
-    const filterWrapper: HTMLElement = document.createElement("div");
-    const sortWrapper: HTMLElement = document.createElement("div");
-    const filterTitle: HTMLElement = document.createElement("p");
-    const sortTitle: HTMLElement = document.createElement("p");
-    const filterElement: HTMLSelectElement = this.createMenuFilterElement();
-    const sortElement: HTMLSelectElement = this.createMenuSortElement();
-    const searchElement: HTMLElement = this.createMenuSearchElement();
-    const btnSearch: HTMLButtonElement = this.buttonSearch;
-    const closeSearch: HTMLDivElement = this.closeSearch;
-    const categoriesSushi: HTMLSelectElement = this.sushiSelectElement;
-    const dessertSelectElement: HTMLSelectElement = this.dessertsSelectElement;
-    const drinksSelectElement: HTMLSelectElement = this.drinksSelectElement;
+    const productWrapper: HTMLDivElement = document.createElement("div");
     mainWrapper.classList.add("catalog");
     caption.classList.add("catalog__caption");
-    categoriesWrapper.classList.add("catalog__categories-wrapper");
-    menuWrapper.classList.add("catalog__menu-wrapper");
-    filterWrapper.classList.add("catalog__filter-wrapper");
-    sortWrapper.classList.add("catalog__sort-wrapper");
-    this.productWrapper.classList.add("catalog__products");
-    filterTitle.classList.add("catalog__filter-title");
-    sortTitle.classList.add("catalog__sort-title");
-    filterTitle.innerText = "Filter:";
-    sortTitle.innerText = "Sort:";
+    productWrapper.classList.add("catalog__products");
     mainWrapper.innerHTML = "";
     caption.innerText = "Catalog Product page";
 
-    const cardProducts: ProductProjection[] = (
-      await this.products.getProducts(this.queryArgs.getQueryArgs().productsAll)
-    ).body.results;
-    this.addCardProductsToPage(cardProducts);
-
-    this.navigationWrapper.addEventListener("click", async (event) => {
-      const currentElement: HTMLElement = event.target as HTMLElement;
-      if (currentElement.textContent === "Catalog") {
-        this.productWrapper.innerHTML = "";
-        this.optionDrinksReset.selected = true;
-        this.optionDessertsReset.selected = true;
-        this.optionSushiReset.selected = true;
-        this.categoriesLiElement.textContent = "";
-        this.subcategoriesLiElement.textContent = "";
-        const cardProductsAll: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().productsAll,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsAll);
-      }
-      if (currentElement.textContent === "/ Sushi") {
-        this.productWrapper.innerHTML = "";
-        this.optionSushi.selected = true;
-        this.subcategoriesLiElement.textContent = "";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories.sushi))
-              .categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (currentElement.textContent === "/ Desserts") {
-        this.productWrapper.innerHTML = "";
-        this.optionDesserts.selected = true;
-        this.subcategoriesLiElement.textContent = "";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.desserts,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-
-      if (currentElement.textContent === "/ Drinks") {
-        this.productWrapper.innerHTML = "";
-        this.optionDrinks.selected = true;
-        this.subcategoriesLiElement.textContent = "";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.drinks,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-    });
-
-    filterElement?.addEventListener("change", async () => {
-      this.productWrapper.innerHTML = "";
-      const filterItem: HTMLOptionElement =
-        filterElement.options[filterElement.selectedIndex];
-      this.optionSortReset.selected = true;
-      if (filterItem.text === "Reset filter") {
-        const cardProductsFilterAll: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().productsAll,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsFilterAll);
-      }
-      if (filterItem.text === "With lactose") {
-        const cardProductsFilterLactoseYes: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().filterLactoseYes,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsFilterLactoseYes);
-      }
-      if (filterItem.text === "Lactose free") {
-        const cardProductsFilterLactoseNo: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().filterLactoseNo,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsFilterLactoseNo);
-      }
-    });
-
-    sortElement?.addEventListener("change", async () => {
-      this.productWrapper.innerHTML = "";
-      const sortItem: HTMLOptionElement =
-        sortElement.options[sortElement.selectedIndex];
-      this.optionFilterReset.selected = true;
-      if (sortItem.text === "Reset sort") {
-        const cardProductsSortReset: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().productsAll,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsSortReset);
-      }
-      if (sortItem.text === "A-Z") {
-        const cardProductsSortAz: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().sortAlphabetically,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsSortAz);
-      }
-      if (sortItem.text === "Price ascending") {
-        const cardProductsSortAz: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().sortAscending,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsSortAz);
-      }
-      if (sortItem.text === "Price descending") {
-        const cardProductsSortAz: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().sortDescending,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsSortAz);
-      }
-    });
-
-    btnSearch?.addEventListener("click", async () => {
-      this.productWrapper.innerHTML = "";
-      const inputValue = this.inputSearch.value;
-      const cardSearch: ProductProjection[] = (
-        await this.products.getProducts(
-          this.queryArgs.getQueryArgs(inputValue).searchText,
-        )
-      ).body.results;
-      this.addCardProductsToPage(cardSearch);
-    });
-
-    closeSearch?.addEventListener("click", async () => {
-      this.productWrapper.innerHTML = "";
-      this.inputSearch.value = "";
-      const cardProductsCloseSearch: ProductProjection[] = (
-        await this.products.getProducts(
-          this.queryArgs.getQueryArgs().productsAll,
-        )
-      ).body.results;
-      this.addCardProductsToPage(cardProductsCloseSearch);
-    });
-
-    categoriesSushi?.addEventListener("change", async () => {
-      this.optionDrinksReset.selected = true;
-      this.optionDessertsReset.selected = true;
-      this.productWrapper.innerHTML = "";
-      const categoriesSushiItem =
-        categoriesSushi.options[categoriesSushi.selectedIndex];
-      if (categoriesSushiItem.text === "") {
-        this.categoriesLiElement.textContent = "";
-        this.subcategoriesLiElement.textContent = "";
-        const cardProductsFilterAll: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().productsAll,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsFilterAll);
-      }
-      if (categoriesSushiItem.text === "Sushi") {
-        this.categoriesLiElement.textContent = "/ Sushi";
-        this.subcategoriesLiElement.textContent = "";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories.sushi))
-              .categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (categoriesSushiItem.text === " > Roll") {
-        this.categoriesLiElement.textContent = "/ Sushi";
-        this.subcategoriesLiElement.textContent = "/ Roll";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories.rolls))
-              .categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (categoriesSushiItem.text === " > Set") {
-        this.categoriesLiElement.textContent = "/ Sushi";
-        this.subcategoriesLiElement.textContent = "/ Set";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories.set))
-              .categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-    });
-    dessertSelectElement?.addEventListener("change", async () => {
-      this.productWrapper.innerHTML = "";
-      this.optionDrinksReset.selected = true;
-      this.optionSushiReset.selected = true;
-      const categoriesDessertsItem =
-        dessertSelectElement.options[dessertSelectElement.selectedIndex];
-      if (categoriesDessertsItem.text === "") {
-        this.categoriesLiElement.textContent = "";
-        this.subcategoriesLiElement.textContent = "";
-        const cardProductsFilterAll: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().productsAll,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsFilterAll);
-      }
-      if (categoriesDessertsItem.text === "Desserts") {
-        this.categoriesLiElement.textContent = "/ Desserts";
-        this.subcategoriesLiElement.textContent = "";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.desserts,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (categoriesDessertsItem.text === " > Healthy food") {
-        this.categoriesLiElement.textContent = "/ Desserts";
-        this.subcategoriesLiElement.textContent = "/ Healthy food";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.healthyFood,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (categoriesDessertsItem.text === " > Usual dessert") {
-        this.categoriesLiElement.textContent = "/ Desserts";
-        this.subcategoriesLiElement.textContent = "/ Usual dessert";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.usualDessert,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-    });
-    drinksSelectElement?.addEventListener("change", async () => {
-      this.productWrapper.innerHTML = "";
-      this.optionDessertsReset.selected = true;
-      this.optionSushiReset.selected = true;
-      const categoriesDrinksItem =
-        drinksSelectElement.options[drinksSelectElement.selectedIndex];
-      if (categoriesDrinksItem.text === "") {
-        this.categoriesLiElement.textContent = "";
-        this.subcategoriesLiElement.textContent = "";
-        const cardProductsFilterAll: ProductProjection[] = (
-          await this.products.getProducts(
-            this.queryArgs.getQueryArgs().productsAll,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardProductsFilterAll);
-      }
-      if (categoriesDrinksItem.text === "Drinks") {
-        this.categoriesLiElement.textContent = "/ Drinks";
-        this.subcategoriesLiElement.textContent = "";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.drinks,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (categoriesDrinksItem.text === " > Soft drinks") {
-        this.categoriesLiElement.textContent = "/ Drinks";
-        this.subcategoriesLiElement.textContent = "/ Soft drinks";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.softDrinks,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-      if (categoriesDrinksItem.text === " > Hot drinks") {
-        this.categoriesLiElement.textContent = "/ Drinks";
-        this.subcategoriesLiElement.textContent = "/ Hot drinks";
-        const cardCategories: ProductProjection[] = (
-          await this.products.getProducts(
-            (
-              await this.queryArgs.getQueryArgsCategories(
-                indexCategories.hotDrinks,
-              )
-            ).categoriesSushi,
-          )
-        ).body.results;
-        this.addCardProductsToPage(cardCategories);
-      }
-    });
-
-    filterWrapper.append(filterTitle, filterElement);
-    sortWrapper.append(sortTitle, sortElement);
-    menuWrapper.append(searchElement, filterWrapper, sortWrapper);
-    mainWrapper.append(
-      caption,
-      this.createNavigationElement(),
-      categoriesWrapper,
-      menuWrapper,
-      this.productWrapper,
-    );
-    return mainWrapper;
-  }
-
-  addCardProductsToPage(cardProducts: ProductProjection[]) {
-    cardProducts.forEach((product) => {
-      const productCard = this.createCardProduct(product);
-      this.productWrapper.append(productCard);
-      this.events.clickProductCard(productCard);
-    });
-  }
-
-  createNavigationElement() {
-    const navigationWrapper: HTMLUListElement = this.navigationWrapper;
-    const catalogLiElement: HTMLLIElement = this.catalogLiElement;
-    const categoriesLiElement: HTMLLIElement = this.categoriesLiElement;
-    const subcategoriesLiElement: HTMLLIElement = this.subcategoriesLiElement;
+    const navigationWrapper = document.createElement("ul");
+    const navigationCatalog: HTMLLIElement = document.createElement("li");
+    const navigationCategories: HTMLLIElement = document.createElement("li");
+    const navigationSubcategories: HTMLLIElement = document.createElement("li");
     navigationWrapper.classList.add("catalog__nav-wrapper");
-    catalogLiElement.classList.add("catalog__nav-catalog");
-    categoriesLiElement.classList.add("catalog__nav-categories");
-    subcategoriesLiElement.classList.add("catalog__nav-subcategories");
-    catalogLiElement.textContent = "Catalog";
-    categoriesLiElement.textContent = "";
-    subcategoriesLiElement.textContent = "";
+    navigationCatalog.classList.add("catalog__nav-catalog");
+    navigationCategories.classList.add("catalog__nav-categories");
+    navigationSubcategories.classList.add("catalog__nav-subcategories");
+    navigationCatalog.textContent = "Catalog";
+    navigationCategories.textContent = "";
+    navigationSubcategories.textContent = "";
     navigationWrapper.append(
-      catalogLiElement,
-      categoriesLiElement,
-      subcategoriesLiElement,
+      navigationCatalog,
+      navigationCategories,
+      navigationSubcategories,
     );
-    return navigationWrapper;
-  }
 
-  createMenuCategoriesElement(): HTMLElement {
     const categoriesWrapper: HTMLElement = document.createElement("div");
     const categoriesSushiWrapper: HTMLElement = document.createElement("div");
     const categoriesDessertsWrapper: HTMLElement =
@@ -463,12 +51,21 @@ class CatalogPage {
     const categoriesTitleSushi: HTMLElement = document.createElement("p");
     const categoriesTitleDesserts: HTMLElement = document.createElement("p");
     const categoriesTitleDrinks: HTMLElement = document.createElement("p");
-    const sushiSelectElement: HTMLSelectElement = this.sushiSelectElement;
-    const dessertSelectElement: HTMLSelectElement = this.dessertsSelectElement;
-    const drinksSelectElement: HTMLSelectElement = this.drinksSelectElement;
-    const optionSushi: HTMLOptionElement = this.optionSushi;
-    const optionDesserts: HTMLOptionElement = this.optionDesserts;
-    const optionDrinks: HTMLOptionElement = this.optionDrinks;
+    const sushiSelectElement: HTMLSelectElement =
+      document.createElement("select");
+    const dessertSelectElement: HTMLSelectElement =
+      document.createElement("select");
+    const drinksSelectElement: HTMLSelectElement =
+      document.createElement("select");
+    const optionSushi: HTMLOptionElement = document.createElement("option");
+    const optionDesserts: HTMLOptionElement = document.createElement("option");
+    const optionDrinks: HTMLOptionElement = document.createElement("option");
+    const optionDessertsReset: HTMLOptionElement =
+      document.createElement("option");
+    const optionSushiReset: HTMLOptionElement =
+      document.createElement("option");
+    const optionDrinksReset: HTMLOptionElement =
+      document.createElement("option");
     const optionSushiRolls: HTMLOptionElement =
       document.createElement("option");
     const optionSushiSet: HTMLOptionElement = document.createElement("option");
@@ -479,12 +76,7 @@ class CatalogPage {
     const optionDrinksSoft: HTMLOptionElement =
       document.createElement("option");
     const optionDrinksHot: HTMLOptionElement = document.createElement("option");
-    this.optionSushiReset.classList.add("catalog__categories-sushi-reset");
-    this.optionDrinksReset.classList.add("catalog__categories-dessert-reset");
-    this.optionDessertsReset.classList.add("catalog__categories-drinks-reset");
-    sushiSelectElement.classList.add("catalog__categories-sushi-select");
-    dessertSelectElement.classList.add("catalog__categories-dessert-select");
-    drinksSelectElement.classList.add("catalog__categories-drinks-select");
+    categoriesWrapper.classList.add("catalog__categories-wrapper");
     categoriesSushiWrapper.classList.add("catalog__categories-sushi-wrapper");
     categoriesDessertsWrapper.classList.add(
       "catalog__categories-desserts-wrapper",
@@ -494,35 +86,41 @@ class CatalogPage {
     categoriesTitleSushi.innerText = "Sushi:";
     categoriesTitleDesserts.innerText = "Desserts:";
     categoriesTitleDrinks.innerText = "Drinks:";
+    sushiSelectElement.classList.add("catalog__categories-sushi-select");
+    dessertSelectElement.classList.add("catalog__categories-dessert-select");
+    drinksSelectElement.classList.add("catalog__categories-drinks-select");
+    optionSushiReset.classList.add("catalog__categories-dessert-reset");
+    optionDessertsReset.classList.add("catalog__categories-sushi-reset");
+    optionDrinksReset.classList.add("catalog__categories-drinks-reset");
     sushiSelectElement.innerText = "Reset filter";
     dessertSelectElement.innerText = "With lactose";
     drinksSelectElement.innerText = "Lactose free";
-    this.optionSushiReset.innerHTML = "";
+    optionSushiReset.innerHTML = "";
     optionSushi.innerHTML = "Sushi";
     optionSushiRolls.innerHTML = "&nbsp;> Roll";
     optionSushiSet.innerHTML = "&nbsp;> Set";
-    this.optionDessertsReset.innerHTML = "";
+    optionDessertsReset.innerHTML = "";
     optionDesserts.innerHTML = "Desserts";
     optionDessertsHealthy.innerHTML = "&nbsp;> Healthy food";
     optionDessertsUsual.innerHTML = "&nbsp;> Usual dessert";
-    this.optionDrinksReset.innerHTML = "";
+    optionDrinksReset.innerHTML = "";
     optionDrinks.innerHTML = "Drinks";
     optionDrinksSoft.innerHTML = "&nbsp;> Soft drinks";
     optionDrinksHot.innerHTML = "&nbsp;> Hot drinks";
     sushiSelectElement.append(
-      this.optionSushiReset,
+      optionSushiReset,
       optionSushi,
       optionSushiRolls,
       optionSushiSet,
     );
     dessertSelectElement.append(
-      this.optionDessertsReset,
+      optionDessertsReset,
       optionDesserts,
       optionDessertsHealthy,
       optionDessertsUsual,
     );
     drinksSelectElement.append(
-      this.optionDrinksReset,
+      optionDrinksReset,
       optionDrinks,
       optionDrinksSoft,
       optionDrinksHot,
@@ -539,68 +137,558 @@ class CatalogPage {
       categoriesDessertsWrapper,
       categoriesDrinksWrapper,
     );
-    return categoriesWrapper;
-  }
 
-  createMenuFilterElement(): HTMLSelectElement {
-    const filter: HTMLSelectElement = document.createElement("select");
-    const resetFilter = this.optionFilterReset;
-    const lactoseYes: HTMLOptionElement = document.createElement("option");
-    const lactoseNo: HTMLOptionElement = document.createElement("option");
-    filter.classList.add("catalog__filter-select");
-    resetFilter.classList.add("catalog__filter-reset");
-    lactoseYes.classList.add("catalog__filter-yes");
-    lactoseNo.classList.add("catalog__filter-no");
-    resetFilter.innerText = "Reset filter";
-    lactoseYes.innerText = "With lactose";
-    lactoseNo.innerText = "Lactose free";
-    filter.append(resetFilter, lactoseYes, lactoseNo);
-    return filter;
-  }
-
-  createMenuSortElement(): HTMLSelectElement {
-    const sort: HTMLSelectElement = document.createElement("select");
-    const sortReset: HTMLOptionElement = this.optionSortReset;
-    const sortAlphabetically: HTMLOptionElement =
-      document.createElement("option");
-    const sortPriceAscending: HTMLOptionElement =
-      document.createElement("option");
-    const sortPriceDescending: HTMLOptionElement =
-      document.createElement("option");
-    sort.classList.add("catalog__sort-select");
-    sortReset.classList.add("catalog__sort-reset");
-    sortAlphabetically.classList.add("catalog__sort-alphabetically");
-    sortPriceAscending.classList.add("catalog__sort-ascending");
-    sortPriceDescending.classList.add("catalog__sort-descending");
-    sortReset.innerText = "Reset sort";
-    sortAlphabetically.innerText = "A-Z";
-    sortPriceAscending.innerText = "Price ascending";
-    sortPriceDescending.innerText = "Price descending";
-    sort.append(
-      sortReset,
-      sortAlphabetically,
-      sortPriceAscending,
-      sortPriceDescending,
-    );
-    return sort;
-  }
-
-  createMenuSearchElement(): HTMLElement {
-    const labelSearch: HTMLElement = document.createElement("div");
-    const inputSearch = this.inputSearch;
-    const btnSearch = this.buttonSearch;
-    const closeSearch = this.closeSearch;
-    labelSearch.classList.add("catalog__search-wrapper");
+    const menuWrapper: HTMLElement = document.createElement("div");
+    const searchWrapper: HTMLElement = document.createElement("div");
+    const inputSearch = document.createElement("input");
+    const btnSearch: HTMLButtonElement = document.createElement("button");
+    const closeSearch: HTMLDivElement = document.createElement("div");
+    menuWrapper.classList.add("catalog__menu-wrapper");
+    searchWrapper.classList.add("catalog__search-wrapper");
     inputSearch.classList.add("catalog__search-select");
     btnSearch.classList.add("catalog__search-button");
     closeSearch.classList.add("catalog__search-close");
     inputSearch.setAttribute("type", "text");
     inputSearch.setAttribute("type", "text");
     btnSearch.textContent = "ок";
-    labelSearch.textContent = "Search:";
     closeSearch.innerHTML = "&#128473;";
-    labelSearch.append(inputSearch, closeSearch, btnSearch);
-    return labelSearch;
+    searchWrapper.textContent = "Search:";
+    searchWrapper.append(inputSearch, closeSearch, btnSearch);
+
+    const filterWrapper: HTMLElement = document.createElement("div");
+    const filterTitle: HTMLElement = document.createElement("p");
+    const filterSelect: HTMLSelectElement = document.createElement("select");
+    const filterOptionReset = document.createElement("option");
+    const filterOptionLactoseYes: HTMLOptionElement =
+      document.createElement("option");
+    const filterOptionLactoseNo: HTMLOptionElement =
+      document.createElement("option");
+    filterWrapper.classList.add("catalog__filter-wrapper");
+    filterTitle.classList.add("catalog__filter-title");
+    filterSelect.classList.add("catalog__filter-select");
+    filterOptionReset.classList.add("catalog__filter-reset");
+    filterOptionLactoseYes.classList.add("catalog__filter-yes");
+    filterOptionLactoseNo.classList.add("catalog__filter-no");
+    filterTitle.innerText = "Filter:";
+    filterOptionReset.innerText = "Reset filter";
+    filterOptionLactoseYes.innerText = "With lactose";
+    filterOptionLactoseNo.innerText = "Lactose free";
+    filterSelect.append(
+      filterOptionReset,
+      filterOptionLactoseYes,
+      filterOptionLactoseNo,
+    );
+    filterWrapper.append(filterTitle, filterSelect);
+
+    const sortWrapper: HTMLElement = document.createElement("div");
+    const sortTitle: HTMLElement = document.createElement("p");
+    const sortSelect: HTMLSelectElement = document.createElement("select");
+    const sortOptionReset: HTMLOptionElement = document.createElement("option");
+    const sortOptionAlphabetically: HTMLOptionElement =
+      document.createElement("option");
+    const sortOptionPriceAscending: HTMLOptionElement =
+      document.createElement("option");
+    const sortOptionPriceDescending: HTMLOptionElement =
+      document.createElement("option");
+    sortWrapper.classList.add("catalog__sort-wrapper");
+    sortTitle.classList.add("catalog__sort-title");
+    sortSelect.classList.add("catalog__sort-select");
+    sortOptionReset.classList.add("catalog__sort-reset");
+    sortOptionAlphabetically.classList.add("catalog__sort-alphabetically");
+    sortOptionPriceAscending.classList.add("catalog__sort-ascending");
+    sortOptionPriceDescending.classList.add("catalog__sort-descending");
+    sortTitle.innerText = "Sort:";
+    sortOptionReset.innerText = "Reset sort";
+    sortOptionAlphabetically.innerText = "A-Z";
+    sortOptionPriceAscending.innerText = "Price ascending";
+    sortOptionPriceDescending.innerText = "Price descending";
+    sortSelect.append(
+      sortOptionReset,
+      sortOptionAlphabetically,
+      sortOptionPriceAscending,
+      sortOptionPriceDescending,
+    );
+    sortWrapper.append(sortTitle, sortSelect);
+    menuWrapper.append(searchWrapper, filterWrapper, sortWrapper);
+    mainWrapper.append(
+      caption,
+      navigationWrapper,
+      categoriesWrapper,
+      menuWrapper,
+      productWrapper,
+    );
+
+    const indexCategories: number = 9;
+    localStorage.setItem("indexCategories", `${indexCategories}`);
+    const cardProducts: ProductProjection[] = (
+      await this.products.getProducts(
+        (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+      )
+    ).body.results;
+    this.addCardProductsToPage(cardProducts, productWrapper);
+    this.clickNavigation(
+      navigationWrapper,
+      productWrapper,
+      optionSushi,
+      optionDesserts,
+      optionDrinks,
+      optionDrinksReset,
+      optionDessertsReset,
+      optionSushiReset,
+      navigationCategories,
+      navigationSubcategories,
+      sortOptionReset,
+      filterOptionReset,
+      inputSearch,
+    );
+    this.changeFilter(
+      filterSelect,
+      productWrapper,
+      sortOptionReset,
+      inputSearch,
+    );
+    this.changeSort(sortSelect, productWrapper, filterOptionReset, inputSearch);
+    this.clickSearch(btnSearch, closeSearch, productWrapper, inputSearch);
+    this.changeCategories(
+      productWrapper,
+      sushiSelectElement,
+      dessertSelectElement,
+      drinksSelectElement,
+      optionDrinksReset,
+      optionDessertsReset,
+      optionSushiReset,
+      navigationCategories,
+      navigationSubcategories,
+      sortOptionReset,
+      filterOptionReset,
+      inputSearch,
+    );
+    return mainWrapper;
+  }
+
+  addCardProductsToPage(
+    cardProducts: ProductProjection[],
+    productWrapper: HTMLDivElement,
+  ): void {
+    cardProducts.forEach((product) => {
+      const productCard = this.createCardProduct(product);
+      productWrapper.append(productCard);
+      this.events.clickProductCard(productCard);
+    });
+  }
+
+  clickNavigation(
+    navigationWrapper: HTMLUListElement,
+    productWrapper: HTMLDivElement,
+    optionSushi: HTMLOptionElement,
+    optionDesserts: HTMLOptionElement,
+    optionDrinks: HTMLOptionElement,
+    optionDrinksReset: HTMLOptionElement,
+    optionDessertsReset: HTMLOptionElement,
+    optionSushiReset: HTMLOptionElement,
+    navigationCategories: HTMLLIElement,
+    navigationSubcategories: HTMLLIElement,
+    sortOptionReset: HTMLOptionElement,
+    filterOptionReset: HTMLOptionElement,
+    inputSearch: HTMLInputElement,
+  ): void {
+    navigationWrapper.addEventListener("click", async (event) => {
+      inputSearch.value = "";
+      sortOptionReset.selected = true;
+      filterOptionReset.selected = true;
+      const currentElement: HTMLElement = event.target as HTMLElement;
+      if (currentElement.textContent === "Catalog") {
+        const indexCategories: number = 9;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        productWrapper.innerHTML = "";
+        optionDrinksReset.selected = true;
+        optionDessertsReset.selected = true;
+        optionSushiReset.selected = true;
+        navigationCategories.textContent = "";
+        navigationSubcategories.textContent = "";
+        const cardProductsAll: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsAll, productWrapper);
+      }
+      if (currentElement.textContent === "/ Sushi") {
+        const indexCategories: number = 0;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        productWrapper.innerHTML = "";
+        optionSushi.selected = true;
+        navigationSubcategories.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (currentElement.textContent === "/ Desserts") {
+        const indexCategories: number = 1;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        productWrapper.innerHTML = "";
+        optionDesserts.selected = true;
+        navigationSubcategories.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (currentElement.textContent === "/ Drinks") {
+        const indexCategories: number = 2;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        productWrapper.innerHTML = "";
+        optionDrinks.selected = true;
+        navigationSubcategories.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+    });
+  }
+
+  changeFilter(
+    filterSelect: HTMLSelectElement,
+    productWrapper: HTMLDivElement,
+    sortOptionReset: HTMLOptionElement,
+    inputSearch: HTMLInputElement,
+  ): void {
+    filterSelect?.addEventListener("change", async () => {
+      const indexCategories: number = Number(
+        localStorage.getItem("indexCategories"),
+      ) as number;
+      productWrapper.innerHTML = "";
+      inputSearch.value = "";
+      const filterItem: HTMLOptionElement =
+        filterSelect.options[filterSelect.selectedIndex];
+      sortOptionReset.selected = true;
+      if (filterItem.text === "Reset filter") {
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
+      }
+      if (filterItem.text === "With lactose") {
+        const cardProductsFilterLactoseYes: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories))
+              .filterLactoseYes,
+          )
+        ).body.results;
+        this.addCardProductsToPage(
+          cardProductsFilterLactoseYes,
+          productWrapper,
+        );
+      }
+      if (filterItem.text === "Lactose free") {
+        const cardProductsFilterLactoseNo: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories))
+              .filterLactoseNo,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterLactoseNo, productWrapper);
+      }
+    });
+  }
+
+  changeSort(
+    sortSelect: HTMLSelectElement,
+    productWrapper: HTMLDivElement,
+    filterOptionReset: HTMLOptionElement,
+    inputSearch: HTMLInputElement,
+  ): void {
+    sortSelect?.addEventListener("change", async () => {
+      const indexCategories: number = Number(
+        localStorage.getItem("indexCategories"),
+      ) as number;
+      inputSearch.value = "";
+      productWrapper.innerHTML = "";
+      const sortItem: HTMLOptionElement =
+        sortSelect.options[sortSelect.selectedIndex];
+      filterOptionReset.selected = true;
+      if (sortItem.text === "Reset sort") {
+        const cardProductsSortReset: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsSortReset, productWrapper);
+      }
+      if (sortItem.text === "A-Z") {
+        const cardProductsSortAz: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories))
+              .sortAlphabetically,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsSortAz, productWrapper);
+      }
+      if (sortItem.text === "Price ascending") {
+        const cardProductsSortAz: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).sortAscending,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsSortAz, productWrapper);
+      }
+      if (sortItem.text === "Price descending") {
+        const cardProductsSortAz: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).sortDescending,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsSortAz, productWrapper);
+      }
+    });
+  }
+
+  clickSearch(
+    btnSearch: HTMLButtonElement,
+    closeSearch: HTMLDivElement,
+    productWrapper: HTMLDivElement,
+    inputSearch: HTMLInputElement,
+  ): void {
+    btnSearch?.addEventListener("click", async () => {
+      const indexCategories: number = Number(
+        localStorage.getItem("indexCategories"),
+      ) as number;
+      productWrapper.innerHTML = "";
+      const inputValue = inputSearch.value;
+      const cardSearch: ProductProjection[] = (
+        await this.products.getProducts(
+          (await this.queryArgs.getQueryArgs(indexCategories, inputValue))
+            .searchText,
+        )
+      ).body.results;
+      this.addCardProductsToPage(cardSearch, productWrapper);
+    });
+
+    closeSearch?.addEventListener("click", async () => {
+      const indexCategories: number = Number(
+        localStorage.getItem("indexCategories"),
+      ) as number;
+      productWrapper.innerHTML = "";
+      inputSearch.value = "";
+      const cardProductsCloseSearch: ProductProjection[] = (
+        await this.products.getProducts(
+          (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+        )
+      ).body.results;
+      this.addCardProductsToPage(cardProductsCloseSearch, productWrapper);
+    });
+  }
+
+  changeCategories(
+    productWrapper: HTMLDivElement,
+    sushiSelectElement: HTMLSelectElement,
+    dessertSelectElement: HTMLSelectElement,
+    drinksSelectElement: HTMLSelectElement,
+    optionDrinksReset: HTMLOptionElement,
+    optionDessertsReset: HTMLOptionElement,
+    optionSushiReset: HTMLOptionElement,
+    navigationCategories: HTMLLIElement,
+    navigationSubcategories: HTMLLIElement,
+    sortOptionReset: HTMLOptionElement,
+    filterOptionReset: HTMLOptionElement,
+    inputSearch: HTMLInputElement,
+  ): void {
+    sushiSelectElement?.addEventListener("change", async () => {
+      inputSearch.value = "";
+      optionDrinksReset.selected = true;
+      optionDessertsReset.selected = true;
+      sortOptionReset.selected = true;
+      filterOptionReset.selected = true;
+      productWrapper.innerHTML = "";
+      const categoriesSushiItem =
+        sushiSelectElement.options[sushiSelectElement.selectedIndex];
+      if (categoriesSushiItem.text === "") {
+        const indexCategories: number = 9;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "";
+        navigationSubcategories.textContent = "";
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
+      }
+      if (categoriesSushiItem.text === "Sushi") {
+        const indexCategories: number = 0;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Sushi";
+        navigationSubcategories.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (categoriesSushiItem.text === " > Roll") {
+        const indexCategories: number = 8;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Sushi";
+        navigationSubcategories.textContent = "/ Roll";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (categoriesSushiItem.text === " > Set") {
+        const indexCategories: number = 3;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Sushi";
+        navigationSubcategories.textContent = "/ Set";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+    });
+    dessertSelectElement?.addEventListener("change", async () => {
+      inputSearch.value = "";
+      productWrapper.innerHTML = "";
+      optionDrinksReset.selected = true;
+      optionSushiReset.selected = true;
+      sortOptionReset.selected = true;
+      filterOptionReset.selected = true;
+      const categoriesDessertsItem =
+        dessertSelectElement.options[dessertSelectElement.selectedIndex];
+      if (categoriesDessertsItem.text === "") {
+        const indexCategories: number = 9;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "";
+        navigationSubcategories.textContent = "";
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
+      }
+      if (categoriesDessertsItem.text === "Desserts") {
+        const indexCategories: number = 1;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Desserts";
+        navigationSubcategories.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (categoriesDessertsItem.text === " > Healthy food") {
+        const indexCategories: number = 6;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Desserts";
+        navigationSubcategories.textContent = "/ Healthy food";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (categoriesDessertsItem.text === " > Usual dessert") {
+        const indexCategories: number = 7;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Desserts";
+        navigationSubcategories.textContent = "/ Usual dessert";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+    });
+    drinksSelectElement?.addEventListener("change", async () => {
+      inputSearch.value = "";
+      productWrapper.innerHTML = "";
+      optionDessertsReset.selected = true;
+      optionSushiReset.selected = true;
+      sortOptionReset.selected = true;
+      filterOptionReset.selected = true;
+      const categoriesDrinksItem =
+        drinksSelectElement.options[drinksSelectElement.selectedIndex];
+      if (categoriesDrinksItem.text === "") {
+        const indexCategories: number = 9;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "";
+        navigationSubcategories.textContent = "";
+        const cardProductsFilterAll: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
+      }
+      if (categoriesDrinksItem.text === "Drinks") {
+        const indexCategories: number = 2;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Drinks";
+        navigationSubcategories.textContent = "";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (categoriesDrinksItem.text === " > Soft drinks") {
+        const indexCategories: number = 4;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Drinks";
+        navigationSubcategories.textContent = "/ Soft drinks";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      if (categoriesDrinksItem.text === " > Hot drinks") {
+        const indexCategories: number = 5;
+        localStorage.setItem("indexCategories", `${indexCategories}`);
+        navigationCategories.textContent = "/ Drinks";
+        navigationSubcategories.textContent = "/ Hot drinks";
+        const cardCategories: ProductProjection[] = (
+          await this.products.getProducts(
+            (await this.queryArgs.getQueryArgsCategories(indexCategories))
+              .categoriesSushi,
+          )
+        ).body.results;
+        this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+    });
   }
 
   createCardProduct(product: ProductProjection): HTMLElement {
