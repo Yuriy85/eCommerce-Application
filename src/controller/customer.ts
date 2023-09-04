@@ -195,7 +195,7 @@ class Customer {
     dateOfBirth: string,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
-    const customer = apiRoot
+    apiRoot
       .customers()
       .withId({ ID: id })
       .post({
@@ -222,8 +222,26 @@ class Customer {
         },
       })
       .execute();
-    console.log(customer);
-    return customer;
+  }
+  updateCustomerPassword(
+    version: number,
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    apiRoot
+      .customers()
+      .password()
+      .post({
+        body: {
+          id: id,
+          version: version,
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        },
+      })
+      .execute();
   }
 }
 export default Customer;

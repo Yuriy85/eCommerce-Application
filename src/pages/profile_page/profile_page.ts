@@ -2,6 +2,8 @@ import Customer from "../../controller/customer";
 import "./profile_page.scss";
 // import "../../controller/events";
 import Events from "../../controller/events";
+import { Address } from "@commercetools/platform-sdk";
+import { pagePaths } from "../../routes/routes";
 
 class ProfilePage {
   customer: Customer;
@@ -14,7 +16,9 @@ class ProfilePage {
     const customerId: string = localStorage
       .getItem("id")
       ?.slice(1, -1) as string;
-    const customer = await this.customer.getCustomerObject(customerId);
+    const customerFromServer = await this.customer.getCustomerObject(
+      customerId,
+    );
 
     const mainWrapper: HTMLElement = document.createElement("div");
 
@@ -33,7 +37,7 @@ class ProfilePage {
 
     const firstName: HTMLInputElement = document.createElement("input");
     firstName.classList.add("profile__first-name");
-    firstName.value = customer.body.firstName as string;
+    firstName.value = customerFromServer.body.firstName as string;
     firstName.disabled = true;
 
     const firstNameEditError: HTMLElement = document.createElement("span");
@@ -50,7 +54,7 @@ class ProfilePage {
 
     const lastName: HTMLInputElement = document.createElement("input");
     lastName.classList.add("profile__last-name");
-    lastName.value = customer.body.lastName as string;
+    lastName.value = customerFromServer.body.lastName as string;
     lastName.disabled = true;
 
     const lastNameEditError: HTMLElement = document.createElement("span");
@@ -68,7 +72,7 @@ class ProfilePage {
     const birthDate: HTMLInputElement = document.createElement("input");
     birthDate.classList.add("profile__birth-date");
     birthDate.setAttribute("type", "date");
-    birthDate.value = customer.body.dateOfBirth as string;
+    birthDate.value = customerFromServer.body.dateOfBirth as string;
     birthDate.disabled = true;
 
     const birthDateEditError: HTMLElement = document.createElement("span");
@@ -85,7 +89,7 @@ class ProfilePage {
 
     const email: HTMLInputElement = document.createElement("input");
     email.classList.add("profile__email");
-    email.value = customer.body.email;
+    email.value = customerFromServer.body.email;
     email.disabled = true;
 
     const emailEditError: HTMLElement = document.createElement("span");
@@ -93,236 +97,53 @@ class ProfilePage {
 
     wrapperEmail.append(titleEmail, email, emailEditError);
 
+    // change password
+    const wrapperChangePassword: HTMLElement = document.createElement("div");
+    wrapperChangePassword.classList.add("profile__wrapper-change-password");
+
+    const titleChangePassword: HTMLElement = document.createElement("h4");
+    titleChangePassword.classList.add("profile__title-change-password");
+    titleChangePassword.innerText = "Change password:";
+
+    const pendingPassword: HTMLInputElement = document.createElement("input");
+    pendingPassword.classList.add("profile__pending-password");
+    pendingPassword.placeholder = "pending password";
+
+    const newPassword: HTMLInputElement = document.createElement("input");
+    newPassword.classList.add("profile__new-password");
+    newPassword.placeholder = "new password";
+
+    const passwordEditError: HTMLElement = document.createElement("span");
+    passwordEditError.classList.add("profile__password-error");
+
+    const savePasswordButton: HTMLButtonElement =
+      document.createElement("button");
+    savePasswordButton.classList.add("profile__save-password-button");
+    savePasswordButton.innerText = "Save new password";
+    wrapperChangePassword.append(
+      titleChangePassword,
+      pendingPassword,
+      newPassword,
+      passwordEditError,
+      savePasswordButton,
+    );
+
+    // change password end
+
     const wrapperAddresses: HTMLElement = document.createElement("div");
     wrapperAddresses.classList.add("profile__wrapper-addresses");
 
-    // Billing addresses
-
-    const wrapperBillingAddress: HTMLElement = document.createElement("div");
-    wrapperBillingAddress.classList.add("profile__wrapper-billing-address");
-
-    const titleBillingAddress: HTMLElement = document.createElement("h3");
-    titleBillingAddress.classList.add("profile__title-billing-address");
-    titleBillingAddress.innerText = "Billing address";
-
-    const wrapperBillingCountry: HTMLElement = document.createElement("div");
-    wrapperBillingCountry.classList.add("profile__wrapper-billing-country");
-
-    const titleBillingCountry: HTMLElement = document.createElement("h4");
-    titleBillingCountry.classList.add("profile__title-billing-country");
-    titleBillingCountry.innerText = "Country:";
-
-    const billingCountry: HTMLInputElement = document.createElement("input");
-    billingCountry.classList.add("profile__billing-country");
-    billingCountry.value =
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].country
-        : customer.body.addresses[0].country;
-    billingCountry.disabled = true;
-
-    wrapperBillingCountry.append(titleBillingCountry, billingCountry);
-
-    const wrapperBillingCity: HTMLElement = document.createElement("div");
-    wrapperBillingCity.classList.add("profile__wrapper-billing-city");
-
-    const titleBillingCity: HTMLElement = document.createElement("h4");
-    titleBillingCity.classList.add("profile__title-billing-city");
-    titleBillingCity.innerText = "City:";
-
-    const billingCity: HTMLInputElement = document.createElement("input");
-    billingCity.classList.add("profile__billing-city");
-    billingCity.value = (
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].city
-        : customer.body.addresses[0].city
-    ) as string;
-    billingCity.disabled = true;
-
-    wrapperBillingCity.append(titleBillingCity, billingCity);
-
-    const wrapperBillingPostcode: HTMLElement = document.createElement("div");
-    wrapperBillingPostcode.classList.add("profile__wrapper-billing-postcode");
-
-    const titleBillingPostcode: HTMLElement = document.createElement("h4");
-    titleBillingPostcode.classList.add("profile__title-billing-postcode");
-    titleBillingPostcode.innerText = "Postcode:";
-
-    const billingPostcode: HTMLInputElement = document.createElement("input");
-    billingPostcode.classList.add("profile__billing-postcode");
-    billingPostcode.value = (
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].postalCode
-        : customer.body.addresses[0].postalCode
-    ) as string;
-    billingPostcode.disabled = true;
-
-    wrapperBillingPostcode.append(titleBillingPostcode, billingPostcode);
-
-    const wrapperBillingStreet: HTMLElement = document.createElement("div");
-    wrapperBillingStreet.classList.add("profile__wrapper-billing-street");
-
-    const titleBillingStreet: HTMLElement = document.createElement("h4");
-    titleBillingStreet.classList.add("profile__title-billing-Street");
-    titleBillingStreet.innerText = "Street:";
-
-    const billingStreet: HTMLInputElement = document.createElement("input");
-    billingStreet.classList.add("profile__billing-street");
-    billingStreet.value = (
-      customer.body.addresses.length > 1
-        ? customer.body.addresses[1].streetName
-        : customer.body.addresses[0].streetName
-    ) as string;
-    billingStreet.disabled = true;
-
-    wrapperBillingStreet.append(titleBillingStreet, billingStreet);
-
-    const wrapperDefaultBillingAddress: HTMLElement =
-      document.createElement("div");
-    wrapperDefaultBillingAddress.classList.add(
-      "profile__wrapper-default-billing-address",
+    customerFromServer.body.addresses.forEach((address) =>
+      wrapperAddresses.append(
+        this.createAddressCard(
+          address,
+          customerFromServer.body.billingAddressIds,
+          customerFromServer.body.shippingAddressIds,
+          customerFromServer.body.defaultBillingAddressId,
+          customerFromServer.body.defaultShippingAddressId,
+        ),
+      ),
     );
-
-    const titleDefaultBillingAddress: HTMLElement =
-      document.createElement("h4");
-    titleDefaultBillingAddress.classList.add(
-      "profile__title-default-billing-address",
-    );
-    titleDefaultBillingAddress.innerText = "Default:";
-
-    const labelDefaultBillingAddress: HTMLInputElement =
-      document.createElement("input");
-    labelDefaultBillingAddress.setAttribute("type", "checkbox");
-    labelDefaultBillingAddress.classList.add(
-      "profile__label-default-billing-address",
-    );
-    customer.body.defaultBillingAddressId
-      ? (labelDefaultBillingAddress.checked = true)
-      : null;
-    labelDefaultBillingAddress.disabled = true;
-
-    wrapperDefaultBillingAddress.append(
-      titleDefaultBillingAddress,
-      labelDefaultBillingAddress,
-    );
-
-    wrapperBillingAddress.append(
-      titleBillingAddress,
-      wrapperBillingCountry,
-      wrapperBillingCity,
-      wrapperBillingPostcode,
-      wrapperBillingStreet,
-      wrapperDefaultBillingAddress,
-    );
-
-    // Shipping address
-
-    const wrapperShippingAddress: HTMLElement = document.createElement("div");
-    wrapperShippingAddress.classList.add("profile__wrapper-shipping-address");
-
-    const titleShippingAddress: HTMLElement = document.createElement("h3");
-    titleShippingAddress.classList.add("profile__title-shipping-address");
-    titleShippingAddress.innerText = "Shipping address";
-
-    const wrapperShippingCountry: HTMLElement = document.createElement("div");
-    wrapperShippingCountry.classList.add("profile__wrapper-shipping-country");
-
-    const titleShippingCountry: HTMLElement = document.createElement("h4");
-    titleShippingCountry.classList.add("profile__title-shipping-country");
-    titleShippingCountry.innerText = "Country:";
-
-    const shippingCountry: HTMLInputElement = document.createElement("input");
-    shippingCountry.classList.add("profile__shipping-country");
-    shippingCountry.value = customer.body.addresses[0].country;
-
-    shippingCountry.disabled = true;
-
-    wrapperShippingCountry.append(titleShippingCountry, shippingCountry);
-
-    const wrapperShippingCity: HTMLElement = document.createElement("div");
-    wrapperShippingCity.classList.add("profile__wrapper-shipping-city");
-
-    const titleShippingCity: HTMLElement = document.createElement("h4");
-    titleShippingCity.classList.add("profile__title-shipping-city");
-    titleShippingCity.innerText = "City:";
-
-    const shippingCity: HTMLInputElement = document.createElement("input");
-    shippingCity.classList.add("profile__shipping-city");
-    shippingCity.value = customer.body.addresses[0].city as string;
-
-    shippingCity.disabled = true;
-
-    wrapperShippingCity.append(titleShippingCity, shippingCity);
-
-    const wrapperShippingPostcode: HTMLElement = document.createElement("div");
-    wrapperShippingPostcode.classList.add("profile__wrapper-shipping-postcode");
-
-    const titleShippingPostcode: HTMLElement = document.createElement("h4");
-    titleShippingPostcode.classList.add("profile__title-shipping-postcode");
-    titleShippingPostcode.innerText = "Postcode:";
-
-    const shippingPostcode: HTMLInputElement = document.createElement("input");
-    shippingPostcode.classList.add("profile__shipping-postcode");
-    shippingPostcode.value = customer.body.addresses[0].postalCode as string;
-
-    shippingPostcode.disabled = true;
-
-    wrapperShippingPostcode.append(titleShippingPostcode, shippingPostcode);
-
-    const wrapperShippingStreet: HTMLElement = document.createElement("div");
-    wrapperShippingStreet.classList.add("profile__wrapper-shipping-street");
-
-    const titleShippingStreet: HTMLElement = document.createElement("h4");
-    titleShippingStreet.classList.add("profile__title-shipping-Street");
-    titleShippingStreet.innerText = "Street:";
-
-    const shippingStreet: HTMLInputElement = document.createElement("input");
-    shippingStreet.classList.add("profile__shipping-street");
-    shippingStreet.value = customer.body.addresses[0].streetName as string;
-
-    shippingStreet.disabled = true;
-
-    wrapperShippingStreet.append(titleShippingStreet, shippingStreet);
-
-    const wrapperDefaultShippingAddress: HTMLElement =
-      document.createElement("div");
-    wrapperDefaultShippingAddress.classList.add(
-      "profile__wrapper-default-shipping-address",
-    );
-
-    const titleDefaultShippingAddress: HTMLElement =
-      document.createElement("h4");
-    titleDefaultShippingAddress.classList.add(
-      "profile__title-default-shipping-address",
-    );
-    titleDefaultShippingAddress.innerText = "Default:";
-
-    const labelDefaultShippingAddress: HTMLInputElement =
-      document.createElement("input");
-    labelDefaultShippingAddress.setAttribute("type", "checkbox");
-    labelDefaultShippingAddress.classList.add(
-      "profile__label-default-shipping-address",
-    );
-    customer.body.defaultShippingAddressId
-      ? (labelDefaultShippingAddress.checked = true)
-      : null;
-    labelDefaultShippingAddress.disabled = true;
-
-    wrapperDefaultShippingAddress.append(
-      titleDefaultShippingAddress,
-      labelDefaultShippingAddress,
-    );
-
-    wrapperShippingAddress.append(
-      titleShippingAddress,
-      wrapperShippingCountry,
-      wrapperShippingCity,
-      wrapperShippingPostcode,
-      wrapperShippingStreet,
-      wrapperDefaultShippingAddress,
-    );
-
-    wrapperAddresses.append(wrapperBillingAddress, wrapperShippingAddress);
-
     const wrapperEditSaveButtons: HTMLElement = document.createElement("div");
     wrapperEditSaveButtons.classList.add("profile__wrapper-edit-save");
 
@@ -346,24 +167,21 @@ class ProfilePage {
       wrapperLastName,
       wrapperBirthDate,
       wrapperEmail,
-      wrapperAddresses,
       wrapperEditSaveButtons,
+      wrapperChangePassword,
+      wrapperAddresses,
     );
     const disabledInputs: HTMLInputElement[] = [
       firstName,
       lastName,
       birthDate,
       email,
-      billingCountry,
-      billingCity,
-      billingPostcode,
-      billingStreet,
-      shippingCountry,
-      shippingCity,
-      shippingPostcode,
-      shippingStreet,
-      labelDefaultBillingAddress,
-      labelDefaultShippingAddress,
+    ];
+    const fieldsWrappers: HTMLSpanElement[] = [
+      firstNameEditError,
+      lastNameEditError,
+      birthDateEditError,
+      emailEditError,
     ];
 
     this.clickButtonEdit(editButton, disabledInputs);
@@ -373,19 +191,201 @@ class ProfilePage {
       firstName,
       disabledInputs,
       customerId,
-      customer.body.version,
+      customerFromServer.body.version,
       email,
       firstName,
       lastName,
       birthDate,
+      fieldsWrappers,
     );
 
     this.events.inputFilling(firstName, firstNameEditError, "name");
     this.events.inputFilling(lastName, lastNameEditError, "surname");
     this.events.inputFilling(birthDate, birthDateEditError, "date");
     this.events.inputFilling(email, emailEditError, "email");
+    this.events.inputFilling(newPassword, passwordEditError, "password");
 
     return mainWrapper;
+  }
+
+  createAddressCard(
+    address: Address,
+    billingAddressIds?: string[],
+    shippingAddressIds?: string[],
+    defaultBillingAddressId?: string,
+    defaultShippingAddressId?: string,
+  ): HTMLElement {
+    const wrapperBillingAddress: HTMLElement = document.createElement("div");
+    wrapperBillingAddress.classList.add("profile__wrapper-billing-address");
+
+    const titleBillingAddress: HTMLElement = document.createElement("h3");
+    titleBillingAddress.classList.add("profile__title-billing-address");
+    titleBillingAddress.innerText = "Address";
+
+    const wrapperBillingCountry: HTMLElement = document.createElement("div");
+    wrapperBillingCountry.classList.add("profile__wrapper-billing-country");
+
+    const titleBillingCountry: HTMLElement = document.createElement("h4");
+    titleBillingCountry.classList.add("profile__title-billing-country");
+    titleBillingCountry.innerText = "Country:";
+
+    const billingCountry: HTMLInputElement = document.createElement("input");
+    billingCountry.classList.add("profile__billing-country");
+    billingCountry.value = address.country === "IT" ? "Italy" : "Belarus";
+    billingCountry.disabled = true;
+
+    wrapperBillingCountry.append(titleBillingCountry, billingCountry);
+
+    const wrapperBillingCity: HTMLElement = document.createElement("div");
+    wrapperBillingCity.classList.add("profile__wrapper-billing-city");
+
+    const titleBillingCity: HTMLElement = document.createElement("h4");
+    titleBillingCity.classList.add("profile__title-billing-city");
+    titleBillingCity.innerText = "City:";
+
+    const billingCity: HTMLInputElement = document.createElement("input");
+    billingCity.classList.add("profile__billing-city");
+    billingCity.value = address.city as string;
+    billingCity.disabled = true;
+
+    wrapperBillingCity.append(titleBillingCity, billingCity);
+
+    const wrapperBillingPostcode: HTMLElement = document.createElement("div");
+    wrapperBillingPostcode.classList.add("profile__wrapper-billing-postcode");
+
+    const titleBillingPostcode: HTMLElement = document.createElement("h4");
+    titleBillingPostcode.classList.add("profile__title-billing-postcode");
+    titleBillingPostcode.innerText = "Postcode:";
+
+    const billingPostcode: HTMLInputElement = document.createElement("input");
+    billingPostcode.classList.add("profile__billing-postcode");
+    billingPostcode.value = address.postalCode as string;
+    billingPostcode.disabled = true;
+
+    wrapperBillingPostcode.append(titleBillingPostcode, billingPostcode);
+
+    const wrapperBillingStreet: HTMLElement = document.createElement("div");
+    wrapperBillingStreet.classList.add("profile__wrapper-billing-street");
+
+    const titleBillingStreet: HTMLElement = document.createElement("h4");
+    titleBillingStreet.classList.add("profile__title-billing-Street");
+    titleBillingStreet.innerText = "Street:";
+
+    const billingStreet: HTMLInputElement = document.createElement("input");
+    billingStreet.classList.add("profile__billing-street");
+    billingStreet.value = address.streetName as string;
+    billingStreet.disabled = true;
+
+    wrapperBillingStreet.append(titleBillingStreet, billingStreet);
+
+    const wrapperBillingAddressType: HTMLElement =
+      document.createElement("div");
+    wrapperBillingAddressType.classList.add(
+      "profile__wrapper-billing-address-type",
+    );
+
+    const titleBillingAddressType: HTMLElement = document.createElement("h4");
+    titleBillingAddressType.classList.add(
+      "profile__title-billing-address-type",
+    );
+    titleBillingAddressType.innerText = "Billing:";
+
+    const labelBillingAddressType: HTMLInputElement =
+      document.createElement("input");
+    labelBillingAddressType.setAttribute("type", "checkbox");
+    labelBillingAddressType.classList.add(
+      "profile__label-billing-address-type",
+    );
+
+    labelBillingAddressType.disabled = true;
+
+    wrapperBillingAddressType.append(
+      titleBillingAddressType,
+      labelBillingAddressType,
+    );
+
+    wrapperBillingStreet.append(titleBillingStreet, billingStreet);
+
+    const wrapperShippingAddressType: HTMLElement =
+      document.createElement("div");
+    wrapperShippingAddressType.classList.add(
+      "profile__wrapper-billing-address-type",
+    );
+
+    const titleShippingAddressType: HTMLElement = document.createElement("h4");
+    titleShippingAddressType.classList.add(
+      "profile__title-billing-address-type",
+    );
+    titleShippingAddressType.innerText = "Shipping:";
+
+    const labelShippingAddressType: HTMLInputElement =
+      document.createElement("input");
+    labelShippingAddressType.setAttribute("type", "checkbox");
+    labelShippingAddressType.classList.add(
+      "profile__label-billing-address-type",
+    );
+
+    labelShippingAddressType.disabled = true;
+
+    wrapperShippingAddressType.append(
+      titleShippingAddressType,
+      labelShippingAddressType,
+    );
+
+    const wrapperDefaultBillingAddress: HTMLElement =
+      document.createElement("div");
+    wrapperDefaultBillingAddress.classList.add(
+      "profile__wrapper-default-billing-address",
+    );
+
+    const titleDefaultBillingAddress: HTMLElement =
+      document.createElement("h4");
+    titleDefaultBillingAddress.classList.add(
+      "profile__title-default-billing-address",
+    );
+    titleDefaultBillingAddress.innerText = "Default:";
+
+    const labelDefaultBillingAddress: HTMLInputElement =
+      document.createElement("input");
+    labelDefaultBillingAddress.setAttribute("type", "checkbox");
+    labelDefaultBillingAddress.classList.add(
+      "profile__label-default-billing-address",
+    );
+
+    labelDefaultBillingAddress.disabled = true;
+
+    wrapperDefaultBillingAddress.append(
+      titleDefaultBillingAddress,
+      labelDefaultBillingAddress,
+    );
+
+    if (
+      defaultBillingAddressId === address.id ||
+      defaultShippingAddressId === address.id
+    ) {
+      labelDefaultBillingAddress.checked = true;
+    }
+
+    if (billingAddressIds?.includes(address.id as string)) {
+      labelBillingAddressType.checked = true;
+    }
+
+    if (shippingAddressIds?.includes(address.id as string)) {
+      labelShippingAddressType.checked = true;
+    }
+
+    wrapperBillingAddress.append(
+      titleBillingAddress,
+      wrapperBillingCountry,
+      wrapperBillingCity,
+      wrapperBillingPostcode,
+      wrapperBillingStreet,
+      wrapperBillingAddressType,
+      wrapperShippingAddressType,
+      wrapperDefaultBillingAddress,
+    );
+
+    return wrapperBillingAddress;
   }
 
   clickButtonEdit(button: HTMLButtonElement, fieldsArray: HTMLInputElement[]) {
@@ -410,9 +410,16 @@ class ProfilePage {
     firstName: HTMLInputElement,
     lastName: HTMLInputElement,
     dateOfBirth: HTMLInputElement,
+    fieldsWrappers: HTMLSpanElement[],
   ) {
     button.addEventListener("click", () => {
-      if (field.disabled === false) {
+      let isError = false;
+      fieldsWrappers.forEach((span) => {
+        if (span.innerText) {
+          isError = true;
+        }
+      });
+      if (field.disabled === false && !isError) {
         this.customer.updateCustomer(
           customerId,
           version,
@@ -428,6 +435,7 @@ class ProfilePage {
         message.style.scale = "1";
         setTimeout(() => {
           message.style.scale = "0";
+          window.location.href = pagePaths.profilePath;
         }, 2000);
       }
     });
