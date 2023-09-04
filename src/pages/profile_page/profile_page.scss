@@ -9,23 +9,23 @@
   align-items: center;
 }
 .profile__wrapper-addresses {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 40rem;
-    column-gap: 4rem;
-    margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 40rem;
 }
 .profile__title-billing-address,
 .profile__title-shipping-address {
-    text-align: center;
-    margin-bottom: 0;
+  margin: 10px;
+  text-align: center;
 }
 
 .profile__first-name,
 .profile__last-name,
 .profile__birth-date,
 .profile__email,
+.profile__pending-password,
+.profile__new-password,
 .profile__billing-country,
 .profile__billing-city,
 .profile__billing-postcode,
@@ -34,31 +34,32 @@
 .profile__shipping-city,
 .profile__shipping-postcode,
 .profile__shipping-street,
-// .profile__edit-button,
-// .profile__save-button,
 .profile__data-profile-saved {
-    margin: 20px 0 0 0;
-    padding: 0 10px;
-    border: 0;
-    border-bottom: 1px solid rgb(0, 0, 0);
-    border-radius: 10px;
-    height: 30px;
-    opacity: .6;
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid rgb(0, 0, 0);
+  border-radius: 10px;
+  height: 30px;
+  opacity: 0.6;
+}
+.profile__data-profile-saved {
+margin-top: .5rem;
 }
 .profile__edit-button,
 .profile__save-button {
-    opacity: 1;
-    margin: 20px 0 0 0;
-
+  opacity: 1;
+  margin: 20px 0 0 0;
 }
 .profile__email {
-    width: 17rem;
-    text-align: center;
+  width: 17rem;
+  text-align: center;
 }
 .profile__title-first-name,
 .profile__title-last-name,
 .profile__title-birth-date,
 .profile__title-email,
+.profile__title-change-password,
 .profile__title-billing-country,
 .profile__title-billing-city,
 .profile__title-billing-postcode,
@@ -68,13 +69,16 @@
 .profile__title-shipping-postcode,
 .profile__title-shipping-street,
 .profile__title-default-billing-address,
-.profile__title-default-shipping-address {
-    margin-bottom: 0;
+.profile__title-default-shipping-address,
+.profile__title-billing-Street,
+.profile__title-billing-address-type {
+  margin: 0;
 }
 .profile__wrapper-first-name,
 .profile__wrapper-last-name,
 .profile__wrapper-birth-date,
 .profile__wrapper-email,
+.profile__wrapper-change-password,
 .profile__wrapper-billing-country,
 .profile__wrapper-billing-city,
 .profile__wrapper-billing-postcode,
@@ -85,56 +89,76 @@
 .profile__wrapper-shipping-street,
 .profile__wrapper-default-billing-address,
 .profile__wrapper-default-shipping-address,
-.profile__wrapper-edit-save {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 1rem;
-    width: 100%;
-    max-width: 22rem;
-    justify-content: space-between;
+.profile__wrapper-edit-save,
+.profile__wrapper-billing-address-type {
+  margin: 5px 0 5px 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  width: 100%;
+  max-width: 22rem;
+  justify-content: space-between;
 }
 .profile__wrapper-birth-date {
+  justify-content: center;
+}
+.profile__wrapper-change-password {
+    max-width: 35rem;
+    align-items: center;
+    row-gap: 1rem;
+    margin-bottom: 2rem;
     justify-content: center;
 }
 .profile__wrapper-default-billing-address,
-.profile__wrapper-default-shipping-address {
-    justify-content: flex-end;
-    align-items: baseline;
-    column-gap: 2rem;
+.profile__wrapper-default-shipping-address,
+.profile__wrapper-billing-address-type {
+  justify-content: flex-end;
+  align-items: baseline;
+  column-gap: 2rem;
 }
 .profile__label-default-billing-address,
-.profile__label-default-shipping-address {
-    box-shadow: none;
-    scale: 1.5;
+.profile__label-default-shipping-address,
+.profile__label-billing-address-type {
+  box-shadow: none;
+  scale: 1.5;
 }
 input.profile__email::value {
-    font-size: .8rem;
-    text-align: center;
+  font-size: 0.8rem;
+  text-align: center;
 }
 .profile__wrapper-edit-save {
-    justify-content: center;
+  justify-content: center;
 }
 .profile__data-profile-saved {
-    background: linear-gradient(90deg, rgba(0, 214, 160, 1), rgba(30, 17, 115, 1));
-    scale: 0;
-    height: 3rem;
-    color: #fafae5;
-    border: 3px solid #6aff00;
-    box-shadow: 0 0 10px rgb(0, 0, 0);
-    width: 13rem;
-    text-align: center;
-    bottom: 5rem;
-    opacity: 1;
-    transition: .25s;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 214, 160, 1),
+    rgba(30, 17, 115, 1)
+  );
+  scale: 0;
+//   height: 3rem;
+  color: #fafae5;
+  border: 3px solid #6aff00;
+  box-shadow: 0 0 10px rgb(0, 0, 0);
+//   width: 13rem;
+  text-align: center;
+//   bottom: 5rem;
+  opacity: 1;
+  transition: 0.25s;
 }
 .profile__first-name-error,
 .profile__last-name-error,
 .profile__birth-date-error,
-.profile__email-error {
-    padding: 0 10px;
-    color: #ffd400;
+.profile__email-error,
+.profile__password-error {
+  padding: 0 10px;
+  color: #ffd400;
 }
 .profile__wrapper-billing-address,
 .profile__wrapper-shipping-address {
-    display: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px black;
+  margin: 10px;
+  padding: 10px;
+  // display: none;
 }
