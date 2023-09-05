@@ -11,7 +11,7 @@ const config = {
   entry: "./src/index.ts",
   output: {
     path: path.resolve(__dirname, "dist"),
-    assetModuleFilename: 'assets/[hash][ext]',
+    assetModuleFilename: "assets/[hash][ext]",
   },
   devServer: {
     open: true,
@@ -19,7 +19,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./index.html",
+      template: "./src/index.html",
     }),
 
     // Add your plugins here
@@ -31,10 +31,10 @@ const config = {
         test: /\.html$/,
         use: [
           {
-            loader: 'html-loader',
-            options: { minimize: true }
-          }
-        ]
+            loader: "html-loader",
+            options: { minimize: true },
+          },
+        ],
       },
       {
         test: /\.(ts|tsx)$/i,
@@ -43,7 +43,17 @@ const config = {
       },
       {
         test: /\.s[ac]ss$/i,
-        use: [stylesHandler, "css-loader", "sass-loader"],
+        use: [
+          stylesHandler,
+          "css-loader",
+          "sass-loader",
+          {
+            loader: "sass-resources-loader",
+            options: {
+              resources: ["src/styles/abstracts/_variables.scss"],
+            },
+          },
+        ],
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,

@@ -2,6 +2,7 @@ import Clients from "./client";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
 import logoutImg from "../assets/icons/logout.svg";
+import { CustomerUpdateAction } from "@commercetools/platform-sdk";
 
 class Customer {
   clients: Clients;
@@ -183,10 +184,9 @@ class Customer {
       .get()
       .execute();
 
-    console.log(customer);
     return customer;
   }
-  updateCustomer(
+  async updateCustomer(
     id: string,
     version: number,
     email: string,
@@ -195,7 +195,7 @@ class Customer {
     dateOfBirth: string,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
-    apiRoot
+    await apiRoot
       .customers()
       .withId({ ID: id })
       .post({
@@ -223,14 +223,15 @@ class Customer {
       })
       .execute();
   }
-  updateCustomerPassword(
+
+  async updateCustomerPassword(
     version: number,
     id: string,
     currentPassword: string,
     newPassword: string,
   ) {
     const apiRoot = this.clients.getCredentialsFlowClient();
-    apiRoot
+    const costumer = await apiRoot
       .customers()
       .password()
       .post({
@@ -242,6 +243,193 @@ class Customer {
         },
       })
       .execute();
+    return costumer;
+  }
+
+  async removeAddress(version: number, customerId: string, addressId: string) {
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    const customer = await apiRoot
+      .customers()
+      .withId({ ID: customerId })
+      .post({
+        body: {
+          version: version,
+          actions: [
+            {
+              action: "removeAddress",
+              addressId: addressId,
+            },
+          ],
+        },
+      })
+      .execute();
+    return customer;
+  }
+
+  async changeAddress(
+    version: number,
+    customerId: string,
+    addressId: string,
+    streetName: string,
+    postalCode: string,
+    city: string,
+    country: string,
+    oldBilling?: boolean,
+    oldShipping?: boolean,
+    oldDefaultAddress?: boolean,
+    billing?: boolean,
+    shipping?: boolean,
+    defaultAddress?: boolean,
+  ) {
+    const actionsArray: CustomerUpdateAction[] = [
+      {
+        action: "changeAddress",
+        addressId: addressId,
+        address: {
+          streetName: streetName,
+          postalCode: postalCode,
+          city: city,
+          country: country,
+        },
+      },
+    ];
+    if (billing) {
+      if (!defaultAddress && oldDefaultAddress) {
+        actionsArray.push({
+          action: "removeBillingAddressId",
+          addressId: addressId,
+        });
+      }
+      actionsArray.push({
+        action: "addBillingAddressId",
+        addressId: addressId,
+      });
+      if (defaultAddress) {
+        actionsArray.push({
+          action: "setDefaultBillingAddress",
+          addressId: addressId,
+        });
+      }
+    } else if (oldBilling) {
+      actionsArray.push({
+        action: "removeBillingAddressId",
+        addressId: addressId,
+      });
+    }
+    if (shipping) {
+      if (!defaultAddress && oldDefaultAddress) {
+        actionsArray.push({
+          action: "removeShippingAddressId",
+          addressId: addressId,
+        });
+      }
+      actionsArray.push({
+        action: "addShippingAddressId",
+        addressId: addressId,
+      });
+      if (defaultAddress) {
+        actionsArray.push({
+          action: "setDefaultShippingAddress",
+          addressId: addressId,
+        });
+      }
+    } else if (oldShipping) {
+      actionsArray.push({
+        action: "removeShippingAddressId",
+        addressId: addressId,
+      });
+    }
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    const customer = await apiRoot
+      .customers()
+      .withId({ ID: customerId })
+      .post({
+        body: {
+          version: version,
+          actions: actionsArray,
+        },
+      })
+      .execute();
+    return customer;
+  }
+
+  async addAddress(
+    version: number,
+    customerId: string,
+    streetName: string,
+    postalCode: string,
+    city: string,
+    country: string,
+  ) {
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    const customer = await apiRoot
+      .customers()
+      .withId({ ID: customerId })
+      .post({
+        body: {
+          version: version,
+          actions: [
+            {
+              action: "addAddress",
+              address: {
+                streetName: streetName,
+                postalCode: postalCode,
+                city: city,
+                country: country,
+              },
+            },
+          ],
+        },
+      })
+      .execute();
+    return customer;
+  }
+
+  async changeAddressAttributes(
+    version: number,
+    customerId: string,
+    addressId: string,
+    billing?: boolean,
+    shipping?: boolean,
+    defaultAddress?: boolean,
+  ) {
+    const actionsArray: CustomerUpdateAction[] = [];
+    if (billing) {
+      actionsArray.push({
+        action: "addBillingAddressId",
+        addressId: addressId,
+      });
+      if (defaultAddress) {
+        actionsArray.push({
+          action: "setDefaultBillingAddress",
+          addressId: addressId,
+        });
+      }
+    }
+    if (shipping) {
+      actionsArray.push({
+        action: "addShippingAddressId",
+        addressId: addressId,
+      });
+      if (defaultAddress) {
+        actionsArray.push({
+          action: "setDefaultShippingAddress",
+          addressId: addressId,
+        });
+      }
+    }
+    const apiRoot = this.clients.getCredentialsFlowClient();
+    const customer = await apiRoot
+      .customers()
+      .withId({ ID: customerId })
+      .post({
+        body: {
+          version: version,
+          actions: actionsArray,
+        },
+      })
+      .execute();
+    return customer;
   }
 }
 export default Customer;

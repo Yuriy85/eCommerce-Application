@@ -1,18 +1,17 @@
 .catalog {
   width: 100%;
-  max-width: 1200px;
-  min-height: calc(100vh - 200px);
+  max-width: $main-Wrapper-width;
+  min-height: $empty-height;
   margin: auto;
-  padding: 25px;
+  padding: $main-padding;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-
 .catalog__nav-wrapper {
   display: flex;
-  margin: 0  0 20px 0;
+  margin: 0 0 20px 0;
   border-radius: 10px;
   background: #00000036;
   box-shadow: 0 0 10px black;
@@ -28,13 +27,14 @@
   &:hover {
     cursor: pointer;
     scale: 1.05;
-    text-decoration: underline ;
+    text-decoration: underline;
   }
 }
 
-.catalog__categories-wrapper{
+.catalog__categories-wrapper {
+  max-width: 1014px;
   display: flex;
-  margin: 0  0 20px 0;
+  margin: 0 0 20px 0;
   border-radius: 10px;
   background: #00000036;
   box-shadow: 0 0 10px black;
@@ -46,16 +46,18 @@
 .catalog__categories-sushi-wrapper p,
 .catalog__categories-desserts-wrapper p,
 .catalog__categories-drinks-wrapper p,
-.catalog__categories-wrapper p{
+.catalog__categories-wrapper p {
   margin: 0;
   padding: 0 10px;
 }
-.catalog__menu-wrapper{
+.catalog__menu-wrapper {
+  max-width: 1034px;
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   margin: 0 0 40px;
+  font-size: 0.9rem;
 }
 
 .catalog__categories-sushi-wrapper,
@@ -65,7 +67,7 @@
 .catalog__sort-wrapper,
 .catalog__search-wrapper {
   display: flex;
-  margin: 0 20px 0 0;
+  margin: 0 10px 0 10px;
   border-radius: 10px;
   background: #00000036;
   box-shadow: 0 0 10px black;
@@ -82,6 +84,7 @@
 
 .catalog__categories-wrapper {
   margin: 0 0 20px 0;
+  font-size: 0.9rem;
 }
 
 .catalog__categories-sushi-select,
@@ -90,7 +93,7 @@
 .catalog__filter-select,
 .catalog__sort-select,
 .catalog__search-select {
-  background: #0f0bee83;
+  min-width: auto;
   cursor: pointer;
   color: #fafae5;
   border: none;
@@ -99,39 +102,43 @@
 }
 
 .catalog__categories-drinks-select {
-  width: 180px;
+  max-width: 195px;
+  width: 100%;
 }
 
 .catalog__categories-dessert-select {
-  width: 195px;
+  max-width: 180px;
+  width: 100%;
 }
 
-.catalog__categories-sushi-select{
-  width: 120px;
+.catalog__categories-sushi-select {
+  max-width: 180px;
+  width: 100%;
 }
 
 .catalog__search-select {
-  width: 170px;
+  max-width: 170px;
+  width: 100%;
   margin: 0 10px;
 }
 
 .catalog__search-button,
 .catalog__search-close {
+  min-width: auto;
   width: 40px;
-  min-width: 20px;
   height: 25px;
   padding: 0;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 0 10px black;
-  background: #0f0bee83;
+  background: $button-gradient;
   &:hover {
     cursor: pointer;
     box-shadow: 0 0 20px black;
-    scale: 1.05;
-    background: #77777736;
-    color: #0f0bee83;
     font-weight: 700;
+  }
+  &:active {
+    box-shadow: none;
   }
 }
 .catalog__search-close {
@@ -142,8 +149,7 @@
   margin: 0 10px 0 0;
 }
 .catalog__filter-title,
-.catalog__sort-title,
-.catalog__search-wrapper {
+.catalog__sort-title {
   font-weight: 700;
   margin: 0 10px 0 0;
 }
@@ -221,7 +227,7 @@
     flex-direction: column;
   }
 
-  .catalog__categories-wrapper{
+  .catalog__categories-wrapper {
     flex-direction: column;
   }
   .catalog__categories-sushi-wrapper,

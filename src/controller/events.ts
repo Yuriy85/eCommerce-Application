@@ -181,8 +181,13 @@ class Events {
     select: HTMLSelectElement,
     inputCode: HTMLInputElement,
     type: "billing" | "shipping",
+    errorArea?: HTMLSpanElement,
+    errorText?: string,
   ) {
     select.addEventListener("change", (event) => {
+      if (errorArea) {
+        (errorArea as HTMLSpanElement).innerText = errorText || "";
+      }
       if (type === "billing") {
         Checks.billingCheckCountry = (event.target as HTMLSelectElement).value;
       }
