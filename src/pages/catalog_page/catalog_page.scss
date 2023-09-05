@@ -1,10 +1,241 @@
 .catalog {
   width: 100%;
-  max-width: 1200px;
-  min-height: calc(100vh - 200px);
+  max-width: $main-Wrapper-width;
+  min-height: $empty-height;
   margin: auto;
-  padding: 25px;
+  padding: $main-padding;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.catalog__nav-wrapper {
+  display: flex;
+  margin: 0 0 20px 0;
+  border-radius: 10px;
+  background: #00000036;
+  box-shadow: 0 0 10px black;
+  padding: 5px 10px;
+  justify-content: space-between;
+  transition: all 0.1s;
+}
+
+.catalog__nav-catalog,
+.catalog__nav-categories,
+.catalog__nav-subcategories {
+  list-style-type: none;
+  &:hover {
+    cursor: pointer;
+    scale: 1.05;
+    text-decoration: underline;
+  }
+}
+
+.catalog__categories-wrapper {
+  max-width: 1014px;
+  display: flex;
+  margin: 0 0 20px 0;
+  border-radius: 10px;
+  background: #00000036;
+  box-shadow: 0 0 10px black;
+  padding: 5px 10px;
+  justify-content: space-between;
+  transition: all 0.1s;
+}
+
+.catalog__categories-sushi-wrapper p,
+.catalog__categories-desserts-wrapper p,
+.catalog__categories-drinks-wrapper p,
+.catalog__categories-wrapper p {
+  margin: 0;
+  padding: 0 10px;
+}
+.catalog__menu-wrapper {
+  max-width: 1034px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 40px;
+  font-size: 0.9rem;
+}
+
+.catalog__categories-sushi-wrapper,
+.catalog__categories-desserts-wrapper,
+.catalog__categories-drinks-wrapper,
+.catalog__filter-wrapper,
+.catalog__sort-wrapper,
+.catalog__search-wrapper {
+  display: flex;
+  margin: 0 10px 0 10px;
+  border-radius: 10px;
+  background: #00000036;
+  box-shadow: 0 0 10px black;
+  padding: 5px 10px;
+  justify-content: space-between;
+  transition: all 0.1s;
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px black;
+    scale: 1.05;
+    background: #77777736;
+  }
+}
+
+.catalog__categories-wrapper {
+  margin: 0 0 20px 0;
+  font-size: 0.9rem;
+}
+
+.catalog__categories-sushi-select,
+.catalog__categories-dessert-select,
+.catalog__categories-drinks-select,
+.catalog__filter-select,
+.catalog__sort-select,
+.catalog__search-select {
+  min-width: auto;
+  cursor: pointer;
+  color: #fafae5;
+  border: none;
+  border-radius: 10px;
+  padding: 0 0 0 5px;
+}
+
+.catalog__categories-drinks-select {
+  max-width: 195px;
+  width: 100%;
+}
+
+.catalog__categories-dessert-select {
+  max-width: 180px;
+  width: 100%;
+}
+
+.catalog__categories-sushi-select {
+  max-width: 180px;
+  width: 100%;
+}
+
+.catalog__search-select {
+  max-width: 170px;
+  width: 100%;
+  margin: 0 10px;
+}
+
+.catalog__search-button,
+.catalog__search-close {
+  min-width: auto;
+  width: 40px;
+  height: 25px;
+  padding: 0;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px black;
+  background: $button-gradient;
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px black;
+    font-weight: 700;
+  }
+  &:active {
+    box-shadow: none;
+  }
+}
+.catalog__search-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 4px 0;
+  margin: 0 10px 0 0;
+}
+.catalog__filter-title,
+.catalog__sort-title {
+  font-weight: 700;
+  margin: 0 10px 0 0;
+}
+
+.catalog__products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-evenly;
+}
+
+.catalog__card {
+  width: 280px;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  background: #00000036;
+  // border: solid 3px rgb(197 226 226 / 77%);
+  box-shadow: 0 0 10px black;
+  padding: 5px;
+  justify-content: space-between;
+  transition: all 0.1s;
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px black;
+    scale: 1.05;
+    background: #77777736;
+  }
+  &:active {
+    box-shadow: 0 0 10px black;
+    scale: 1.03;
+  }
+}
+
+.catalog__card-title {
+  text-align: center;
+}
+.catalog__card-img {
+  width: 150px;
+  height: 150px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.catalog__card-subtitle {
+  text-align: center;
+}
+
+.catalog__card-first-price,
+.catalog__card-second-price,
+.catalog__card-third-price {
+  margin: 0;
+}
+
+.catalog__card--discount {
+  color: #6aff00;
+  text-shadow: 0 0 10px #000000;
+  & strike {
+    color: #fafae5;
+    text-shadow: none;
+  }
+}
+
+.catalog__price-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 1120px) {
+  .catalog__menu-wrapper {
+    flex-direction: column;
+  }
+
+  .catalog__categories-wrapper {
+    flex-direction: column;
+  }
+  .catalog__categories-sushi-wrapper,
+  .catalog__categories-desserts-wrapper,
+  .catalog__categories-drinks-wrapper,
+  .catalog__filter-wrapper,
+  .catalog__sort-wrapper,
+  .catalog__search-wrapper {
+    margin: 20px 0 0 0;
+  }
 }

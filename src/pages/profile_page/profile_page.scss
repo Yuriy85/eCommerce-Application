@@ -1,10 +1,194 @@
 .profile {
   width: 100%;
-  max-width: 1200px;
-  min-height: calc(100vh - 200px);
+  max-width: $main-Wrapper-width;
+  min-height: $empty-height;
   margin: auto;
-  padding: 25px;
+  padding: $main-padding;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.profile__wrapper-addresses {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+.profile__title-billing-address,
+.profile__title-shipping-address {
+  margin: 10px;
+  text-align: center;
+}
+
+.profile__first-name,
+.profile__last-name,
+.profile__birth-date,
+.profile__email,
+.profile__pending-password,
+.profile__new-password,
+.profile__billing-country,
+.profile__billing-city,
+.profile__billing-postcode,
+.profile__billing-street,
+.profile__shipping-country,
+.profile__shipping-city,
+.profile__shipping-postcode,
+.profile__shipping-street,
+.profile__data-profile-saved {
+  margin: 0;
+  padding: 0 10px;
+  border: 0;
+  border-bottom: 1px solid rgb(0, 0, 0);
+  border-radius: 10px;
+  height: 30px;
+}
+.profile__data-profile-saved {
+  margin-top: 0.5rem;
+}
+.profile__edit-button,
+.profile__save-button {
+  opacity: 1;
+  margin: 20px 0 0 0;
+}
+.profile__email {
+  width: 17rem;
+  text-align: center;
+}
+.profile__title-first-name,
+.profile__title-last-name,
+.profile__title-birth-date,
+.profile__title-email,
+.profile__title-change-password,
+.profile__title-billing-country,
+.profile__title-billing-city,
+.profile__title-billing-postcode,
+.profile__title-billing-street,
+.profile__title-shipping-country,
+.profile__title-shipping-city,
+.profile__title-shipping-postcode,
+.profile__title-shipping-street,
+.profile__title-default-billing-address,
+.profile__title-default-shipping-address,
+.profile__title-billing-Street,
+.profile__title-billing-address-type {
+  margin: 0;
+}
+.profile__wrapper-first-name,
+.profile__wrapper-last-name,
+.profile__wrapper-birth-date,
+.profile__wrapper-email,
+.profile__wrapper-change-password,
+.profile__wrapper-billing-country,
+.profile__wrapper-billing-city,
+.profile__wrapper-billing-postcode,
+.profile__wrapper-billing-street,
+.profile__wrapper-shipping-country,
+.profile__wrapper-shipping-city,
+.profile__wrapper-shipping-postcode,
+.profile__wrapper-shipping-street,
+.profile__wrapper-default-billing-address,
+.profile__wrapper-default-shipping-address,
+.profile__wrapper-edit-save,
+.profile__wrapper-billing-address-type {
+  margin: 5px 0 5px 0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  width: 100%;
+  max-width: 22rem;
+  justify-content: space-between;
+}
+.profile__wrapper-birth-date {
+  justify-content: center;
+}
+.profile__wrapper-change-password {
+  max-width: 35rem;
+  align-items: center;
+  row-gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+.profile__wrapper-default-billing-address,
+.profile__wrapper-default-shipping-address,
+.profile__wrapper-billing-address-type {
+  justify-content: flex-end;
+  align-items: baseline;
+  column-gap: 2rem;
+}
+.profile__label-default-billing-address,
+.profile__label-default-shipping-address,
+.profile__label-billing-address-type {
+  box-shadow: none;
+  scale: 1.5;
+}
+input.profile__email::value {
+  font-size: 0.8rem;
+  text-align: center;
+}
+.profile__wrapper-edit-save {
+  justify-content: center;
+}
+.profile__data-profile-saved {
+  background: $button-gradient;
+  scale: 0;
+  //   height: 3rem;
+  color: #fafae5;
+  border: 3px solid #6aff00;
+  box-shadow: 0 0 10px rgb(0, 0, 0);
+  //   width: 13rem;
+  text-align: center;
+  //   bottom: 5rem;
+  opacity: 1;
+  transition: 0.25s;
+}
+.profile__first-name-error,
+.profile__last-name-error,
+.profile__birth-date-error,
+.profile__email-error,
+.profile__password-error,
+.profile__billing-city-error,
+.profile__billing-postcode-error,
+.profile__billing-street-error {
+  min-width: 200px;
+  padding: 0 10px;
+  color: #ffd400;
+}
+.profile__wrapper-billing-address,
+.profile__wrapper-shipping-address {
+  max-width: 365px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px black;
+  margin: 10px;
+  padding: 10px;
+  & button {
+    min-width: auto;
+    margin: 15px;
+  }
+}
+
+.profile__modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.profile__show-modal {
+  display: table;
+}
+
+#new_address {
+  position: absolute;
+  background-color: #485758e8;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  & button {
+    margin: 10px;
+  }
 }

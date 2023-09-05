@@ -3,6 +3,7 @@ import Checks from "./checks";
 import Register from "./register";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
+import { SimpleSlider } from "simple-slider-ts";
 
 class Events {
   register: Register;
@@ -180,8 +181,13 @@ class Events {
     select: HTMLSelectElement,
     inputCode: HTMLInputElement,
     type: "billing" | "shipping",
+    errorArea?: HTMLSpanElement,
+    errorText?: string,
   ) {
     select.addEventListener("change", (event) => {
+      if (errorArea) {
+        (errorArea as HTMLSpanElement).innerText = errorText || "";
+      }
       if (type === "billing") {
         Checks.billingCheckCountry = (event.target as HTMLSelectElement).value;
       }
@@ -192,13 +198,17 @@ class Events {
     });
   }
 
-  clickPageAnchor(anchor: HTMLElement, path: string) {
+  clickPageAnchor(
+    anchor: HTMLElement,
+    path: string,
+    profileButton?: HTMLElement,
+  ) {
     anchor.addEventListener("click", () => {
       if (localStorage.getItem("id") && anchor.innerHTML === "Login") {
-        location.href = pagePaths.mainPath;
+        window.location.href = pagePaths.mainPath;
       } else if (localStorage.getItem("id") && anchor.id === "log-btn") {
         localStorage.removeItem("id");
-        location.href = path;
+        window.location.href = path;
         const loginImage: HTMLImageElement = document.getElementById(
           "log-img",
         ) as HTMLImageElement;
@@ -206,9 +216,47 @@ class Events {
           document.getElementById("log-title");
         (loginTitle as HTMLElement).innerText = "Login";
         loginImage.src = loginImg;
+        profileButton?.classList.add("header__hide-element");
       } else {
-        location.href = path;
+        window.location.href = path;
       }
+    });
+  }
+
+  clickProductCard(card: HTMLElement): void {
+    card.addEventListener("click", () => {
+      window.location.href = `${pagePaths.detailedPath}?${card.id}`;
+    });
+  }
+
+  clickToCatalogButton(button: HTMLButtonElement): void {
+    button.addEventListener("click", () => {
+      window.location.href = pagePaths.catalogPath;
+    });
+  }
+
+  clickSliderButton(
+    btn: HTMLButtonElement,
+    slider: SimpleSlider,
+    revers: boolean,
+    type: "next" | "prev",
+  ): void {
+    btn.addEventListener("click", () => {
+      if (type === "next") {
+        if (revers) {
+          slider.reverse();
+          revers = false;
+        }
+        slider.next();
+      } else {
+        slider.reverse();
+        slider.next();
+      }
+      slider.pause();
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.disabled = false;
+      }, 1500);
     });
   }
 }

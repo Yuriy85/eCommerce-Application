@@ -1,14 +1,14 @@
 .header {
   width: 100%;
   min-height: 100px;
-  color: rgb(197, 226, 226);
-  background: linear-gradient(90deg, #00d69f, #1e1173);
+  // color: rgb(197, 226, 226);
+  background: linear-gradient(90deg, #00d6a0af, #1e1173af);
   border-radius: 0 0 15px 15px;
 }
 
 .header__wrapper {
   width: 100%;
-  max-width: 1200px;
+  max-width: $main-Wrapper-width;
   height: 100%;
   margin: auto;
   padding: 15px;
@@ -18,9 +18,10 @@
 }
 
 .header__button {
-  margin: 3px;
+  min-width: 90px;
+  margin: 3px 0 3px 20px;
   text-align: center;
-  color: rgb(197, 226, 226);
+  color: inherit;
   font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 1px;
@@ -30,15 +31,20 @@
   transition: all 0.3s;
   &:hover {
     color: #edf8f6;
+    scale: 1.2;
+    color: #6aff00;
     cursor: pointer;
   }
 }
-
+.header__button--active {
+  color: #6aff00;
+  scale: 1.2;
+}
 .header__user-menu {
   flex-wrap: wrap;
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
+  justify-content: flex-end;
 }
 
 .header__button {
@@ -52,4 +58,8 @@
     cursor: pointer;
     color: #edf8f6;
   }
+}
+
+.header__hide-element {
+  display: none;
 }

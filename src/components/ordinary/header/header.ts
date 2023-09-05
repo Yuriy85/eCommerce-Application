@@ -1,6 +1,5 @@
 import "./header.scss";
 import catalogImg from "../../../assets/icons/catalog.svg";
-import detailedImg from "../../../assets/icons/detailed.svg";
 import profileImg from "../../../assets/icons/profile.svg";
 import loginImg from "../../../assets/icons/login.svg";
 import logoutImg from "../../../assets/icons/logout.svg";
@@ -48,6 +47,11 @@ class Header {
     const wrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h1");
     const userMenu: HTMLElement = document.createElement("div");
+    const profileButton = this.createButton(
+      profileImg,
+      "Profile",
+      pagePaths.profilePath,
+    );
     const loginButton = this.createButton(
       loginImg,
       "Login",
@@ -58,13 +62,12 @@ class Header {
     wrapper.classList.add("header__wrapper");
     caption.classList.add("header__caption");
     userMenu.classList.add("header__user-menu");
-    caption.innerText = "eCommerce";
+    caption.innerText = "eSushi";
     wrapper.appendChild(caption);
     wrapper.appendChild(userMenu);
     userMenu.append(
       this.createButton(catalogImg, "Catalog", pagePaths.catalogPath),
-      this.createButton(detailedImg, "Detailed", pagePaths.detailedPath),
-      this.createButton(profileImg, "Profile", pagePaths.profilePath),
+      profileButton,
       loginButton,
       this.createButton(registerImg, "Register", pagePaths.registerPath),
       this.createButton(basketImg, "Basket", pagePaths.basketPath),
@@ -74,10 +77,16 @@ class Header {
     this.header.appendChild(wrapper);
     parentNode.appendChild(this.header);
 
-    this.events.clickPageAnchor(loginButton, pagePaths.loginPath);
+    this.events.clickPageAnchor(
+      loginButton,
+      pagePaths.loginPath,
+      profileButton,
+    );
 
     if (localStorage.getItem("id")) {
       this.changeLoginIcon("in");
+    } else {
+      profileButton.classList.add("header__hide-element");
     }
   }
 
