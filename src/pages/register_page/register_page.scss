@@ -1,9 +1,9 @@
 .register {
   width: 100%;
-  max-width: 1200px;
-  min-height: calc(100vh - 200px);
+  max-width: $main-Wrapper-width;
+  min-height: $empty-height;
   margin: auto;
-  padding: 25px;
+  padding: $main-padding;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,15 +18,19 @@
 
 .register__section-address {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
   max-width: 550px;
+  flex-wrap: wrap;
+  gap: 50px;
 }
+
 .register__section-basic-billing,
 .register__section-basic-shipping {
   display: flex;
   flex-direction: column;
-  width: 45%;
+  max-width: 250px;
+  width: 100%;
 }
 
 .register__input-reg-email,

@@ -4,6 +4,7 @@ import "./profile_page.scss";
 import Events from "../../controller/events";
 import { Address } from "@commercetools/platform-sdk";
 import { pagePaths } from "../../routes/routes";
+import Checks from "../../controller/checks";
 
 class ProfilePage {
   customer: Customer;
@@ -133,17 +134,21 @@ class ProfilePage {
     const wrapperAddresses: HTMLElement = document.createElement("div");
     wrapperAddresses.classList.add("profile__wrapper-addresses");
 
-    customerFromServer.body.addresses.forEach((address) =>
-      wrapperAddresses.append(
-        this.createAddressCard(
-          address,
-          customerFromServer.body.billingAddressIds,
-          customerFromServer.body.shippingAddressIds,
-          customerFromServer.body.defaultBillingAddressId,
-          customerFromServer.body.defaultShippingAddressId,
-        ),
-      ),
-    );
+    customerFromServer.body.addresses.forEach((address) => {
+      const addressCard = this.createAddressCard(
+        address,
+        customerFromServer.body.billingAddressIds,
+        customerFromServer.body.shippingAddressIds,
+        customerFromServer.body.defaultBillingAddressId,
+        customerFromServer.body.defaultShippingAddressId,
+      );
+      wrapperAddresses.append(addressCard);
+      this.clickAddress(
+        customerFromServer.body.version,
+        customerId,
+        addressCard,
+      );
+    });
     const wrapperEditSaveButtons: HTMLElement = document.createElement("div");
     wrapperEditSaveButtons.classList.add("profile__wrapper-edit-save");
 
@@ -155,9 +160,19 @@ class ProfilePage {
     saveButton.classList.add("profile__save-button");
     saveButton.innerText = "Save";
 
+    const profileModal: HTMLElement = document.createElement("div");
+    profileModal.classList.add("profile__modal");
+
+    const emptyCard: HTMLElement = this.createAddressCard();
+    profileModal.append(emptyCard);
+
+    const addButton: HTMLButtonElement = document.createElement("button");
+    addButton.classList.add("profile__add-button");
+    addButton.innerText = "Add new address";
+
     const savedMessage: HTMLElement = document.createElement("div");
     savedMessage.classList.add("profile__data-profile-saved");
-    savedMessage.innerText = "Personal data has been changed";
+    savedMessage.innerText = "Personal data has been saved";
 
     wrapperEditSaveButtons.append(editButton, saveButton, savedMessage);
 
@@ -170,6 +185,8 @@ class ProfilePage {
       wrapperEditSaveButtons,
       wrapperChangePassword,
       wrapperAddresses,
+      addButton,
+      profileModal,
     );
     const disabledInputs: HTMLInputElement[] = [
       firstName,
@@ -198,6 +215,21 @@ class ProfilePage {
       birthDate,
       fieldsWrappers,
     );
+    this.clickButtonChangePassword(
+      customerFromServer.body.version,
+      customerId,
+      savePasswordButton,
+      savedMessage,
+      passwordEditError,
+      pendingPassword,
+      newPassword,
+    );
+    this.clickButtonAddAddress(addButton, profileModal);
+    this.clickAddAddress(
+      emptyCard,
+      customerFromServer.body.version,
+      customerId,
+    );
 
     this.events.inputFilling(firstName, firstNameEditError, "name");
     this.events.inputFilling(lastName, lastNameEditError, "surname");
@@ -209,7 +241,7 @@ class ProfilePage {
   }
 
   createAddressCard(
-    address: Address,
+    address?: Address,
     billingAddressIds?: string[],
     shippingAddressIds?: string[],
     defaultBillingAddressId?: string,
@@ -217,10 +249,11 @@ class ProfilePage {
   ): HTMLElement {
     const wrapperBillingAddress: HTMLElement = document.createElement("div");
     wrapperBillingAddress.classList.add("profile__wrapper-billing-address");
+    wrapperBillingAddress.id = address?.id ? address.id : "new_address";
 
     const titleBillingAddress: HTMLElement = document.createElement("h3");
     titleBillingAddress.classList.add("profile__title-billing-address");
-    titleBillingAddress.innerText = "Address";
+    titleBillingAddress.innerText = address ? "Address" : "New address";
 
     const wrapperBillingCountry: HTMLElement = document.createElement("div");
     wrapperBillingCountry.classList.add("profile__wrapper-billing-country");
@@ -229,10 +262,23 @@ class ProfilePage {
     titleBillingCountry.classList.add("profile__title-billing-country");
     titleBillingCountry.innerText = "Country:";
 
-    const billingCountry: HTMLInputElement = document.createElement("input");
+    const billingCountry: HTMLSelectElement = document.createElement("select");
     billingCountry.classList.add("profile__billing-country");
-    billingCountry.value = address.country === "IT" ? "Italy" : "Belarus";
-    billingCountry.disabled = true;
+
+    const optionBillingIt: HTMLOptionElement = document.createElement(
+      "option",
+    ) as HTMLOptionElement;
+    optionBillingIt.textContent = "Italy";
+
+    const optionBillingBy: HTMLOptionElement = document.createElement(
+      "option",
+    ) as HTMLOptionElement;
+    optionBillingBy.textContent = "Belarus";
+
+    billingCountry.append(optionBillingBy, optionBillingIt);
+
+    billingCountry.selectedIndex = address?.country === "IT" ? 1 : 0;
+    billingCountry.disabled = address ? true : false;
 
     wrapperBillingCountry.append(titleBillingCountry, billingCountry);
 
@@ -245,10 +291,13 @@ class ProfilePage {
 
     const billingCity: HTMLInputElement = document.createElement("input");
     billingCity.classList.add("profile__billing-city");
-    billingCity.value = address.city as string;
-    billingCity.disabled = true;
+    billingCity.value = address ? (address.city as string) : "Minsk";
+    billingCity.disabled = address ? true : false;
 
-    wrapperBillingCity.append(titleBillingCity, billingCity);
+    const billingCityError: HTMLElement = document.createElement("span");
+    billingCityError.classList.add("profile__billing-city-error");
+
+    wrapperBillingCity.append(titleBillingCity, billingCity, billingCityError);
 
     const wrapperBillingPostcode: HTMLElement = document.createElement("div");
     wrapperBillingPostcode.classList.add("profile__wrapper-billing-postcode");
@@ -259,10 +308,17 @@ class ProfilePage {
 
     const billingPostcode: HTMLInputElement = document.createElement("input");
     billingPostcode.classList.add("profile__billing-postcode");
-    billingPostcode.value = address.postalCode as string;
-    billingPostcode.disabled = true;
+    billingPostcode.value = address ? (address.postalCode as string) : "220100";
+    billingPostcode.disabled = address ? true : false;
 
-    wrapperBillingPostcode.append(titleBillingPostcode, billingPostcode);
+    const billingPostcodeError: HTMLElement = document.createElement("span");
+    billingPostcodeError.classList.add("profile__billing-postcode-error");
+
+    wrapperBillingPostcode.append(
+      titleBillingPostcode,
+      billingPostcode,
+      billingPostcodeError,
+    );
 
     const wrapperBillingStreet: HTMLElement = document.createElement("div");
     wrapperBillingStreet.classList.add("profile__wrapper-billing-street");
@@ -273,10 +329,19 @@ class ProfilePage {
 
     const billingStreet: HTMLInputElement = document.createElement("input");
     billingStreet.classList.add("profile__billing-street");
-    billingStreet.value = address.streetName as string;
-    billingStreet.disabled = true;
+    billingStreet.value = address
+      ? (address.streetName as string)
+      : "Bangalor plosad'";
+    billingStreet.disabled = address ? true : false;
 
-    wrapperBillingStreet.append(titleBillingStreet, billingStreet);
+    const billingStreetError: HTMLElement = document.createElement("span");
+    billingStreetError.classList.add("profile__billing-street-error");
+
+    wrapperBillingStreet.append(
+      titleBillingStreet,
+      billingStreet,
+      billingStreetError,
+    );
 
     const wrapperBillingAddressType: HTMLElement =
       document.createElement("div");
@@ -297,14 +362,12 @@ class ProfilePage {
       "profile__label-billing-address-type",
     );
 
-    labelBillingAddressType.disabled = true;
+    labelBillingAddressType.disabled = address ? true : false;
 
     wrapperBillingAddressType.append(
       titleBillingAddressType,
       labelBillingAddressType,
     );
-
-    wrapperBillingStreet.append(titleBillingStreet, billingStreet);
 
     const wrapperShippingAddressType: HTMLElement =
       document.createElement("div");
@@ -325,7 +388,7 @@ class ProfilePage {
       "profile__label-billing-address-type",
     );
 
-    labelShippingAddressType.disabled = true;
+    labelShippingAddressType.disabled = address ? true : false;
 
     wrapperShippingAddressType.append(
       titleShippingAddressType,
@@ -352,7 +415,7 @@ class ProfilePage {
       "profile__label-default-billing-address",
     );
 
-    labelDefaultBillingAddress.disabled = true;
+    labelDefaultBillingAddress.disabled = address ? true : false;
 
     wrapperDefaultBillingAddress.append(
       titleDefaultBillingAddress,
@@ -360,19 +423,37 @@ class ProfilePage {
     );
 
     if (
-      defaultBillingAddressId === address.id ||
-      defaultShippingAddressId === address.id
+      defaultBillingAddressId === address?.id ||
+      defaultShippingAddressId === address?.id
     ) {
       labelDefaultBillingAddress.checked = true;
     }
 
-    if (billingAddressIds?.includes(address.id as string)) {
+    if (!address || billingAddressIds?.includes(address?.id as string)) {
       labelBillingAddressType.checked = true;
     }
 
-    if (shippingAddressIds?.includes(address.id as string)) {
+    if (!address || shippingAddressIds?.includes(address?.id as string)) {
       labelShippingAddressType.checked = true;
     }
+
+    const editAddressButton: HTMLButtonElement =
+      document.createElement("button");
+    editAddressButton.classList.add("profile__edit-address-button");
+    editAddressButton.innerText = address ? "Edit" : "Add";
+
+    const saveAddressButton: HTMLButtonElement =
+      document.createElement("button");
+    saveAddressButton.classList.add("profile__save-address-button");
+    saveAddressButton.innerText = "Save";
+    if (!address) {
+      saveAddressButton.style.display = "none";
+    }
+
+    const deleteAddressButton: HTMLButtonElement =
+      document.createElement("button");
+    deleteAddressButton.classList.add("profile__del-address-button");
+    deleteAddressButton.innerText = address ? "Delete" : "Cancel";
 
     wrapperBillingAddress.append(
       titleBillingAddress,
@@ -383,9 +464,102 @@ class ProfilePage {
       wrapperBillingAddressType,
       wrapperShippingAddressType,
       wrapperDefaultBillingAddress,
+      editAddressButton,
+      saveAddressButton,
+      deleteAddressButton,
     );
 
+    this.events.inputFilling(billingCity, billingCityError, "billingCity");
+    this.events.inputFilling(
+      billingPostcode,
+      billingPostcodeError,
+      "billingCode",
+    );
+    this.events.inputFilling(
+      billingStreet,
+      billingStreetError,
+      "billingStreet",
+    );
+    this.events.selectCountry(
+      billingCountry,
+      billingPostcode,
+      "billing",
+      billingPostcodeError,
+      "Enter post code!",
+    );
+
+    if (!address) {
+      deleteAddressButton.addEventListener("click", () => {
+        document
+          .querySelector(".profile__modal")
+          ?.classList.remove("profile__show-modal");
+      });
+    }
+
     return wrapperBillingAddress;
+  }
+
+  clickAddAddress(card: HTMLElement, version: number, customerId: string) {
+    card.addEventListener("click", async (event) => {
+      const country: string =
+        (card.childNodes[1].childNodes[1] as HTMLSelectElement).value ===
+        "Belarus"
+          ? "BY"
+          : "IT";
+      const cityInput: HTMLInputElement = card.childNodes[2]
+        .childNodes[1] as HTMLInputElement;
+      const postcodeInput: HTMLInputElement = card.childNodes[3]
+        .childNodes[1] as HTMLInputElement;
+      const streetInput: HTMLInputElement = card.childNodes[4]
+        .childNodes[1] as HTMLInputElement;
+      const billingInput: HTMLInputElement = card.childNodes[5]
+        .childNodes[1] as HTMLInputElement;
+      const shippingInput: HTMLInputElement = card.childNodes[6]
+        .childNodes[1] as HTMLInputElement;
+      const defaultInput: HTMLInputElement = card.childNodes[7]
+        .childNodes[1] as HTMLInputElement;
+      const errorsAreas: HTMLSpanElement[] = [
+        card.childNodes[2].childNodes[2] as HTMLSpanElement,
+        card.childNodes[3].childNodes[2] as HTMLSpanElement,
+        card.childNodes[4].childNodes[2] as HTMLSpanElement,
+      ];
+
+      if (
+        (event.target as HTMLButtonElement).innerText === "Add" &&
+        !errorsAreas.some((errorsArea) => errorsArea.innerText)
+      ) {
+        try {
+          const costumer = await this.customer.addAddress(
+            version,
+            customerId,
+            streetInput.value,
+            postcodeInput.value,
+            cityInput.value,
+            country,
+          );
+          const lastAddress = costumer.body.addresses.length - 1;
+          try {
+            await this.customer.changeAddressAttributes(
+              costumer.body.version,
+              customerId,
+              costumer.body.addresses[lastAddress].id as string,
+              billingInput.checked,
+              shippingInput.checked,
+              defaultInput.checked,
+            );
+            (card.firstChild as HTMLElement).innerText =
+              "New address has been added!";
+            setTimeout(() => {
+              window.location.href = pagePaths.profilePath;
+            }, 1500);
+          } catch (error) {
+            error as Error;
+          }
+        } catch (error) {
+          error as Error;
+        }
+      }
+    });
   }
 
   clickButtonEdit(button: HTMLButtonElement, fieldsArray: HTMLInputElement[]) {
@@ -393,7 +567,6 @@ class ProfilePage {
       fieldsArray.forEach((field) => {
         if (field.disabled === true) {
           field.disabled = false;
-          field.style.opacity = "1";
         }
       });
     });
@@ -430,13 +603,137 @@ class ProfilePage {
         );
         fieldsArray.forEach((field) => {
           field.disabled = true;
-          field.style.opacity = ".6";
         });
         message.style.scale = "1";
         setTimeout(() => {
           message.style.scale = "0";
           window.location.href = pagePaths.profilePath;
         }, 2000);
+      }
+    });
+  }
+
+  clickButtonChangePassword(
+    version: number,
+    customerId: string,
+    button: HTMLButtonElement,
+    message: HTMLElement,
+    errorArea: HTMLElement,
+    currentPassword: HTMLInputElement,
+    newPassword: HTMLInputElement,
+  ) {
+    button.addEventListener("click", async () => {
+      if (!errorArea.innerText) {
+        try {
+          await this.customer.updateCustomerPassword(
+            version,
+            customerId,
+            currentPassword.value,
+            newPassword.value,
+          );
+          message.style.scale = "1";
+          setTimeout(() => {
+            message.style.scale = "0";
+            window.location.href = pagePaths.profilePath;
+          }, 1500);
+        } catch (error) {
+          errorArea.innerText = (error as Error).message;
+          currentPassword.value = "";
+          newPassword.value = "";
+        }
+      }
+    });
+  }
+
+  clickButtonAddAddress(button: HTMLButtonElement, profileModal: HTMLElement) {
+    button.addEventListener("click", () => {
+      profileModal.classList.add("profile__show-modal");
+    });
+  }
+
+  clickAddress(version: number, customerId: string, card: HTMLElement) {
+    let billingInputValue: boolean = false;
+    let shippingInputValue: boolean = false;
+    let defaultInputValue: boolean = false;
+
+    card.addEventListener("click", async (event) => {
+      const country: string =
+        (card.childNodes[1].childNodes[1] as HTMLSelectElement).value ===
+        "Belarus"
+          ? "BY"
+          : "IT";
+      const cityInput: HTMLInputElement = card.childNodes[2]
+        .childNodes[1] as HTMLInputElement;
+      const postcodeInput: HTMLInputElement = card.childNodes[3]
+        .childNodes[1] as HTMLInputElement;
+      const streetInput: HTMLInputElement = card.childNodes[4]
+        .childNodes[1] as HTMLInputElement;
+      const billingInput: HTMLInputElement = card.childNodes[5]
+        .childNodes[1] as HTMLInputElement;
+      const shippingInput: HTMLInputElement = card.childNodes[6]
+        .childNodes[1] as HTMLInputElement;
+      const defaultInput: HTMLInputElement = card.childNodes[7]
+        .childNodes[1] as HTMLInputElement;
+      const errorsAreas: HTMLSpanElement[] = [
+        card.childNodes[2].childNodes[2] as HTMLSpanElement,
+        card.childNodes[3].childNodes[2] as HTMLSpanElement,
+        card.childNodes[4].childNodes[2] as HTMLSpanElement,
+      ];
+
+      if ((event.target as HTMLButtonElement).innerText === "Delete") {
+        try {
+          await this.customer.removeAddress(version, customerId, card.id);
+          window.location.href = pagePaths.profilePath;
+        } catch (error) {
+          error as Error;
+        }
+      }
+      if ((event.target as HTMLButtonElement).innerText === "Edit") {
+        Checks.billingCheckCountry = country === "BY" ? "Belarus" : "Italy";
+        billingInputValue = (
+          card.childNodes[5].childNodes[1] as HTMLInputElement
+        ).checked;
+        shippingInputValue = (
+          card.childNodes[6].childNodes[1] as HTMLInputElement
+        ).checked;
+        defaultInputValue = (
+          card.childNodes[7].childNodes[1] as HTMLInputElement
+        ).checked;
+        card.childNodes.forEach((child) =>
+          child.childNodes.forEach((child) => {
+            (child as HTMLButtonElement).disabled = false;
+          }),
+        );
+      }
+      if (
+        !errorsAreas.some((errorsArea) => errorsArea.innerText) &&
+        (event.target as HTMLButtonElement).innerText === "Save" &&
+        !cityInput.disabled
+      ) {
+        try {
+          await this.customer.changeAddress(
+            version,
+            customerId,
+            card.id,
+            streetInput.value,
+            postcodeInput.value,
+            cityInput.value,
+            country,
+            billingInputValue,
+            shippingInputValue,
+            defaultInputValue,
+            billingInput.checked,
+            shippingInput.checked,
+            defaultInput.checked,
+          );
+          (card.firstChild as HTMLElement).innerText =
+            "Address has been saved!";
+          setTimeout(() => {
+            window.location.href = pagePaths.profilePath;
+          }, 1500);
+        } catch (error) {
+          error as Error;
+        }
       }
     });
   }
