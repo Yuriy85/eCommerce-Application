@@ -1,0 +1,10 @@
+.basket {
+  width: 100%;
+  max-width: $main-Wrapper-width;
+  min-height: $empty-height;
+  margin: auto;
+  padding: $main-padding;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
