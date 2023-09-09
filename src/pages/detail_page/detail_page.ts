@@ -75,14 +75,33 @@ class DetailPage {
     metaDescription.classList.add("detail__meta-description");
     metaDescription.innerText = product.metaDescription?.["en-US"] as string;
 
+    const firstPriceWrapper = document.createElement("div");
+    firstPriceWrapper.classList.add("detail__first-price-wrapper");
     const firstVariantPrice: HTMLElement = document.createElement("p");
     firstVariantPrice.classList.add("detail__price");
+    const toBasketFirst: HTMLButtonElement = document.createElement("button");
+    toBasketFirst.classList.add(
+      "detail__to-basket-button",
+      "detail__first-basket",
+    );
 
+    const secondPriceWrapper = document.createElement("div");
+    secondPriceWrapper.classList.add("detail__second-price-wrapper");
     const secondVariantPrice: HTMLElement = document.createElement("p");
     secondVariantPrice.classList.add("detail__price");
+    const toBasketSecond: HTMLButtonElement = document.createElement("button");
+    toBasketSecond.classList.add("detail__to-basket-button");
 
+    const thirdPriceWrapper = document.createElement("div");
+    thirdPriceWrapper.classList.add("detail__third-price-wrapper");
     const thirdVariantPrice: HTMLElement = document.createElement("p");
     thirdVariantPrice.classList.add("detail__price");
+    const toBasketThird: HTMLButtonElement = document.createElement("button");
+    toBasketThird.classList.add("detail__to-basket-button");
+
+    firstPriceWrapper.append(firstVariantPrice, toBasketFirst);
+    secondPriceWrapper.append(secondVariantPrice, toBasketSecond);
+    thirdPriceWrapper.append(thirdVariantPrice, toBasketThird);
 
     const btnToCatalog: HTMLButtonElement = document.createElement("button");
     btnToCatalog.classList.add("detail__to-catalog");
@@ -114,6 +133,7 @@ class DetailPage {
     }
 
     if (secondProductData) {
+      toBasketSecond.style.display = "block";
       if (secondProductData.prices?.[0].discounted) {
         secondVariantPrice.classList.add("detail__price--discount");
         secondVariantPrice.innerHTML = `${(
@@ -136,6 +156,7 @@ class DetailPage {
     }
 
     if (thirdProductData) {
+      toBasketThird.style.display = "block";
       if (thirdProductData.prices?.[0].discounted) {
         thirdVariantPrice.classList.add("detail__price--discount");
         thirdVariantPrice.innerHTML = `${(
@@ -173,9 +194,9 @@ class DetailPage {
     description.append(
       mainDescription,
       metaDescription,
-      firstVariantPrice,
-      secondVariantPrice,
-      thirdVariantPrice,
+      firstPriceWrapper,
+      secondPriceWrapper,
+      thirdPriceWrapper,
     );
     imageButtonWrapper.append(imageWrapper, btnClose);
     imageSlider.append(btnLeft, imageButtonWrapper, btnRight);
@@ -183,6 +204,7 @@ class DetailPage {
 
     this.showSlider(imageWrapper, btnLeft, btnRight);
     this.events.clickToCatalogButton(btnToCatalog);
+    this.events.clickToBasketOnDetailedCard(description);
     return mainWrapper;
   }
 

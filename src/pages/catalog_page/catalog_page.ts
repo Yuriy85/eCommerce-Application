@@ -697,9 +697,33 @@ class CatalogPage {
     const subtitle: HTMLElement = document.createElement("h4");
     const image: HTMLElement = document.createElement("div");
     const priceWrapper: HTMLElement = document.createElement("div");
+
+    const firstPriceWrap: HTMLElement = document.createElement("div");
+    firstPriceWrap.classList.add("catalog__first-price-wrap");
     const price: HTMLElement = document.createElement("h4");
+    const toBasket: HTMLButtonElement = document.createElement("button");
+    toBasket.classList.add(
+      "catalog__to-basket-button",
+      "catalog__first-basket",
+    );
+    firstPriceWrap.append(price, toBasket);
+
+    const priceVariantWrap: HTMLElement = document.createElement("div");
+    priceVariantWrap.classList.add("catalog__price-variant-wrap");
     const priceVariant: HTMLElement = document.createElement("h4");
+    const toBasketTwo: HTMLButtonElement = document.createElement("button");
+    toBasketTwo.classList.add("catalog__to-basket-button");
+
+    priceVariantWrap.append(priceVariant, toBasketTwo);
+
+    const priceVariantTwoWrap: HTMLElement = document.createElement("div");
+    priceVariantTwoWrap.classList.add("catalog__price-variant-two-wrap");
     const priceVariantTwo: HTMLElement = document.createElement("h4");
+    const toBasketThree: HTMLButtonElement = document.createElement("button");
+    toBasketThree.classList.add("catalog__to-basket-button");
+
+    priceVariantTwoWrap.append(priceVariantTwo, toBasketThree);
+
     card.classList.add("catalog__card");
     card.setAttribute("id", product.id);
     title.classList.add("catalog__card-title");
@@ -737,6 +761,7 @@ class CatalogPage {
       )}`;
     }
     if (secondProductData) {
+      toBasketTwo.style.display = "block";
       if (secondProductData.prices?.[0].discounted) {
         priceVariant.classList.add("catalog__card--discount");
         priceVariant.innerHTML = `${(
@@ -758,6 +783,7 @@ class CatalogPage {
       }
     }
     if (thirdProductData) {
+      toBasketThree.style.display = "block";
       if (thirdProductData.prices?.[0].discounted) {
         priceVariantTwo.classList.add("catalog__card--discount");
         priceVariantTwo.innerHTML = `${(
@@ -778,7 +804,7 @@ class CatalogPage {
         )}`;
       }
     }
-    priceWrapper.append(price, priceVariant, priceVariantTwo);
+    priceWrapper.append(firstPriceWrap, priceVariantWrap, priceVariantTwoWrap);
     card.append(title, image, subtitle, priceWrapper);
     return card;
   }

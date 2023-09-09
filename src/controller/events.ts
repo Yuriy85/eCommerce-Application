@@ -4,6 +4,7 @@ import Register from "./register";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
 import { SimpleSlider } from "simple-slider-ts";
+// import { createDecipheriv } from "crypto";
 
 class Events {
   register: Register;
@@ -224,8 +225,20 @@ class Events {
   }
 
   clickProductCard(card: HTMLElement): void {
-    card.addEventListener("click", () => {
-      window.location.href = `${pagePaths.detailedPath}?${card.id}`;
+    card.addEventListener("click", (event) => {
+      if ((event.target as HTMLElement).tagName === "BUTTON") {
+        (event.target as HTMLButtonElement).disabled = true;
+      } else {
+        window.location.href = `${pagePaths.detailedPath}?${card.id}`;
+      }
+    });
+  }
+
+  clickToBasketOnDetailedCard(card: HTMLElement): void {
+    card.addEventListener("click", (event) => {
+      if ((event.target as HTMLElement).tagName === "BUTTON") {
+        (event.target as HTMLButtonElement).disabled = true;
+      }
     });
   }
 
@@ -260,5 +273,4 @@ class Events {
     });
   }
 }
-
 export default Events;
