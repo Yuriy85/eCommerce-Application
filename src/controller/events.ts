@@ -4,16 +4,23 @@ import Register from "./register";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
 import { SimpleSlider } from "simple-slider-ts";
-// import { createDecipheriv } from "crypto";
+import Carts from "./carts";
+import { ProductData } from "@commercetools/platform-sdk";
+import Products from "../controller/products";
 
 class Events {
   register: Register;
   login: Login;
   checks: Checks;
+  carts: Carts;
+  products: Products;
+
   constructor() {
     this.register = new Register();
     this.login = new Login();
     this.checks = new Checks();
+    this.carts = new Carts();
+    this.products = new Products();
   }
 
   clickCheckboxUnited(
@@ -235,9 +242,18 @@ class Events {
   }
 
   clickToBasketOnDetailedCard(card: HTMLElement): void {
-    card.addEventListener("click", (event) => {
+    card.addEventListener("click", async (event) => {
       if ((event.target as HTMLElement).tagName === "BUTTON") {
         (event.target as HTMLButtonElement).disabled = true;
+        localStorage.setItem("idCard", JSON.stringify(card.id));
+        const cart = await this.carts.getCart();
+        const version = cart.body.version;
+        const product: ProductData = await this.products.getProductByID(
+          localStorage.getItem("idCard")?.slice(1, -1) as string,
+        );
+        const sku: string = product.masterVariant?.sku as string;
+        this.carts.addProductOnCart(sku, version);
+        window.location.href = pagePaths.basketPath;
       }
     });
   }
