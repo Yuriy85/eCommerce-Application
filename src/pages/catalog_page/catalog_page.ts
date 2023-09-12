@@ -272,6 +272,7 @@ class CatalogPage {
   ): void {
     cardProducts.forEach((product) => {
       const productCard = this.createCardProduct(product);
+      this.events.clickToBasketOnDetailedCard(productCard);
       productWrapper.append(productCard);
       this.events.clickProductCard(productCard);
     });

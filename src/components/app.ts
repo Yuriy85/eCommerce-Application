@@ -24,7 +24,7 @@ class App {
   profilePage: ProfilePage;
   loginPage: HTMLElement;
   registerPage: HTMLElement;
-  basketPage: HTMLElement;
+  basketPage: BasketPage;
   aboutPage: HTMLElement;
   errorPage: ErrorPage;
   products: Products;
@@ -40,7 +40,7 @@ class App {
     this.profilePage = new ProfilePage();
     this.loginPage = new LoginPage().render();
     this.registerPage = new RegisterPage().render();
-    this.basketPage = new BasketPage().render();
+    this.basketPage = new BasketPage();
     this.aboutPage = new AboutPage().render();
     this.errorPage = new ErrorPage();
     this.products = new Products();
@@ -79,7 +79,7 @@ class App {
       pageInnerData = this.registerPage;
     } else if (path === pagePaths.basketPath) {
       headerButtons[4]?.classList.add("header__button--active");
-      pageInnerData = this.basketPage;
+      pageInnerData = await this.basketPage.render();
     } else if (path === pagePaths.aboutPath) {
       headerButtons[5]?.classList.add("header__button--active");
       pageInnerData = this.aboutPage;
