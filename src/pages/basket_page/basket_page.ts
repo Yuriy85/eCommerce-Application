@@ -23,14 +23,16 @@ class BasketPage {
     mainWrapper.innerHTML = "";
     mainWrapper.appendChild(caption);
     caption.innerText = "Basket page";
-
-    const cart = await this.carts.getCart();
-    const productsOnCart = cart.body.lineItems;
-    productsOnCart.forEach((product) => {
-      const element = this.createProductCard(product);
-      this.clickDeleteProduct(mainWrapper, element);
-      mainWrapper.append(element);
-    });
+    if (localStorage.getItem("objectCart")) {
+      const cart = JSON.parse(localStorage.getItem("objectCart") as string);
+      const productsOnCart = cart.body.lineItems;
+      console.log(productsOnCart);
+      productsOnCart.forEach((product: LineItem) => {
+        const element = this.createProductCard(product);
+        this.clickDeleteProduct(mainWrapper, element);
+        mainWrapper.append(element);
+      });
+    }
     return mainWrapper;
   }
 

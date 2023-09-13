@@ -252,7 +252,11 @@ class Events {
           localStorage.getItem("idCard")?.slice(1, -1) as string,
         );
         const sku: string = product.masterVariant?.sku as string;
-        this.carts.addProductOnCart(sku, version);
+        const cartWithAddProduct = await this.carts.addProductOnCart(
+          sku,
+          version,
+        );
+        localStorage.setItem("objectCart", JSON.stringify(cartWithAddProduct));
         window.location.href = pagePaths.basketPath;
       }
     });
