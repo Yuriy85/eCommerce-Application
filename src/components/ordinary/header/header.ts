@@ -22,22 +22,27 @@ class Header {
     imgSvg: string,
     name: string,
     href: string,
+    style: string,
     id?: string,
   ): HTMLAnchorElement {
     const button = document.createElement("a");
     const buttonImg = document.createElement("img");
     const buttonTitle = document.createElement("span");
+    const buttonCount = document.createElement("span");
     button.id = id ? `${id}-btn` : "";
     button.classList.add("header__button");
     buttonImg.classList.add("header__button-img");
     buttonTitle.classList.add("header__button-title");
-    button.appendChild(buttonImg);
-    button.appendChild(buttonTitle);
+    buttonCount.classList.add("header__button-count");
+    button.append(buttonImg, buttonCount, buttonTitle);
     buttonImg.src = imgSvg;
     buttonImg.id = id ? `${id}-img` : "";
     buttonTitle.innerText = name;
     buttonTitle.id = id ? `${id}-title` : "";
-    if (!id) {
+    buttonCount.style.display = style;
+    buttonCount.textContent = this.getCountOnBasketIcon();
+    buttonCount.id = id ? `${id}-count` : "";
+    if (id !== "log") {
       button.href = href;
     }
     return button;
@@ -51,11 +56,13 @@ class Header {
       profileImg,
       "Profile",
       pagePaths.profilePath,
+      "none",
     );
     const loginButton = this.createButton(
       loginImg,
       "Login",
       pagePaths.loginPath,
+      "none",
       "log",
     );
     caption.title = " go to main";
@@ -66,12 +73,23 @@ class Header {
     wrapper.appendChild(caption);
     wrapper.appendChild(userMenu);
     userMenu.append(
-      this.createButton(catalogImg, "Catalog", pagePaths.catalogPath),
+      this.createButton(catalogImg, "Catalog", pagePaths.catalogPath, "none"),
       profileButton,
       loginButton,
-      this.createButton(registerImg, "Register", pagePaths.registerPath),
-      this.createButton(basketImg, "Basket", pagePaths.basketPath),
-      this.createButton(aboutImg, "About Us", pagePaths.aboutPath),
+      this.createButton(
+        registerImg,
+        "Register",
+        pagePaths.registerPath,
+        "none",
+      ),
+      this.createButton(
+        basketImg,
+        "Basket",
+        pagePaths.basketPath,
+        "block",
+        "basket",
+      ),
+      this.createButton(aboutImg, "About Us", pagePaths.aboutPath, "none"),
     );
     this.header.classList.add("header");
     this.header.appendChild(wrapper);
@@ -99,6 +117,15 @@ class Header {
     ) as HTMLSpanElement;
     loginTitle.innerText = method ? "Logout" : "login";
     loginImage.src = method ? logoutImg : loginImg;
+  }
+
+  getCountOnBasketIcon(): string {
+    const count: number = +(localStorage.getItem(
+      "countProductOnCart",
+    ) as string);
+    const countProductOnCart: string =
+      count === 0 ? "" : (localStorage.getItem("countProductOnCart") as string);
+    return countProductOnCart;
   }
 }
 

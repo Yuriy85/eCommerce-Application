@@ -3,16 +3,19 @@ import { LineItem } from "@commercetools/platform-sdk";
 import Products from "../../controller/products";
 import Events from "../../controller/events";
 import Carts from "../../controller/carts";
+import Header from "../../components/ordinary/header/header";
 
 class BasketPage {
   products: Products;
   events: Events;
   carts: Carts;
+  header: Header;
 
   constructor() {
     this.products = new Products();
     this.events = new Events();
     this.carts = new Carts();
+    this.header = new Header();
   }
 
   async render(): Promise<HTMLElement> {
@@ -26,7 +29,8 @@ class BasketPage {
     if (localStorage.getItem("objectCart")) {
       const cart = JSON.parse(localStorage.getItem("objectCart") as string);
       const productsOnCart = cart.body.lineItems;
-      console.log(productsOnCart);
+      const countProduct = cart.body.lineItems.length;
+      localStorage.setItem("countProduct", countProduct);
       productsOnCart.forEach((product: LineItem) => {
         const element = this.createProductCard(product);
         this.clickDeleteProduct(mainWrapper, element);
@@ -40,7 +44,21 @@ class BasketPage {
     element.addEventListener("click", async (event) => {
       if ((event.target as HTMLElement).tagName === "BUTTON") {
         const lineItemId = element.id;
-        this.carts.removeProductOnCart(lineItemId);
+        const cartWithRemoveProduct = await this.carts.removeProductOnCart(
+          lineItemId,
+        );
+        localStorage.setItem(
+          "objectCart",
+          JSON.stringify(cartWithRemoveProduct),
+        );
+        const cartProductLength: string = String(
+          cartWithRemoveProduct.body.lineItems.length,
+        );
+        localStorage.setItem("countProductOnCart", cartProductLength);
+        const buttonBasketCount: HTMLElement = document.getElementById(
+          "basket-count",
+        ) as HTMLElement;
+        buttonBasketCount.textContent = this.header.getCountOnBasketIcon();
         mainWrapper.removeChild(element);
       }
     });
