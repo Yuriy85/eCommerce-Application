@@ -257,6 +257,14 @@ class Events {
           version,
         );
         localStorage.setItem("objectCart", JSON.stringify(cartWithAddProduct));
+        const cartProductLength: string = String(
+          cartWithAddProduct.body.lineItems.length,
+        );
+        localStorage.setItem("countProductOnCart", cartProductLength);
+        const buttonBasketCount: HTMLElement = document.getElementById(
+          "basket-count",
+        ) as HTMLElement;
+        buttonBasketCount.textContent = cartProductLength;
         window.location.href = pagePaths.basketPath;
       }
     });
