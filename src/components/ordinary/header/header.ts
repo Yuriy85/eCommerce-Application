@@ -40,7 +40,7 @@ class Header {
     buttonTitle.innerText = name;
     buttonTitle.id = id ? `${id}-title` : "";
     buttonCount.style.display = style;
-    buttonCount.textContent = this.getCountOnBasketIcon();
+    buttonCount.textContent = Header.getCountOnBasketIcon();
     buttonCount.id = id ? `${id}-count` : "";
     if (id !== "log") {
       button.href = href;
@@ -119,7 +119,7 @@ class Header {
     loginImage.src = method ? logoutImg : loginImg;
   }
 
-  getCountOnBasketIcon(): string {
+  static getCountOnBasketIcon(): string {
     const count: number = +(localStorage.getItem(
       "countProductOnCart",
     ) as string);

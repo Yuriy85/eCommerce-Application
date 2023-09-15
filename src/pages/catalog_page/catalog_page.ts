@@ -1,6 +1,11 @@
 import "./catalog_page.scss";
 import Products from "../../controller/products";
-import { ProductProjection, ProductVariant } from "@commercetools/platform-sdk";
+import {
+  Cart,
+  ClientResponse,
+  ProductProjection,
+  ProductVariant,
+} from "@commercetools/platform-sdk";
 import Events from "../../controller/events";
 import QueryArgs from "../data/query-arguments";
 
@@ -272,7 +277,7 @@ class CatalogPage {
   ): void {
     cardProducts.forEach((product) => {
       const productCard = this.createCardProduct(product);
-      this.events.clickToBasketOnDetailedCard(productCard);
+      // this.events.clickToBasketOnDetailedCard(productCard);
       productWrapper.append(productCard);
       this.events.clickProductCard(productCard);
     });
@@ -713,7 +718,10 @@ class CatalogPage {
     priceVariantWrap.classList.add("catalog__price-variant-wrap");
     const priceVariant: HTMLElement = document.createElement("h4");
     const toBasketTwo: HTMLButtonElement = document.createElement("button");
-    toBasketTwo.classList.add("catalog__to-basket-button");
+    toBasketTwo.classList.add(
+      "catalog__to-basket-button",
+      "catalog__second-basket",
+    );
 
     priceVariantWrap.append(priceVariant, toBasketTwo);
 
@@ -721,7 +729,10 @@ class CatalogPage {
     priceVariantTwoWrap.classList.add("catalog__price-variant-two-wrap");
     const priceVariantTwo: HTMLElement = document.createElement("h4");
     const toBasketThree: HTMLButtonElement = document.createElement("button");
-    toBasketThree.classList.add("catalog__to-basket-button");
+    toBasketThree.classList.add(
+      "catalog__to-basket-button",
+      "catalog__third-basket",
+    );
 
     priceVariantTwoWrap.append(priceVariantTwo, toBasketThree);
 
@@ -741,6 +752,8 @@ class CatalogPage {
     const firstProductData: ProductVariant = product.masterVariant;
     const secondProductData: ProductVariant = product.variants[0];
     const thirdProductData: ProductVariant = product.variants[1];
+
+    toBasket.id = firstProductData.prices?.[0].id as string;
 
     if (firstProductData.prices?.[0].discounted) {
       price.classList.add("catalog__card--discount");
@@ -762,6 +775,8 @@ class CatalogPage {
       )}`;
     }
     if (secondProductData) {
+      toBasketTwo.id = secondProductData.prices?.[0].id as string;
+
       toBasketTwo.style.display = "block";
       if (secondProductData.prices?.[0].discounted) {
         priceVariant.classList.add("catalog__card--discount");
@@ -784,6 +799,7 @@ class CatalogPage {
       }
     }
     if (thirdProductData) {
+      toBasketThree.id = thirdProductData.prices?.[0].id as string;
       toBasketThree.style.display = "block";
       if (thirdProductData.prices?.[0].discounted) {
         priceVariantTwo.classList.add("catalog__card--discount");
@@ -804,6 +820,20 @@ class CatalogPage {
           separator as number,
         )}`;
       }
+    }
+    if (localStorage.getItem("objectCart")) {
+      const cartsData: ClientResponse<Cart> = JSON.parse(
+        localStorage.getItem("objectCart") as string,
+      );
+      toBasket.disabled = cartsData.body.lineItems.some(
+        (item) => item.price.id === toBasket.id,
+      );
+      toBasketTwo.disabled = cartsData.body.lineItems.some(
+        (item) => item.price.id === toBasketTwo.id,
+      );
+      toBasketThree.disabled = cartsData.body.lineItems.some(
+        (item) => item.price.id === toBasketThree.id,
+      );
     }
     priceWrapper.append(firstPriceWrap, priceVariantWrap, priceVariantTwoWrap);
     card.append(title, image, subtitle, priceWrapper);
