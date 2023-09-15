@@ -19,7 +19,7 @@ class App {
   main: Main;
   footer: Footer;
   mainPage: HTMLElement;
-  catalogPage: Promise<HTMLElement>;
+  catalogPage: CatalogPage;
   detailPage: DetailPage;
   profilePage: ProfilePage;
   loginPage: HTMLElement;
@@ -35,7 +35,7 @@ class App {
     this.main = new Main();
     this.footer = new Footer();
     this.mainPage = new MainPage().render();
-    this.catalogPage = new CatalogPage().render();
+    this.catalogPage = new CatalogPage();
     this.detailPage = new DetailPage();
     this.profilePage = new ProfilePage();
     this.loginPage = new LoginPage().render();
@@ -65,7 +65,7 @@ class App {
       pageInnerData = this.mainPage;
     } else if (path === pagePaths.catalogPath) {
       headerButtons[0]?.classList.add("header__button--active");
-      pageInnerData = await this.catalogPage;
+      pageInnerData = await this.catalogPage.render();
     } else if (path.split("?")[0] === pagePaths.detailedPath) {
       pageInnerData = await this.detailPage.render();
     } else if (path === pagePaths.profilePath) {

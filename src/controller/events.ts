@@ -5,8 +5,12 @@ import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
 import { SimpleSlider } from "simple-slider-ts";
 import Carts from "./carts";
-import { ProductData } from "@commercetools/platform-sdk";
+import { Cart, ClientResponse, ProductData } from "@commercetools/platform-sdk";
 import Products from "../controller/products";
+import hourImg from "../assets/icons/hourglass.svg";
+import cartImg from "../assets/icons/basket.svg";
+import delCartImg from "../assets/icons/basket-del.svg";
+import Header from "../components/ordinary/header/header";
 
 class Events {
   register: Register;
@@ -232,40 +236,159 @@ class Events {
   }
 
   clickProductCard(card: HTMLElement): void {
-    card.addEventListener("click", (event) => {
-      if ((event.target as HTMLElement).tagName === "BUTTON") {
-        (event.target as HTMLButtonElement).disabled = true;
+    card.addEventListener("click", async (event) => {
+      if ((event.target as HTMLButtonElement).tagName === "BUTTON") {
+        const clickedButton: HTMLButtonElement =
+          event.target as HTMLButtonElement;
+        clickedButton.disabled = true;
+        clickedButton.style.backgroundImage = `url(${hourImg})`;
+        const cart: ClientResponse<Cart> = await this.carts.getCart();
+        const version = cart.body.version;
+        const product: ProductData = await this.products.getProductByID(
+          card.id,
+        );
+        const sku: string = clickedButton.classList.contains(
+          "catalog__third-basket",
+        )
+          ? (product.variants[1].sku as string)
+          : clickedButton.classList.contains("catalog__second-basket")
+          ? (product.variants[0].sku as string)
+          : (product.masterVariant.sku as string);
+        try {
+          const cartWithAddProduct = await this.carts.addProductOnCart(
+            sku,
+            version,
+          );
+          clickedButton.style.backgroundImage = `url(${cartImg})`;
+          localStorage.setItem(
+            "objectCart",
+            JSON.stringify(cartWithAddProduct),
+          );
+          const cartProductLength: string = String(
+            cartWithAddProduct.body.lineItems.length,
+          );
+          localStorage.setItem("countProductOnCart", cartProductLength);
+          const buttonBasketCount: HTMLElement = document.getElementById(
+            "basket-count",
+          ) as HTMLElement;
+          buttonBasketCount.textContent = cartProductLength;
+        } catch {
+          window.location.href = pagePaths.catalogPath;
+        }
       } else {
         window.location.href = `${pagePaths.detailedPath}?${card.id}`;
       }
     });
   }
 
-  clickToBasketOnDetailedCard(card: HTMLElement): void {
+  clickDetailCard(card: HTMLElement): void {
     card.addEventListener("click", async (event) => {
+      if ((event.target as HTMLButtonElement).tagName === "BUTTON") {
+        const clickedButton: HTMLButtonElement =
+          event.target as HTMLButtonElement;
+        const cartsData: ClientResponse<Cart> = JSON.parse(
+          localStorage.getItem("objectCart") as string,
+        );
+        let lineItemId = "";
+        let isProductInCart = false;
+        cartsData.body.lineItems.forEach((item) => {
+          if (item.price.id === clickedButton.id) {
+            lineItemId = item.id;
+            isProductInCart = true;
+          }
+        });
+        if (isProductInCart) {
+          try {
+            clickedButton.disabled = true;
+            clickedButton.style.backgroundImage = `url(${hourImg})`;
+            const cartWithRemoveProduct = await this.carts.removeProductOnCart(
+              lineItemId,
+            );
+            clickedButton.title = "Add to cart";
+            clickedButton.disabled = false;
+            clickedButton.style.backgroundImage = `url(${cartImg})`;
+            localStorage.setItem(
+              "objectCart",
+              JSON.stringify(cartWithRemoveProduct),
+            );
+            const cartProductLength: string = String(
+              cartWithRemoveProduct.body.lineItems.length,
+            );
+            localStorage.setItem("countProductOnCart", cartProductLength);
+            const buttonBasketCount: HTMLElement = document.getElementById(
+              "basket-count",
+            ) as HTMLElement;
+            buttonBasketCount.textContent = Header.getCountOnBasketIcon();
+          } catch {
+            window.location.href = pagePaths.detailedPath;
+          }
+        } else {
+          clickedButton.disabled = true;
+          clickedButton.style.backgroundImage = `url(${hourImg})`;
+          const cart: ClientResponse<Cart> = await this.carts.getCart();
+          const version = cart.body.version;
+          const product: ProductData = await this.products.getProductByID(
+            card.id,
+          );
+          const sku: string = clickedButton.classList.contains(
+            "detail__third-basket",
+          )
+            ? (product.variants[1].sku as string)
+            : clickedButton.classList.contains("detail__second-basket")
+            ? (product.variants[0].sku as string)
+            : (product.masterVariant.sku as string);
+          try {
+            const cartWithAddProduct = await this.carts.addProductOnCart(
+              sku,
+              version,
+            );
+            clickedButton.title = "Remove from cart";
+            clickedButton.style.backgroundImage = `url(${delCartImg})`;
+            clickedButton.disabled = false;
+            localStorage.setItem(
+              "objectCart",
+              JSON.stringify(cartWithAddProduct),
+            );
+            const cartProductLength: string = String(
+              cartWithAddProduct.body.lineItems.length,
+            );
+            localStorage.setItem("countProductOnCart", cartProductLength);
+            const buttonBasketCount: HTMLElement = document.getElementById(
+              "basket-count",
+            ) as HTMLElement;
+            buttonBasketCount.textContent = cartProductLength;
+          } catch {
+            window.location.href = `${pagePaths.detailedPath}?${card.id}`;
+          }
+        }
+      }
+    });
+  }
+
+  clickDeleteProduct(element: HTMLElement) {
+    element.addEventListener("click", async (event) => {
       if ((event.target as HTMLElement).tagName === "BUTTON") {
-        (event.target as HTMLButtonElement).disabled = true;
-        localStorage.setItem("idCard", JSON.stringify(card.id));
-        const cart = await this.carts.getCart();
-        const version = cart.body.version;
-        const product: ProductData = await this.products.getProductByID(
-          localStorage.getItem("idCard")?.slice(1, -1) as string,
-        );
-        const sku: string = product.masterVariant?.sku as string;
-        const cartWithAddProduct = await this.carts.addProductOnCart(
-          sku,
-          version,
-        );
-        localStorage.setItem("objectCart", JSON.stringify(cartWithAddProduct));
-        const cartProductLength: string = String(
-          cartWithAddProduct.body.lineItems.length,
-        );
-        localStorage.setItem("countProductOnCart", cartProductLength);
-        const buttonBasketCount: HTMLElement = document.getElementById(
-          "basket-count",
-        ) as HTMLElement;
-        buttonBasketCount.textContent = cartProductLength;
-        window.location.href = pagePaths.basketPath;
+        const lineItemId = element.id;
+        try {
+          const cartWithRemoveProduct = await this.carts.removeProductOnCart(
+            lineItemId,
+          );
+          localStorage.setItem(
+            "objectCart",
+            JSON.stringify(cartWithRemoveProduct),
+          );
+          const cartProductLength: string = String(
+            cartWithRemoveProduct.body.lineItems.length,
+          );
+          localStorage.setItem("countProductOnCart", cartProductLength);
+          const buttonBasketCount: HTMLElement = document.getElementById(
+            "basket-count",
+          ) as HTMLElement;
+          buttonBasketCount.textContent = Header.getCountOnBasketIcon();
+          window.location.href = pagePaths.basketPath;
+        } catch {
+          window.location.href = pagePaths.basketPath;
+        }
       }
     });
   }
