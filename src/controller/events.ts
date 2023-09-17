@@ -283,12 +283,14 @@ class Events {
 
   clickDetailCard(card: HTMLElement): void {
     card.addEventListener("click", async (event) => {
-      if ((event.target as HTMLButtonElement).tagName === "BUTTON") {
+      if (
+        (event.target as HTMLButtonElement).classList.contains(
+          "detail__to-basket-button",
+        )
+      ) {
         const clickedButton: HTMLButtonElement =
           event.target as HTMLButtonElement;
-        const cartsData: ClientResponse<Cart> = JSON.parse(
-          localStorage.getItem("objectCart") as string,
-        );
+        const cartsData: ClientResponse<Cart> = await this.carts.getCart();
         let lineItemId = "";
         let isProductInCart = false;
         cartsData.body.lineItems.forEach((item) => {
@@ -325,8 +327,7 @@ class Events {
         } else {
           clickedButton.disabled = true;
           clickedButton.style.backgroundImage = `url(${hourImg})`;
-          const cart: ClientResponse<Cart> = await this.carts.getCart();
-          const version = cart.body.version;
+          const version = cartsData.body.version;
           const product: ProductData = await this.products.getProductByID(
             card.id,
           );
@@ -421,6 +422,67 @@ class Events {
       setTimeout(() => {
         btn.disabled = false;
       }, 1500);
+    });
+  }
+
+  changeQtyProductOnCart(element: HTMLElement) {
+    element.addEventListener("change", async (event) => {
+      const quantity: HTMLInputElement = event.target as HTMLInputElement;
+      if (+quantity.value < 1) {
+        quantity.value = "1";
+      }
+      if (+quantity.value > 999) {
+        quantity.value = "999";
+      }
+
+      quantity.disabled = true;
+      const changedCart = await this.carts.changeQtyProductOnCart(
+        element.id,
+        quantity.value,
+      );
+      quantity.disabled = false;
+      localStorage.setItem("objectCart", JSON.stringify(changedCart));
+      window.location.href = pagePaths.basketPath;
+    });
+  }
+
+  async clearCart(btn: HTMLButtonElement) {
+    btn.addEventListener("click", async () => {
+      const buttonNameLength = 15;
+      if (btn.innerText.length === buttonNameLength) {
+        const buttonBasketCount: HTMLElement = document.getElementById(
+          "basket-count",
+        ) as HTMLElement;
+
+        btn.disabled = true;
+        const cart: ClientResponse<Cart> = JSON.parse(
+          localStorage.getItem("objectCart") as string,
+        );
+        for (const item of cart.body.lineItems) {
+          const changedCart = await this.carts.removeProductOnCart(item.id);
+          localStorage.setItem("objectCart", JSON.stringify(changedCart));
+          localStorage.setItem(
+            "countProductOnCart",
+            `${changedCart.body.lineItems.length}`,
+          );
+          buttonBasketCount.textContent = Header.getCountOnBasketIcon();
+        }
+
+        window.location.href = pagePaths.basketPath;
+      } else {
+        btn.innerText = "Are you sure?";
+        let seconds = 4;
+        const timer = setInterval(() => {
+          btn.innerText = `Press within  ${seconds - 1}s`;
+          seconds -= 1;
+          if (seconds === 1) {
+            clearInterval(timer);
+          }
+        }, 1000);
+        setTimeout(() => {
+          btn.innerText = btn.disabled ? "Wait..." : "Remove all";
+        }, 4000);
+      }
     });
   }
 }
