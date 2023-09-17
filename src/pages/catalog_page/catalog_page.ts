@@ -764,15 +764,15 @@ class CatalogPage {
         .strike()} ${(
         (firstProductData.prices?.[0].discounted.value.centAmount as number) /
         100
-      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
-        separator as number,
-      )}`;
+      ).toFixed(2)} ${String.fromCharCode(
+        8364,
+      )} ${firstProductData.sku?.substring(separator as number)}`;
     } else {
       price.innerHTML = `${(
         (firstProductData.prices?.[0].value.centAmount as number) / 100
-      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
-        separator as number,
-      )}`;
+      ).toFixed(2)} ${String.fromCharCode(
+        8364,
+      )} ${firstProductData.sku?.substring(separator as number)}`;
     }
     if (secondProductData) {
       toBasketTwo.id = secondProductData.prices?.[0].id as string;
@@ -787,15 +787,15 @@ class CatalogPage {
           .strike()} ${(
           (secondProductData.prices?.[0].discounted.value
             .centAmount as number) / 100
-        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${secondProductData.sku?.substring(separator as number)}`;
       } else {
         priceVariant.innerHTML = `${(
           (secondProductData.prices?.[0].value.centAmount as number) / 100
-        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${secondProductData.sku?.substring(separator as number)}`;
       }
     }
     if (thirdProductData) {
@@ -810,15 +810,15 @@ class CatalogPage {
           .strike()} ${(
           (thirdProductData.prices?.[0].discounted.value.centAmount as number) /
           100
-        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${thirdProductData.sku?.substring(separator as number)}`;
       } else {
         priceVariantTwo.innerHTML = `${(
           (thirdProductData.prices?.[0].value.centAmount as number) / 100
-        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${thirdProductData.sku?.substring(separator as number)}`;
       }
     }
     if (localStorage.getItem("objectCart")) {

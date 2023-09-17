@@ -138,15 +138,15 @@ class DetailPage {
         .strike()} ${(
         (firstProductData.prices?.[0].discounted.value.centAmount as number) /
         100
-      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
-        separator as number,
-      )}`;
+      ).toFixed(2)} ${String.fromCharCode(
+        8364,
+      )} ${firstProductData.sku?.substring(separator as number)}`;
     } else {
       firstVariantPrice.innerHTML = `${(
         (firstProductData.prices?.[0].value.centAmount as number) / 100
-      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
-        separator as number,
-      )}`;
+      ).toFixed(2)} ${String.fromCharCode(
+        8364,
+      )} ${firstProductData.sku?.substring(separator as number)}`;
     }
 
     if (secondProductData) {
@@ -161,15 +161,15 @@ class DetailPage {
           .strike()} ${(
           (secondProductData.prices?.[0].discounted.value
             .centAmount as number) / 100
-        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${secondProductData.sku?.substring(separator as number)}`;
       } else {
         secondVariantPrice.innerHTML = `${(
           (secondProductData.prices?.[0].value.centAmount as number) / 100
-        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${secondProductData.sku?.substring(separator as number)}`;
       }
     }
 
@@ -185,15 +185,15 @@ class DetailPage {
           .strike()} ${(
           (thirdProductData.prices?.[0].discounted.value.centAmount as number) /
           100
-        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${thirdProductData.sku?.substring(separator as number)}`;
       } else {
         thirdVariantPrice.innerHTML = `${(
           (thirdProductData.prices?.[0].value.centAmount as number) / 100
-        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${thirdProductData.sku?.substring(separator as number)}`;
       }
     }
 
@@ -233,7 +233,6 @@ class DetailPage {
         imageSlider,
         imageButtonWrapper,
         btnClose,
-        btnLeft,
       ),
     );
     wrapper.append(imageSlider, description);
@@ -259,7 +258,6 @@ class DetailPage {
     imageSlider: HTMLElement,
     imageButtonWrapper: HTMLElement,
     btnClose: HTMLButtonElement,
-    btnLeft: HTMLButtonElement,
   ) {
     const modalWindow = document.createElement("div");
     modalWindow.classList.add("detail__modal");
@@ -269,8 +267,6 @@ class DetailPage {
       imageSlider.style.position = "absolute";
       imageButtonWrapper.style.maxWidth = "700px";
       btnClose.style.display = "block";
-      btnLeft.style.order = "1";
-      imageSlider.style.flexDirection = "column";
     });
 
     btnClose.addEventListener("click", () => {
@@ -278,8 +274,6 @@ class DetailPage {
       imageSlider.style.position = "unset";
       imageButtonWrapper.style.maxWidth = "300px";
       btnClose.style.display = "none";
-      btnLeft.style.order = "unset";
-      imageSlider.style.flexDirection = "unset";
     });
     return modalWindow;
   }
