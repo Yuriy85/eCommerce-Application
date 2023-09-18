@@ -1,3 +1,5 @@
+import { Cart } from "@commercetools/platform-sdk";
+import { ClientResponse } from "@commercetools/sdk-client-v2";
 import Clients from "./client";
 import ClientsAnonymous from "./clientAnonymous";
 
@@ -20,6 +22,7 @@ class Carts {
       })
       .execute();
     localStorage.setItem("idCarts", JSON.stringify(cart.body.id));
+    localStorage.setItem("objectCart", JSON.stringify(cart));
     return cart;
   }
 
@@ -27,6 +30,7 @@ class Carts {
     const id: string = localStorage.getItem("idCarts")?.slice(1, -1) as string;
     const apiRoot = this.clientsAnonymous.getAnonymousSessionFlowClient();
     const carts = await apiRoot.carts().withId({ ID: id }).get().execute();
+    localStorage.setItem("objectCart", JSON.stringify(carts));
     return carts;
   }
 
@@ -58,14 +62,18 @@ class Carts {
         },
       })
       .execute();
+    localStorage.setItem("objectCart", JSON.stringify(product));
     return product;
   }
 
   async removeProductOnCart(lineItemId: string) {
-    const cart = JSON.parse(localStorage.getItem("objectCart") as string);
-    const version = cart.body.version;
+    const cart: ClientResponse<Cart> = JSON.parse(
+      localStorage.getItem("objectCart") as string,
+    );
+    const version = cart.body?.version || 0;
     const id: string = localStorage.getItem("idCarts")?.slice(1, -1) as string;
     const apiRoot = this.clientsAnonymous.getAnonymousSessionFlowClient();
+
     const product = await apiRoot
       .carts()
       .withId({ ID: id })
@@ -81,6 +89,37 @@ class Carts {
         },
       })
       .execute();
+
+    localStorage.setItem("objectCart", JSON.stringify(product));
+
+    if (product.body.discountCodes.length && !product.body.lineItems.length) {
+      for (const discountCode of product.body.discountCodes) {
+        const cart: ClientResponse<Cart> = JSON.parse(
+          localStorage.getItem("objectCart") as string,
+        );
+        const version = cart.body?.version || 0;
+        const product = await apiRoot
+          .carts()
+          .withId({ ID: id })
+          .post({
+            body: {
+              version: version,
+              actions: [
+                {
+                  action: "removeDiscountCode",
+                  discountCode: {
+                    typeId: "discount-code",
+                    id: discountCode.discountCode.id,
+                  },
+                },
+              ],
+            },
+          })
+          .execute();
+        localStorage.setItem("objectCart", JSON.stringify(product));
+      }
+    }
+
     return product;
   }
 
@@ -105,6 +144,7 @@ class Carts {
         },
       })
       .execute();
+    localStorage.setItem("objectCart", JSON.stringify(product));
     return product;
   }
 
@@ -121,6 +161,7 @@ class Carts {
       })
       .execute();
     localStorage.setItem("idCarts", JSON.stringify(customer.body.id));
+    localStorage.setItem("objectCart", JSON.stringify(customer));
     return customer;
   }
 
@@ -144,6 +185,7 @@ class Carts {
         },
       })
       .execute();
+    localStorage.setItem("objectCart", JSON.stringify(cart));
     return cart;
   }
 }

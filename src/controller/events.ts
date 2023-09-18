@@ -260,10 +260,6 @@ class Events {
             version,
           );
           clickedButton.style.backgroundImage = `url(${cartImg})`;
-          localStorage.setItem(
-            "objectCart",
-            JSON.stringify(cartWithAddProduct),
-          );
           const cartProductLength: string = String(
             cartWithAddProduct.body.lineItems.length,
           );
@@ -309,10 +305,6 @@ class Events {
             clickedButton.title = "Add to cart";
             clickedButton.disabled = false;
             clickedButton.style.backgroundImage = `url(${cartImg})`;
-            localStorage.setItem(
-              "objectCart",
-              JSON.stringify(cartWithRemoveProduct),
-            );
             const cartProductLength: string = String(
               cartWithRemoveProduct.body.lineItems.length,
             );
@@ -346,10 +338,6 @@ class Events {
             clickedButton.title = "Remove from cart";
             clickedButton.style.backgroundImage = `url(${delCartImg})`;
             clickedButton.disabled = false;
-            localStorage.setItem(
-              "objectCart",
-              JSON.stringify(cartWithAddProduct),
-            );
             const cartProductLength: string = String(
               cartWithAddProduct.body.lineItems.length,
             );
@@ -373,10 +361,6 @@ class Events {
         try {
           const cartWithRemoveProduct = await this.carts.removeProductOnCart(
             lineItemId,
-          );
-          localStorage.setItem(
-            "objectCart",
-            JSON.stringify(cartWithRemoveProduct),
           );
           const cartProductLength: string = String(
             cartWithRemoveProduct.body.lineItems.length,
@@ -425,7 +409,7 @@ class Events {
     });
   }
 
-  changeQtyProductOnCart(element: HTMLElement) {
+  changeQtyProducts(element: HTMLElement) {
     element.addEventListener("change", async (event) => {
       const quantity: HTMLInputElement = event.target as HTMLInputElement;
       if (+quantity.value < 1) {
@@ -436,12 +420,8 @@ class Events {
       }
 
       quantity.disabled = true;
-      const changedCart = await this.carts.changeQtyProductOnCart(
-        element.id,
-        quantity.value,
-      );
+      await this.carts.changeQtyProductOnCart(element.id, quantity.value);
       quantity.disabled = false;
-      localStorage.setItem("objectCart", JSON.stringify(changedCart));
       window.location.href = pagePaths.basketPath;
     });
   }
@@ -460,14 +440,12 @@ class Events {
         );
         for (const item of cart.body.lineItems) {
           const changedCart = await this.carts.removeProductOnCart(item.id);
-          localStorage.setItem("objectCart", JSON.stringify(changedCart));
           localStorage.setItem(
             "countProductOnCart",
             `${changedCart.body.lineItems.length}`,
           );
           buttonBasketCount.textContent = Header.getCountOnBasketIcon();
         }
-
         window.location.href = pagePaths.basketPath;
       } else {
         btn.innerText = "Are you sure?";
@@ -482,6 +460,23 @@ class Events {
         setTimeout(() => {
           btn.innerText = btn.disabled ? "Wait..." : "Remove all";
         }, 4000);
+      }
+    });
+  }
+
+  applyPromo(btn: HTMLButtonElement, promo: HTMLInputElement) {
+    btn.addEventListener("click", async () => {
+      try {
+        await this.carts.addPromoCode(promo.value);
+        btn.innerText = "Successful";
+        setTimeout(() => {
+          window.location.href = pagePaths.basketPath;
+        }, 1000);
+      } catch {
+        btn.innerText = "Unsuccessful";
+        setTimeout(() => {
+          window.location.href = pagePaths.basketPath;
+        }, 1000);
       }
     });
   }
