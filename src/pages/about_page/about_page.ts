@@ -1,4 +1,5 @@
 import "./about_page.scss";
+import rssIcon from "../../assets/icons/rss.svg";
 
 class AboutPage {
   render(): HTMLElement {
@@ -16,9 +17,21 @@ class AboutPage {
 
     We're Mikhail Kozarev, Yuriy Panteleev and Maria Panteleeva - TRUE OR FALSE team. 
 
-    Each of us enjoys that way from Stage 0 to this final point! And we've created a really positive environment inside the team during the sprints of eCommerce task, so each member of our team feels comfortable and supported by one another throughout each step.
-    
-    Naturally, we're truly grateful to every member of the RS School!`;
+    Each of us enjoys that way from Stage 0 to this final point! And we've created a really positive environment inside the team during the sprints of eCommerce task, so each member of our team feels comfortable and supported by one another throughout each step.`;
+
+    const gratitude: HTMLElement = document.createElement("div");
+    gratitude.classList.add("about__gratitude");
+    const gratitudeText: HTMLElement = document.createElement("h3");
+    gratitudeText.classList.add("about__gratitude-text");
+    gratitudeText.innerText =
+      "Naturally, we're truly grateful to every member of the RS School!";
+    const logoRS: HTMLElement = document.createElement("a");
+    logoRS.classList.add("about__logoRS");
+    logoRS.setAttribute("href", "https://rs.school/");
+    logoRS.setAttribute("target", "_blank");
+    logoRS.innerHTML = `<img src= "${rssIcon}" style="height: 50px; padding-left: 20px; scale: 1.3"/>`;
+    gratitudeText.append(logoRS);
+    gratitude.append(gratitudeText);
 
     // MIKHAIL
     const blockMikhail: HTMLElement = document.createElement("div");
@@ -61,7 +74,6 @@ class AboutPage {
     blockYuriy.classList.add("about__Yuriy");
     const wrapperYuriy: HTMLElement = document.createElement("div");
     wrapperYuriy.classList.add("about__wrapper-Yuriy");
-    // photoMary.setAttribute("alt", "Mary");
     const aboutYuriyInfo: HTMLElement = document.createElement("div");
     aboutYuriyInfo.classList.add("about__yuriy-info");
     const yuriyFullName: HTMLElement = document.createElement("h2");
@@ -92,7 +104,6 @@ class AboutPage {
     aboutYuriyInfo.append(yuriyFullName, aboutYuriyProj);
 
     blockYuriy.append(wrapperYuriy, aboutYuriyBio, githubYuriy);
-
     // YURIY
 
     // MARIA
@@ -102,7 +113,6 @@ class AboutPage {
     wrapperMaria.classList.add("about__wrapper-Maria");
     const photoMary: HTMLElement = document.createElement("div");
     photoMary.classList.add("about__photo-maria");
-    // photoMary.setAttribute("alt", "Mary");
     const aboutMariaInfo: HTMLElement = document.createElement("div");
     aboutMariaInfo.classList.add("about__maria-info");
     const mariaFullName: HTMLElement = document.createElement("h2");
@@ -135,6 +145,7 @@ class AboutPage {
     mainWrapper.append(
       caption,
       introduction,
+      gratitude,
       blockMikhail,
       blockYuriy,
       blockMaria,
