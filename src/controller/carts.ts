@@ -123,5 +123,28 @@ class Carts {
     localStorage.setItem("idCarts", JSON.stringify(customer.body.id));
     return customer;
   }
+
+  async addPromoCode(promoCode: string) {
+    const id: string = localStorage.getItem("idCarts")?.slice(1, -1) as string;
+    const objectCart = JSON.parse(localStorage.getItem("objectCart") as string);
+    const version = objectCart.body.version;
+    const apiRoot = this.clientsAnonymous.getAnonymousSessionFlowClient();
+    const cart = await apiRoot
+      .carts()
+      .withId({ ID: id })
+      .post({
+        body: {
+          version: version,
+          actions: [
+            {
+              action: "addDiscountCode",
+              code: promoCode,
+            },
+          ],
+        },
+      })
+      .execute();
+    return cart;
+  }
 }
 export default Carts;
