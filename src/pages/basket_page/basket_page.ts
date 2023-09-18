@@ -55,6 +55,8 @@ class BasketPage {
     totalPriceCaption.innerText = "Total price:";
     const totalPriceValue: HTMLElement = document.createElement("h2");
     totalPriceValue.classList.add("basket__total-price-value");
+    const discountValue: HTMLElement = document.createElement("h2");
+    discountValue.classList.add("basket__discount-value");
     const clearCartButton: HTMLButtonElement = document.createElement("button");
     clearCartButton.classList.add("basket__clear-cart");
     clearCartButton.innerText = "Remove all";
@@ -79,6 +81,7 @@ class BasketPage {
     totalCartWrapper.append(
       totalPriceCaption,
       totalPriceValue,
+      discountValue,
       clearCartButton,
     );
     promoCodeWrapper.append(promoCodeCaption, promoCodeValue, promoCodeButton);
@@ -101,6 +104,19 @@ class BasketPage {
         const element = this.createProductCard(product);
         leftAsideWrapper.append(element);
       });
+      if (
+        productsOnCart.some((item) => item.discountedPricePerQuantity.length)
+      ) {
+        const discount =
+          productsOnCart.reduce(
+            (a, v) => a + v.price.value.centAmount * v.quantity,
+            0,
+          ) - cart.body.totalPrice.centAmount;
+
+        discountValue.innerText = `Saved: ${(discount / 100).toFixed(
+          2,
+        )} ${String.fromCharCode(8364)}`;
+      }
     }
 
     this.events.clickPageAnchor(toCatalogButton, pagePaths.catalogPath);
