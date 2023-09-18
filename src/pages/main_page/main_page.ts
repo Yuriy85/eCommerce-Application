@@ -55,9 +55,8 @@ class MainPage {
     const codeDrinkSoft: HTMLElement = document.createElement("p");
     codeSushiSet.classList.add("main-page__promo");
     codeDrinkSoft.classList.add("main-page__promo");
-    codeSushiSet.textContent = "Promo code 20% for sushi set - PROMOCODE20SET";
-    codeDrinkSoft.textContent =
-      "Promo code 10% for sushi set - PROMOCODE10DRINKSOFT";
+    codeSushiSet.textContent = "Promo code 20% for sushi set - sushiset";
+    codeDrinkSoft.textContent = "Promo code 10% for soft drink - drinksoft";
 
     linksToPages.append(
       linkToCatalog,

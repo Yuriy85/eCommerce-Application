@@ -59,6 +59,18 @@ class BasketPage {
     clearCartButton.classList.add("basket__clear-cart");
     clearCartButton.innerText = "Remove all";
 
+    const promoCodeWrapper: HTMLElement = document.createElement("div");
+    promoCodeWrapper.classList.add("basket__promo-code-wrapper");
+    const promoCodeCaption: HTMLElement = document.createElement("h2");
+    promoCodeCaption.classList.add("basket__total-price-caption");
+    promoCodeCaption.innerText = "Promo code:";
+    const promoCodeValue: HTMLInputElement = document.createElement("input");
+    promoCodeValue.classList.add("basket__promo-value");
+    promoCodeValue.type = "text";
+    const promoCodeButton: HTMLButtonElement = document.createElement("button");
+    promoCodeButton.classList.add("basket__clear-cart");
+    promoCodeButton.innerText = "Apply promo";
+
     mainWrapper.innerHTML = "";
 
     mainWrapper.append(caption, wrapper);
@@ -69,6 +81,7 @@ class BasketPage {
       totalPriceValue,
       clearCartButton,
     );
+    promoCodeWrapper.append(promoCodeCaption, promoCodeValue, promoCodeButton);
     emptyWrapper.append(emptyMassage, emptyImage, toCatalogButton);
 
     if (localStorage.getItem("objectCart")) {
@@ -78,7 +91,7 @@ class BasketPage {
       const productsOnCart = cart.body.lineItems;
       if (productsOnCart.length) {
         leftAsideWrapper.innerHTML = "";
-        rightAsideWrapper.append(totalCartWrapper);
+        rightAsideWrapper.append(promoCodeWrapper, totalCartWrapper);
         totalPriceValue.innerText = `${(
           cart.body.totalPrice.centAmount / 100
         ).toFixed(2)} ${String.fromCharCode(8364)}`;
@@ -92,6 +105,7 @@ class BasketPage {
 
     this.events.clickPageAnchor(toCatalogButton, pagePaths.catalogPath);
     this.events.clearCart(clearCartButton);
+    this.events.applyPromo(promoCodeButton, promoCodeValue);
     return mainWrapper;
   }
 
@@ -130,9 +144,11 @@ class BasketPage {
 
     const priceValue = (product.price.value.centAmount / 100).toFixed(2);
 
-    if (product.price.discounted) {
+    if (product.price.discounted || product.discountedPricePerQuantity[0]) {
       const discountedPriceValue = (
-        product.price.discounted.value.centAmount / 100
+        (product.price.discounted?.value.centAmount ||
+          product.discountedPricePerQuantity[0].discountedPrice.value
+            .centAmount) / 100
       ).toFixed(2);
 
       price.classList.add("catalog__card--discount");
@@ -161,7 +177,7 @@ class BasketPage {
     card.append(title, wrapper, toBasket);
 
     this.events.clickDeleteProduct(card);
-    this.events.changeQtyProductOnCart(card);
+    this.events.changeQtyProducts(card);
     return card;
   }
 }
