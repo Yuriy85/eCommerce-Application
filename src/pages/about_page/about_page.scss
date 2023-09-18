@@ -8,13 +8,21 @@
   flex-direction: column;
   row-gap: 20px;
 }
+.about__logoRS {
+   display: contents;
+}
+.about__gratitude-text {
+    display: flex;
+    text-shadow: 4px 5px 5px rgba(0, 0, 0, 0.7);
+    line-height: 2.5;
+    margin-top: 0;
+}
 .about__caption {
   text-align: center;
 }
 .about__introduction {
   margin-bottom: 0;
   text-align: justify;
-  margin-bottom: 20px;
   text-shadow: 4px 5px 5px rgba(0, 0, 0, 0.7);
 }
 .about__Mikhail,
@@ -82,9 +90,6 @@
     justify-content: space-between;
     padding: 10px;
 }
-// .about__yuriy-info {
-//     padding-bottom: 0;
-// }
 .about__wrapper-Maria,
 .about__wrapper-Yuriy,
 .about__wrapper-Mikhail {
@@ -114,10 +119,6 @@ text-align: start;
     padding: 10px;
     margin-bottom: 70px;
 }
-// .about__yuriy-text-bio {
-//     margin-top: 0;
-//     padding-top: 0;
-// }
 .about__github-Maria,
 .about__github-Yuriy,
 .about__github-Mikhail {
@@ -147,5 +148,10 @@ text-align: start;
     }
     .about__wrapper-Yuriy {
         flex-direction: column-reverse;
+    }
+}
+@media screen and (max-width: 947px) {
+    .about__gratitude-text {
+        line-height: 1.4;
     }
 }
