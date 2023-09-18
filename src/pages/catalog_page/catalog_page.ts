@@ -8,6 +8,7 @@ import {
 } from "@commercetools/platform-sdk";
 import Events from "../../controller/events";
 import QueryArgs from "../data/query-arguments";
+import hourImg from "../../assets/icons/hourglass.svg";
 
 class CatalogPage {
   products: Products;
@@ -215,22 +216,52 @@ class CatalogPage {
     );
     sortWrapper.append(sortTitle, sortSelect);
     menuWrapper.append(searchWrapper, filterWrapper, sortWrapper);
+
+    const pagination = document.createElement("nav");
+    const btnOne = document.createElement("div");
+    const btnTwo = document.createElement("div");
+    const btnThree = document.createElement("div");
+    const btnFour = document.createElement("div");
+    pagination.classList.add("catalog__pagination");
+    btnOne.classList.add("catalog__btn-pagination");
+    btnTwo.classList.add("catalog__btn-pagination");
+    btnThree.classList.add("catalog__btn-pagination");
+    btnFour.classList.add("catalog__btn-pagination");
+    btnOne.style.backgroundColor = "blue";
+    btnOne.innerHTML = "1";
+    btnTwo.innerHTML = "2";
+    btnThree.innerHTML = "3";
+    btnFour.innerHTML = "4";
+    pagination.append(btnOne, btnTwo, btnThree, btnFour);
+
     mainWrapper.append(
       caption,
       navigationWrapper,
       categoriesWrapper,
       menuWrapper,
       productWrapper,
+      pagination,
     );
 
     const indexCategories: number = 9;
+    const offset: number = 0;
     localStorage.setItem("indexCategories", `${indexCategories}`);
     const cardProducts: ProductProjection[] = (
       await this.products.getProducts(
-        (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+        (await this.queryArgs.getQueryArgs(indexCategories, offset))
+          .productsAll,
       )
     ).body.results;
     this.addCardProductsToPage(cardProducts, productWrapper);
+    this.changePage(
+      pagination,
+      productWrapper,
+      btnOne,
+      btnTwo,
+      btnThree,
+      btnFour,
+      mainWrapper,
+    );
     this.clickNavigation(
       navigationWrapper,
       productWrapper,
@@ -245,14 +276,34 @@ class CatalogPage {
       sortOptionReset,
       filterOptionReset,
       inputSearch,
+      pagination,
+      btnOne,
+      btnTwo,
+      btnThree,
+      btnFour,
     );
     this.changeFilter(
       filterSelect,
       productWrapper,
       sortOptionReset,
       inputSearch,
+      pagination,
+      btnOne,
+      btnTwo,
+      btnThree,
+      btnFour,
     );
-    this.changeSort(sortSelect, productWrapper, filterOptionReset, inputSearch);
+    this.changeSort(
+      sortSelect,
+      productWrapper,
+      filterOptionReset,
+      inputSearch,
+      pagination,
+      btnOne,
+      btnTwo,
+      btnThree,
+      btnFour,
+    );
     this.clickSearch(btnSearch, closeSearch, productWrapper, inputSearch);
     this.changeCategories(
       productWrapper,
@@ -267,6 +318,11 @@ class CatalogPage {
       sortOptionReset,
       filterOptionReset,
       inputSearch,
+      pagination,
+      btnOne,
+      btnTwo,
+      btnThree,
+      btnFour,
     );
     return mainWrapper;
   }
@@ -297,11 +353,17 @@ class CatalogPage {
     sortOptionReset: HTMLOptionElement,
     filterOptionReset: HTMLOptionElement,
     inputSearch: HTMLInputElement,
+    pagination: HTMLElement,
+    btnOne: HTMLElement,
+    btnTwo: HTMLElement,
+    btnThree: HTMLElement,
+    btnFour: HTMLElement,
   ): void {
     navigationWrapper.addEventListener("click", async (event) => {
       inputSearch.value = "";
       sortOptionReset.selected = true;
       filterOptionReset.selected = true;
+      const offset = 0;
       const currentElement: HTMLElement = event.target as HTMLElement;
       if (currentElement.textContent === "Catalog") {
         const indexCategories: number = 9;
@@ -314,7 +376,8 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardProductsAll: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .productsAll,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsAll, productWrapper);
@@ -327,8 +390,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -341,8 +408,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -355,12 +426,17 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
       }
+      this.showPagination(pagination, btnOne, btnTwo, btnThree, btnFour);
     });
   }
 
@@ -369,6 +445,11 @@ class CatalogPage {
     productWrapper: HTMLDivElement,
     sortOptionReset: HTMLOptionElement,
     inputSearch: HTMLInputElement,
+    pagination: HTMLElement,
+    btnOne: HTMLElement,
+    btnTwo: HTMLElement,
+    btnThree: HTMLElement,
+    btnFour: HTMLElement,
   ): void {
     filterSelect?.addEventListener("change", async () => {
       const indexCategories: number = Number(
@@ -376,13 +457,15 @@ class CatalogPage {
       ) as number;
       productWrapper.innerHTML = "";
       inputSearch.value = "";
+      const offset = 0;
       const filterItem: HTMLOptionElement =
         filterSelect.options[filterSelect.selectedIndex];
       sortOptionReset.selected = true;
       if (filterItem.text === "Reset filter") {
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .productsAll,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
@@ -390,7 +473,7 @@ class CatalogPage {
       if (filterItem.text === "With lactose") {
         const cardProductsFilterLactoseYes: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories))
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
               .filterLactoseYes,
           )
         ).body.results;
@@ -402,12 +485,13 @@ class CatalogPage {
       if (filterItem.text === "Lactose free") {
         const cardProductsFilterLactoseNo: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories))
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
               .filterLactoseNo,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsFilterLactoseNo, productWrapper);
       }
+      this.showPagination(pagination, btnOne, btnTwo, btnThree, btnFour);
     });
   }
 
@@ -416,6 +500,11 @@ class CatalogPage {
     productWrapper: HTMLDivElement,
     filterOptionReset: HTMLOptionElement,
     inputSearch: HTMLInputElement,
+    pagination: HTMLElement,
+    btnOne: HTMLElement,
+    btnTwo: HTMLElement,
+    btnThree: HTMLElement,
+    btnFour: HTMLElement,
   ): void {
     sortSelect?.addEventListener("change", async () => {
       const indexCategories: number = Number(
@@ -423,13 +512,15 @@ class CatalogPage {
       ) as number;
       inputSearch.value = "";
       productWrapper.innerHTML = "";
+      const offset = 0;
       const sortItem: HTMLOptionElement =
         sortSelect.options[sortSelect.selectedIndex];
       filterOptionReset.selected = true;
       if (sortItem.text === "Reset sort") {
         const cardProductsSortReset: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .productsAll,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsSortReset, productWrapper);
@@ -437,7 +528,7 @@ class CatalogPage {
       if (sortItem.text === "A-Z") {
         const cardProductsSortAz: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories))
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
               .sortAlphabetically,
           )
         ).body.results;
@@ -446,7 +537,8 @@ class CatalogPage {
       if (sortItem.text === "Price ascending") {
         const cardProductsSortAz: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).sortAscending,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .sortAscending,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsSortAz, productWrapper);
@@ -454,11 +546,13 @@ class CatalogPage {
       if (sortItem.text === "Price descending") {
         const cardProductsSortAz: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).sortDescending,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .sortDescending,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsSortAz, productWrapper);
       }
+      this.showPagination(pagination, btnOne, btnTwo, btnThree, btnFour);
     });
   }
 
@@ -473,11 +567,17 @@ class CatalogPage {
         localStorage.getItem("indexCategories"),
       ) as number;
       productWrapper.innerHTML = "";
+      const offset = 0;
       const inputValue = inputSearch.value;
       const cardSearch: ProductProjection[] = (
         await this.products.getProducts(
-          (await this.queryArgs.getQueryArgs(indexCategories, inputValue))
-            .searchText,
+          (
+            await this.queryArgs.getQueryArgs(
+              indexCategories,
+              offset,
+              inputValue,
+            )
+          ).searchText,
         )
       ).body.results;
       this.addCardProductsToPage(cardSearch, productWrapper);
@@ -489,9 +589,11 @@ class CatalogPage {
       ) as number;
       productWrapper.innerHTML = "";
       inputSearch.value = "";
+      const offset = 0;
       const cardProductsCloseSearch: ProductProjection[] = (
         await this.products.getProducts(
-          (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+          (await this.queryArgs.getQueryArgs(indexCategories, offset))
+            .productsAll,
         )
       ).body.results;
       this.addCardProductsToPage(cardProductsCloseSearch, productWrapper);
@@ -511,6 +613,11 @@ class CatalogPage {
     sortOptionReset: HTMLOptionElement,
     filterOptionReset: HTMLOptionElement,
     inputSearch: HTMLInputElement,
+    pagination: HTMLElement,
+    btnOne: HTMLElement,
+    btnTwo: HTMLElement,
+    btnThree: HTMLElement,
+    btnFour: HTMLElement,
   ): void {
     sushiSelectElement?.addEventListener("change", async () => {
       inputSearch.value = "";
@@ -519,6 +626,7 @@ class CatalogPage {
       sortOptionReset.selected = true;
       filterOptionReset.selected = true;
       productWrapper.innerHTML = "";
+      const offset = 0;
       const categoriesSushiItem =
         sushiSelectElement.options[sushiSelectElement.selectedIndex];
       if (categoriesSushiItem.text === "") {
@@ -528,7 +636,8 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .productsAll,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
@@ -540,8 +649,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -553,8 +666,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "/ Roll";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -566,16 +683,22 @@ class CatalogPage {
         navigationSubcategories.textContent = "/ Set";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
       }
+      this.showPagination(pagination, btnOne, btnTwo, btnThree, btnFour);
     });
     dessertSelectElement?.addEventListener("change", async () => {
       inputSearch.value = "";
       productWrapper.innerHTML = "";
+      const offset = 0;
       optionDrinksReset.selected = true;
       optionSushiReset.selected = true;
       sortOptionReset.selected = true;
@@ -589,7 +712,8 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .productsAll,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
@@ -601,8 +725,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -614,8 +742,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "/ Healthy food";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -627,16 +759,22 @@ class CatalogPage {
         navigationSubcategories.textContent = "/ Usual dessert";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
       }
+      this.showPagination(pagination, btnOne, btnTwo, btnThree, btnFour);
     });
     drinksSelectElement?.addEventListener("change", async () => {
       inputSearch.value = "";
       productWrapper.innerHTML = "";
+      const offset = 0;
       optionDessertsReset.selected = true;
       optionSushiReset.selected = true;
       sortOptionReset.selected = true;
@@ -650,7 +788,8 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardProductsFilterAll: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgs(indexCategories)).productsAll,
+            (await this.queryArgs.getQueryArgs(indexCategories, offset))
+              .productsAll,
           )
         ).body.results;
         this.addCardProductsToPage(cardProductsFilterAll, productWrapper);
@@ -662,8 +801,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -675,8 +818,12 @@ class CatalogPage {
         navigationSubcategories.textContent = "/ Soft drinks";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
@@ -688,11 +835,141 @@ class CatalogPage {
         navigationSubcategories.textContent = "/ Hot drinks";
         const cardCategories: ProductProjection[] = (
           await this.products.getProducts(
-            (await this.queryArgs.getQueryArgsCategories(indexCategories))
-              .categoriesSushi,
+            (
+              await this.queryArgs.getQueryArgsCategories(
+                indexCategories,
+                offset,
+              )
+            ).categoriesSushi,
           )
         ).body.results;
         this.addCardProductsToPage(cardCategories, productWrapper);
+      }
+      this.showPagination(pagination, btnOne, btnTwo, btnThree, btnFour);
+    });
+  }
+
+  showPagination(
+    pagination: HTMLElement,
+    btnOne: HTMLElement,
+    btnTwo: HTMLElement,
+    btnThree: HTMLElement,
+    btnFour: HTMLElement,
+  ): void {
+    const totalCard: number = +(localStorage.getItem("totalCard") as string);
+    btnOne.style.backgroundColor = "blue";
+    btnTwo.style.backgroundColor = "gray";
+    btnThree.style.backgroundColor = "gray";
+    btnFour.style.backgroundColor = "gray";
+
+    if (totalCard > 18) {
+      pagination.style.display = "flex";
+      btnOne.style.display = "flex";
+      btnTwo.style.display = "flex";
+      btnThree.style.display = "flex";
+      btnFour.style.display = "flex";
+    }
+    if (totalCard < 7) {
+      pagination.style.display = "none";
+    }
+    if (totalCard > 6 && totalCard < 12) {
+      pagination.style.display = "flex";
+      btnOne.style.display = "flex";
+      btnTwo.style.display = "flex";
+      btnThree.style.display = "none";
+      btnFour.style.display = "none";
+    }
+  }
+
+  changePage(
+    pagination: HTMLElement,
+    productWrapper: HTMLDivElement,
+    btnOne: HTMLElement,
+    btnTwo: HTMLElement,
+    btnThree: HTMLElement,
+    btnFour: HTMLElement,
+    mainWrapper: HTMLElement,
+  ): void {
+    pagination.addEventListener("click", async (event) => {
+      productWrapper.innerHTML = "";
+      if ((event.target as HTMLElement).tagName === "DIV") {
+        const btn: HTMLElement = event.target as HTMLElement;
+        if (btn.innerHTML === "1") {
+          btnOne.style.backgroundColor = "blue";
+          btnTwo.style.backgroundColor = "gray";
+          btnThree.style.backgroundColor = "gray";
+          btnFour.style.backgroundColor = "gray";
+          mainWrapper.style.backgroundImage = `url(${hourImg})`;
+          const indexCategories: number = Number(
+            localStorage.getItem("indexCategories"),
+          ) as number;
+          const offset = 0;
+          const cardProductsAll: ProductProjection[] = (
+            await this.products.getProducts(
+              (await this.queryArgs.getQueryArgs(indexCategories, offset))
+                .productsAll,
+            )
+          ).body.results;
+          this.addCardProductsToPage(cardProductsAll, productWrapper);
+          mainWrapper.style.backgroundImage = ``;
+        }
+        if (btn.innerHTML === "2") {
+          btnOne.style.backgroundColor = "gray";
+          btnTwo.style.backgroundColor = "blue";
+          btnThree.style.backgroundColor = "gray";
+          btnFour.style.backgroundColor = "gray";
+          mainWrapper.style.backgroundImage = `url(${hourImg})`;
+          const indexCategories: number = Number(
+            localStorage.getItem("indexCategories"),
+          ) as number;
+          const offset: number = 6;
+          const cardProductsAll: ProductProjection[] = (
+            await this.products.getProducts(
+              (await this.queryArgs.getQueryArgs(indexCategories, offset))
+                .productsAll,
+            )
+          ).body.results;
+          this.addCardProductsToPage(cardProductsAll, productWrapper);
+        }
+        mainWrapper.style.backgroundImage = ``;
+        if (btn.innerHTML === "3") {
+          btnOne.style.backgroundColor = "gray";
+          btnTwo.style.backgroundColor = "gray";
+          btnThree.style.backgroundColor = "blue";
+          btnFour.style.backgroundColor = "gray";
+          mainWrapper.style.backgroundImage = `url(${hourImg})`;
+          const indexCategories: number = Number(
+            localStorage.getItem("indexCategories"),
+          ) as number;
+          const offset: number = 9;
+          const cardProductsAll: ProductProjection[] = (
+            await this.products.getProducts(
+              (await this.queryArgs.getQueryArgs(indexCategories, offset))
+                .productsAll,
+            )
+          ).body.results;
+          this.addCardProductsToPage(cardProductsAll, productWrapper);
+          mainWrapper.style.backgroundImage = ``;
+        }
+        if (btn.innerHTML === "4") {
+          btnOne.style.backgroundColor = "gray";
+          btnTwo.style.backgroundColor = "gray";
+          btnThree.style.backgroundColor = "gray";
+          btnFour.style.backgroundColor = "blue";
+          mainWrapper.style.backgroundImage = `url(${hourImg})`;
+          const indexCategories: number = Number(
+            localStorage.getItem("indexCategories"),
+          ) as number;
+          const offset: number = 18;
+          const cardProductsAll: ProductProjection[] = (
+            await this.products.getProducts(
+              (await this.queryArgs.getQueryArgs(indexCategories, offset))
+                .productsAll,
+            )
+          ).body.results;
+          this.addCardProductsToPage(cardProductsAll, productWrapper);
+          mainWrapper.style.backgroundImage = ``;
+        }
       }
     });
   }
