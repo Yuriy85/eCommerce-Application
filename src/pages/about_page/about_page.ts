@@ -1,4 +1,3 @@
-import "./about_page.scss";
 import rssIcon from "../../assets/icons/rss.svg";
 
 class AboutPage {

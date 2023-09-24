@@ -1,4 +1,3 @@
-import "./header.scss";
 import catalogImg from "../../../assets/icons/catalog.svg";
 import profileImg from "../../../assets/icons/profile.svg";
 import loginImg from "../../../assets/icons/login.svg";
@@ -10,11 +9,9 @@ import { pagePaths } from "../../../routes/routes";
 import Events from "../../../controller/events";
 
 class Header {
-  header: HTMLElement;
   events: Events;
 
   constructor() {
-    this.header = document.createElement("header");
     this.events = new Events();
   }
 
@@ -48,7 +45,8 @@ class Header {
     return button;
   }
 
-  render(parentNode: HTMLElement): void {
+  render(parentNode: HTMLElement): HTMLElement {
+    const header: HTMLElement = document.createElement("header");
     const wrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h1");
     const userMenu: HTMLElement = document.createElement("div");
@@ -91,9 +89,9 @@ class Header {
       ),
       this.createButton(aboutImg, "About Us", pagePaths.aboutPath, "none"),
     );
-    this.header.classList.add("header");
-    this.header.appendChild(wrapper);
-    parentNode.appendChild(this.header);
+    header.classList.add("header");
+    header.appendChild(wrapper);
+    parentNode.appendChild(header);
 
     this.events.clickPageAnchor(
       loginButton,
@@ -106,6 +104,7 @@ class Header {
     } else {
       profileButton.classList.add("header__hide-element");
     }
+    return wrapper;
   }
 
   changeLoginIcon(method?: "in") {
