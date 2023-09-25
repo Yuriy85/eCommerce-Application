@@ -1,6 +1,5 @@
 import Customer from "../../controller/customer";
 import "./profile_page.scss";
-// import "../../controller/events";
 import Events from "../../controller/events";
 import { Address } from "@commercetools/platform-sdk";
 import { pagePaths } from "../../routes/routes";

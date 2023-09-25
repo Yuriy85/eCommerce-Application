@@ -83,7 +83,7 @@ class LoginPage {
   showHidePassword(
     inputLogOpenView: HTMLElement,
     inputLogPassword: HTMLInputElement,
-  ) {
+  ): void {
     inputLogOpenView.addEventListener("click", () => {
       inputLogOpenView.classList.toggle("login__password-open-view-show");
       if (

@@ -37,7 +37,9 @@ class Header {
     buttonTitle.innerText = name;
     buttonTitle.id = id ? `${id}-title` : "";
     buttonCount.style.display = style;
-    buttonCount.textContent = Header.getCountOnBasketIcon();
+    buttonCount.textContent = Header.getCountOnBasketIcon(
+      localStorage.getItem("countProductOnCart") as string,
+    );
     buttonCount.id = id ? `${id}-count` : "";
     if (id !== "log") {
       button.href = href;
@@ -100,31 +102,29 @@ class Header {
     );
 
     if (localStorage.getItem("id")) {
-      this.changeLoginIcon("in");
+      this.changeLoginIcon(
+        document.getElementById("log-img") as HTMLImageElement,
+        document.getElementById("log-title") as HTMLSpanElement,
+        "in",
+      );
     } else {
       profileButton.classList.add("header__hide-element");
     }
-    return wrapper;
+    return header;
   }
 
-  changeLoginIcon(method?: "in") {
-    const loginImage: HTMLImageElement = document.getElementById(
-      "log-img",
-    ) as HTMLImageElement;
-    const loginTitle: HTMLSpanElement = document.getElementById(
-      "log-title",
-    ) as HTMLSpanElement;
+  changeLoginIcon(
+    loginImage: HTMLImageElement,
+    loginTitle: HTMLSpanElement,
+    method?: "in",
+  ) {
     loginTitle.innerText = method ? "Logout" : "login";
     loginImage.src = method ? logoutImg : loginImg;
+    return loginImage;
   }
 
-  static getCountOnBasketIcon(): string {
-    const count: number = +(localStorage.getItem(
-      "countProductOnCart",
-    ) as string);
-    const countProductOnCart: string =
-      count === 0 ? "" : (localStorage.getItem("countProductOnCart") as string);
-    return countProductOnCart;
+  static getCountOnBasketIcon(countFromLocalStorage: string): string {
+    return countFromLocalStorage === "0" ? "" : countFromLocalStorage;
   }
 }
 

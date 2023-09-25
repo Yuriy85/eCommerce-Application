@@ -333,7 +333,6 @@ class CatalogPage {
   ): void {
     cardProducts.forEach((product) => {
       const productCard = this.createCardProduct(product);
-      // this.events.clickToBasketOnDetailedCard(productCard);
       productWrapper.append(productCard);
       this.events.clickProductCard(productCard);
     });
@@ -855,7 +854,7 @@ class CatalogPage {
     btnTwo: HTMLElement,
     btnThree: HTMLElement,
     btnFour: HTMLElement,
-  ): void {
+  ): boolean {
     const totalCard: number = +(localStorage.getItem("totalCard") as string);
     btnOne.style.backgroundColor = "blue";
     btnTwo.style.backgroundColor = "gray";
@@ -868,9 +867,11 @@ class CatalogPage {
       btnTwo.style.display = "flex";
       btnThree.style.display = "flex";
       btnFour.style.display = "flex";
+      return true;
     }
     if (totalCard < 7) {
       pagination.style.display = "none";
+      return true;
     }
     if (totalCard > 6 && totalCard < 12) {
       pagination.style.display = "flex";
@@ -878,7 +879,9 @@ class CatalogPage {
       btnTwo.style.display = "flex";
       btnThree.style.display = "none";
       btnFour.style.display = "none";
+      return true;
     }
+    return false;
   }
 
   changePage(

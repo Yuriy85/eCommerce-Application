@@ -1,20 +1,14 @@
 import "./basket_page.scss";
 import { Cart, ClientResponse, LineItem } from "@commercetools/platform-sdk";
-import Products from "../../controller/products";
 import Events from "../../controller/events";
-import Carts from "../../controller/carts";
 import { pagePaths } from "../../routes/routes";
 import emptyCartImg from "../../assets/images/empty-cart.png";
 
 class BasketPage {
-  products: Products;
   events: Events;
-  carts: Carts;
 
   constructor() {
-    this.products = new Products();
     this.events = new Events();
-    this.carts = new Carts();
   }
 
   render(): HTMLElement {
@@ -122,6 +116,7 @@ class BasketPage {
     this.events.clickPageAnchor(toCatalogButton, pagePaths.catalogPath);
     this.events.clearCart(clearCartButton);
     this.events.applyPromo(promoCodeButton, promoCodeValue);
+
     return mainWrapper;
   }
 

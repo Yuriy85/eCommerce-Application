@@ -312,7 +312,9 @@ class Events {
             const buttonBasketCount: HTMLElement = document.getElementById(
               "basket-count",
             ) as HTMLElement;
-            buttonBasketCount.textContent = Header.getCountOnBasketIcon();
+            buttonBasketCount.textContent = Header.getCountOnBasketIcon(
+              localStorage.getItem("countProductOnCart") as string,
+            );
           } catch {
             window.location.href = pagePaths.detailedPath;
           }
@@ -369,7 +371,9 @@ class Events {
           const buttonBasketCount: HTMLElement = document.getElementById(
             "basket-count",
           ) as HTMLElement;
-          buttonBasketCount.textContent = Header.getCountOnBasketIcon();
+          buttonBasketCount.textContent = Header.getCountOnBasketIcon(
+            localStorage.getItem("countProductOnCart") as string,
+          );
           window.location.href = pagePaths.basketPath;
         } catch {
           window.location.href = pagePaths.basketPath;
@@ -444,7 +448,9 @@ class Events {
             "countProductOnCart",
             `${changedCart.body.lineItems.length}`,
           );
-          buttonBasketCount.textContent = Header.getCountOnBasketIcon();
+          buttonBasketCount.textContent = Header.getCountOnBasketIcon(
+            localStorage.getItem("countProductOnCart") as string,
+          );
         }
         window.location.href = pagePaths.basketPath;
       } else {
