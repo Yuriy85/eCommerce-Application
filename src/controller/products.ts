@@ -27,6 +27,8 @@ class Products {
         queryArgs: queryArgs,
       })
       .execute();
+    const totalCard = String(product.body.total);
+    localStorage.setItem("totalCard", totalCard);
     return product;
   }
 

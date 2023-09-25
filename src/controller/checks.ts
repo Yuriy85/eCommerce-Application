@@ -237,12 +237,13 @@ class Checks {
     }
   }
 
-  printErrors(area: HTMLElement, error: true | string): void {
+  printErrors(area: HTMLElement, error: true | string): HTMLElement {
     if (error === true) {
       area.innerText = "";
     } else {
       area.innerText = error;
     }
+    return area;
   }
 }
 

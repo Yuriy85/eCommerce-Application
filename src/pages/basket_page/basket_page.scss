@@ -8,3 +8,130 @@
   flex-direction: column;
   align-items: center;
 }
+
+.basket__wrapper {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+}
+
+.basket__card-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.basket__card-remove,
+.basket__clear-cart,
+.basket__card-title,
+.basket__total-price-caption {
+  margin: 0.5em;
+}
+
+.basket__left-wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.basket__card,
+.basket__total-cart-wrapper,
+.basket__empty-wrapper,
+.basket__promo-code-wrapper {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  background: #00000036;
+  box-shadow: 0 0 10px black;
+  padding: 10px;
+  justify-content: space-between;
+  transition: all 0.1s;
+  &:hover {
+    // cursor: pointer;
+    // box-shadow: 0 0 20px black;
+    // scale: 1.03;
+    // background: #77777736;
+  }
+  &:active {
+    box-shadow: 0 0 10px black;
+    // scale: 1.03;
+  }
+}
+
+.basket__total-price-value {
+  color: #6aff00;
+}
+
+.basket__card-first-price,
+.basket__card-total-price {
+  margin: 0;
+}
+
+.basket__product-quantity,
+.basket__promo-value {
+  width: 60px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 5px;
+  text-align: center;
+}
+
+.basket__promo-value {
+  width: 270px;;
+  color: #6aff00;
+}
+
+.basket__empty-wrapper {
+  min-height: 250px;
+}
+
+.basket__empty-massage {
+  text-align: center;
+}
+
+.basket__empty-image {
+  max-width: fit-content;
+  width: 100%;
+}
+
+.basket__to-catalog {
+  margin: 1em;
+}
+
+.basket__total-cart-wrapper {
+  min-width: 350px;
+  position: sticky;
+  top: 340px;
+}
+
+.basket__promo-code-wrapper {
+  min-width: 350px;
+  position: sticky;
+  top: 20px;
+  margin-bottom: 20px;
+}
+
+.basket__card-img {
+  width: 150px;
+  height: 150px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 770px) {
+  .basket__right-wrapper {
+    width: 100%;
+  }
+  .basket__wrapper {
+    flex-wrap: wrap;
+  }
+  .basket__total-cart-wrapper,
+  .basket__promo-code-wrapper {
+    min-width: auto;
+  }
+}

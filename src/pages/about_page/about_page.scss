@@ -6,5 +6,152 @@
   padding: $main-padding;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  row-gap: 20px;
+}
+.about__logoRS {
+   display: contents;
+}
+.about__gratitude-text {
+    display: flex;
+    text-shadow: 4px 5px 5px rgba(0, 0, 0, 0.7);
+    line-height: 2.5;
+    margin-top: 0;
+}
+.about__caption {
+  text-align: center;
+}
+.about__introduction {
+  margin-bottom: 0;
+  text-align: justify;
+  text-shadow: 4px 5px 5px rgba(0, 0, 0, 0.7);
+}
+.about__Mikhail,
+.about__Yuriy,
+.about__Maria {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    width: 100%;
+    border-radius: 10px;
+    max-width: 950px;
+    min-height: 15rem;
+    justify-content: space-between;
+    box-shadow: 8px 10px 5px #00000060;
+    background: rgba(0, 0, 0, 0.2117647059)
+}
+.about__Mikhail,
+.about__Maria {
+    position: relative;
+    animation: showLeft 1s ease-out;
+    align-self: flex-end;
+}
+@keyframes showLeft {
+    from {right:200%;}
+    to {right: 0;}
+}
+.about__Yuriy {
+    position: relative;
+    animation: showRight 1s ease-out;
+    align-self: flex-start;
+    box-shadow: -8px 10px 5px #00000060;
+
+}
+@keyframes showRight {
+    from {left:200%;}
+    to {left:0;}
+}
+.about__photo-maria,
+.about__photo-yuriy,
+.about__photo-mikhail {
+    min-width: 270px;
+    min-height: 300px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    background-image: url('../../assets/images/Mary.jpg');
+    margin-top: 94px;
+    margin-left: 10px;
+}
+.about__photo-yuriy {
+    background-image: url('../../assets/images/Yuriy.jpg');
+    margin-left: 0px;
+    margin-right: 10px;
+}
+.about__photo-mikhail {
+    background-image: url('../../assets/images/Mikhail.jpg');
+}
+.about__maria-info,
+.about__yuriy-info,
+.about__mikhail-info {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px;
+}
+.about__wrapper-Maria,
+.about__wrapper-Yuriy,
+.about__wrapper-Mikhail {
+    display: flex;
+    column-gap: 20px;
+}
+.about__fullName-Maria,
+.about__fullName-Yuriy,
+.about__fullName-Mikhail {
+    text-align: end;
+    margin-top: 0;
+    text-shadow: 4px 5px 5px rgba(0, 0, 0, 0.7);
+}
+.about__fullName-Yuriy {
+text-align: start;
+}
+.about__maria-text-proj,
+.about__yuriy-text-proj,
+.about__mikhail-text-proj {
+    text-align: justify;
+    margin-bottom: 0;
+}
+.about__maria-text-bio,
+.about__yuriy-text-bio,
+.about__mikhail-text-bio {
+    text-align: justify;
+    padding: 10px;
+    margin-bottom: 70px;
+}
+.about__github-Maria,
+.about__github-Yuriy,
+.about__github-Mikhail {
+    font-size: 1.17em;
+    color: #6aff00;
+    text-shadow: 4px 5px 5px rgba(0, 0, 0, 0.7);
+    text-decoration: none;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+.about__github-Yuriy {
+    left:10px;
+}
+@media screen and (max-width: 890px) {
+    .about__wrapper-Maria,
+    .about__wrapper-Yuriy,
+    .about__wrapper-Mikhail {
+        flex-direction: column;
+        row-gap: 20px;
+        align-items: center;
+    }
+    .about__fullName-Maria,
+    .about__fullName-Yuriy,
+    .about__fullName-Mikhail {
+        text-align: center;
+    }
+    .about__wrapper-Yuriy {
+        flex-direction: column-reverse;
+    }
+}
+@media screen and (max-width: 947px) {
+    .about__gratitude-text {
+        line-height: 1.4;
+    }
 }

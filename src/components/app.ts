@@ -19,12 +19,12 @@ class App {
   main: Main;
   footer: Footer;
   mainPage: HTMLElement;
-  catalogPage: Promise<HTMLElement>;
+  catalogPage: CatalogPage;
   detailPage: DetailPage;
   profilePage: ProfilePage;
   loginPage: HTMLElement;
   registerPage: HTMLElement;
-  basketPage: HTMLElement;
+  basketPage: BasketPage;
   aboutPage: HTMLElement;
   errorPage: ErrorPage;
   products: Products;
@@ -35,12 +35,12 @@ class App {
     this.main = new Main();
     this.footer = new Footer();
     this.mainPage = new MainPage().render();
-    this.catalogPage = new CatalogPage().render();
+    this.catalogPage = new CatalogPage();
     this.detailPage = new DetailPage();
     this.profilePage = new ProfilePage();
     this.loginPage = new LoginPage().render();
     this.registerPage = new RegisterPage().render();
-    this.basketPage = new BasketPage().render();
+    this.basketPage = new BasketPage();
     this.aboutPage = new AboutPage().render();
     this.errorPage = new ErrorPage();
     this.products = new Products();
@@ -65,7 +65,7 @@ class App {
       pageInnerData = this.mainPage;
     } else if (path === pagePaths.catalogPath) {
       headerButtons[0]?.classList.add("header__button--active");
-      pageInnerData = await this.catalogPage;
+      pageInnerData = await this.catalogPage.render();
     } else if (path.split("?")[0] === pagePaths.detailedPath) {
       pageInnerData = await this.detailPage.render();
     } else if (path === pagePaths.profilePath) {
@@ -79,7 +79,7 @@ class App {
       pageInnerData = this.registerPage;
     } else if (path === pagePaths.basketPath) {
       headerButtons[4]?.classList.add("header__button--active");
-      pageInnerData = this.basketPage;
+      pageInnerData = await this.basketPage.render();
     } else if (path === pagePaths.aboutPath) {
       headerButtons[5]?.classList.add("header__button--active");
       pageInnerData = this.aboutPage;

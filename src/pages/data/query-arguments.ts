@@ -7,39 +7,47 @@ class QueryArgs {
     this.products = new Products();
   }
 
-  async getQueryArgs(index: number, text?: string) {
+  async getQueryArgs(index: number, offset: number, text?: string) {
     const id: string = await this.products.getCategoriesId(index);
+    const limit: number = 6;
 
     const queryArgs: IParamsQueryArgs = {
       productsAll: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         filter: [`categories.id:"${id}"`],
       },
       filterLactoseYes: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         filter: [`categories.id:"${id}"`, `variants.attributes.lactose:"yes"`],
       },
       filterLactoseNo: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         filter: [`categories.id:"${id}"`, `variants.attributes.lactose:"no"`],
       },
       sortAlphabetically: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         sort: [`name.en-US asc`],
         filter: [`categories.id:"${id}"`],
       },
       sortAscending: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         sort: [`price asc`],
         filter: [`categories.id:"${id}"`],
       },
       sortDescending: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         sort: [`price desc`],
         filter: [`categories.id:"${id}"`],
       },
       searchText: {
-        limit: 21,
+        limit: limit,
+        offset: offset,
         filter: [`categories.id:"${id}"`],
         ["text.en-US"]: `"${text}"`,
         fuzzy: true,
@@ -47,12 +55,16 @@ class QueryArgs {
     };
     return queryArgs;
   }
-  async getQueryArgsCategories(index: number): Promise<IParamsCategories> {
+  async getQueryArgsCategories(
+    index: number,
+    offset: number,
+  ): Promise<IParamsCategories> {
     const id: string = await this.products.getCategoriesId(index);
     const categories: IParamsCategories = {
       categoriesSushi: {
-        limit: 21,
+        limit: 6,
         filter: [`categories.id:"${id}"`],
+        offset: offset,
       },
     };
     return categories;

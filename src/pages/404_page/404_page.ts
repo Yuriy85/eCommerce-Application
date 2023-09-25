@@ -1,4 +1,3 @@
-import "./404_page.scss";
 import { pagePaths } from "../../routes/routes";
 
 class ErrorPage {

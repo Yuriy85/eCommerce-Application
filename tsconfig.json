@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
-    "typeRoots": ["src/core/types"],
+    "typeRoots": ["src/core/types", "node_modules/@types"],
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "module": "es6",

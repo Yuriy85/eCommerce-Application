@@ -1,22 +1,18 @@
 import Customer from "./customer";
+import Key from "../controller/key";
 
 class Register {
   customer: Customer;
+  key: Key;
   billing: number[] | undefined;
   shipping: number[] | undefined;
   constructor() {
     this.customer = new Customer();
+    this.key = new Key();
     this.billing = undefined;
     this.shipping = undefined;
   }
-  getKey() {
-    const key = "abcdef01234567890";
-    let result = "";
-    for (let i = 0; i < 8; i += 1) {
-      result += key[Math.floor(Math.random() * key.length)];
-    }
-    return result;
-  }
+
   registration(): void {
     const email: HTMLInputElement = document.querySelector(
       ".register__input-reg-email",
@@ -78,7 +74,7 @@ class Register {
     const valueLastName: string = lastName.value;
     const valueDateOfBirth: string = dateOfBirth.value;
 
-    const keyShipping: string = `${this.getKey()}`;
+    const keyShipping: string = `${this.key.getKey()}`;
     const valueCountryShipping =
       countryShopping.value === "Belarus" ? "BY" : "IT";
 
@@ -86,7 +82,7 @@ class Register {
     const valueStreetShipping: string = streetShopping.value;
     const valuePostcodeShipping: string = postcodeShopping.value;
 
-    const keyBilling: string = `${this.getKey()}`;
+    const keyBilling: string = `${this.key.getKey()}`;
     const valueCountryBilling: string =
       countryBilling.value === "Belarus" ? "BY" : "IT";
     const valueCityBilling: string = cityBilling.value;

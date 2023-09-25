@@ -7,6 +7,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: no-repeat;
+  background-position: center
 }
 
 .catalog__nav-wrapper {
@@ -162,16 +164,15 @@
 }
 
 .catalog__card {
-  width: 280px;
+  width: 330px;
   min-height: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 10px;
   background: #00000036;
-  // border: solid 3px rgb(197 226 226 / 77%);
   box-shadow: 0 0 10px black;
-  padding: 5px;
+  padding: 10px;
   justify-content: space-between;
   transition: all 0.1s;
   &:hover {
@@ -182,7 +183,6 @@
   }
   &:active {
     box-shadow: 0 0 10px black;
-    scale: 1.03;
   }
 }
 
@@ -206,7 +206,30 @@
 .catalog__card-third-price {
   margin: 0;
 }
+.catalog__to-basket-button {
+    display: none;
+}    
+.catalog__to-basket-button {
+    background-image: url('../../assets/icons/basket.svg');
+    min-width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.catalog__first-basket {
+    display: block;
+}
 
+.catalog__to-basket-button:hover,
+.catalog__to-basket-button2:hover,
+.catalog__to-basket-button3:hover {
+    background-color: #6aff0085;
+}
+.catalog__to-basket-button:disabled {
+    background-color: rgb(91, 91, 91);
+    box-shadow: 0 0 10px #000000;
+}
 .catalog__card--discount {
   color: #6aff00;
   text-shadow: 0 0 10px #000000;
@@ -217,9 +240,11 @@
 }
 
 .catalog__price-wrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  row-gap: .5rem;
 }
 
 @media (max-width: 1120px) {
@@ -237,5 +262,40 @@
   .catalog__sort-wrapper,
   .catalog__search-wrapper {
     margin: 20px 0 0 0;
+  }
+}
+.catalog__first-price-wrap,
+.catalog__price-variant-wrap,
+.catalog__price-variant-two-wrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.catalog__pagination {
+  margin: 40px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  // width: 20%;
+}
+
+.catalog__btn-pagination {
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  background-color: rgb(128, 128, 128);
+  box-shadow: 0 0 10px black;
+  padding: 5px 10px;
+  margin: 0 10px 0 0;
+  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px black;
+    scale: 1.05;
+    background: #77777736;
   }
 }

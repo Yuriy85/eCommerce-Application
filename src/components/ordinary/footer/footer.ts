@@ -1,18 +1,13 @@
-import "./footer.scss";
-
 class Footer {
-  footer: HTMLElement;
-  constructor() {
-    this.footer = document.createElement("footer");
-  }
-
-  render(parentNode: HTMLElement): void {
+  render(parentNode: HTMLElement): HTMLElement {
+    const footer: HTMLElement = document.createElement("footer");
     const wrapper: HTMLElement = document.createElement("div");
 
-    this.footer.classList.add("footer");
+    footer.classList.add("footer");
     wrapper.classList.add("footer__wrapper");
-    this.footer.appendChild(wrapper);
-    parentNode.appendChild(this.footer);
+    footer.appendChild(wrapper);
+    parentNode.appendChild(footer);
+    return footer;
   }
 }
 

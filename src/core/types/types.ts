@@ -7,15 +7,31 @@ export type paramQueryArgs = {
 };
 
 export interface IParamsQueryArgs {
-  productsAll: { limit: number; filter: string[] };
-  filterLactoseYes: { limit: number; filter: string[] };
-  filterLactoseNo: { limit: number; filter: string[] };
-  sortAlphabetically: { limit: number; sort: string[]; filter: string[] };
-  sortAscending: { limit: number; sort: string[]; filter: string[] };
-  sortDescending: { limit: number; sort: string[]; filter: string[] };
+  productsAll: { limit: number; offset: number; filter: string[] };
+  filterLactoseYes: { limit: number; offset: number; filter: string[] };
+  filterLactoseNo: { limit: number; offset: number; filter: string[] };
+  sortAlphabetically: {
+    limit: number;
+    offset: number;
+    sort: string[];
+    filter: string[];
+  };
+  sortAscending: {
+    limit: number;
+    offset: number;
+    sort: string[];
+    filter: string[];
+  };
+  sortDescending: {
+    limit: number;
+    offset: number;
+    sort: string[];
+    filter: string[];
+  };
   searchText: {
     limit: number;
     filter: string[];
+    offset: number;
     "text.en-US": string;
     fuzzy: true;
   };
@@ -29,5 +45,6 @@ export interface IParamsCategories {
   categoriesSushi: {
     limit: number;
     filter: string[];
+    offset: number;
   };
 }

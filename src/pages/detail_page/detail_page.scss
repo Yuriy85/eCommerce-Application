@@ -1,3 +1,4 @@
+
 .detail {
   width: 100%;
   max-width: $main-Wrapper-width;
@@ -106,7 +107,7 @@
 }
 
 .detail__price {
-  margin-bottom: 0;
+  margin: 0;
   text-shadow: 0 0 10px #000000;
 }
 
@@ -130,7 +131,35 @@
   overflow: scroll;
   background-color: rgba(0, 0, 0, 0.7);
 }
-
+.detail__first-price-wrapper,
+.detail__second-price-wrapper,
+.detail__third-price-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+.detail__to-basket-button {
+    display: none;
+}
+.detail__to-basket-button {
+    background-image: url('../../assets/icons/basket.svg');
+    min-width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.detail__first-basket {
+    display: block;
+}
+.detail__to-basket-button:hover {
+    background-color: #6aff0085;
+}
+.detail__to-basket-button:disabled {
+    background-color: rgb(91, 91, 91);
+    box-shadow: 0 0 10px #000000;
+}
 @media screen and (max-width: 750px) {
   .detail__wrapper {
     flex-direction: column;
