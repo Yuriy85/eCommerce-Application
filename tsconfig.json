@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "typeRoots": ["src/core/types", "node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "ES2021",
+    "allowJs": true,
+    "strict": true,
+    "moduleResolution": "NodeNext"
+  },
+  "files": ["src/index.ts"]
+}
