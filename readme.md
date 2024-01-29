@@ -1,8 +1,8 @@
-# Project eCommerce Application 🛍️🌐
+# [Project eCommerce Application 🛍️🌐](https://ecommerce-trueorfalse-sprint4.netlify.app/)
 
 ## 1.Describing the project:
 
-Users can browse through a vast range of products 📚👗👟, view detailed descriptions, add their favorite items to the basket 🛒, and proceed to checkout 💳. It includes features such as user registration and login 📝🔐, product search 🔍, product categorization, and sorting to make the shopping experience more streamlined and convenient.
+Users can browse through a vast range of products 📚👗👟, view detailed descriptions, add their favorite items to the basket 🛒, and proceed to checkout 💳. It includes features such as user registration and login 📝🔐, product search 🔍, product categorization, and sorting to make the shopping experience more streamlined and convenient. The eCommerce Application project is the final educational RSSchool project for a team of three people. The main goal is to work with CommerceTools and interact with each other.
 
 Key pages in the application include:
 
@@ -27,21 +27,8 @@ The application is powered by CommerceTools 🌐, a leading provider of commerce
 - Jest
 - Husky
 
-## 4.Scripts:
+## 4.Notes:
 
-- running Prettier: npm run fix
-- running ESLint: npm run lint
-- running Jest: npm test
+Unfortunately, the trial period for the CommerceTools API has expired.
 
-## 5.Setting up and running the project locally
-
-The project is built on Webpack.
-The bundler configuration supports both development and production build modes.
-- running webpack production: npm run build
-- running webpack development: npm run build:dev
-
-The project supports running locally.
-- open with live server: npm start
-
-To initialize husky run script "npm run prepare" once!
 
