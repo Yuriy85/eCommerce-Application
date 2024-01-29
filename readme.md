@@ -2,7 +2,7 @@
 
 ## 1.Describing the project:
 
-Users can browse through a vast range of products 📚👗👟, view detailed descriptions, add their favorite items to the basket 🛒, and proceed to checkout 💳. It includes features such as user registration and login 📝🔐, product search 🔍, product categorization, and sorting to make the shopping experience more streamlined and convenient. The eCommerce Application project is the final educational RSSchool project for a team of three people. The main goal is to work with CommerceTools and interact with each other.
+The eCommerce Application project is the final educational RSSchool project for a team of three people. The main goal is to work with CommerceTools and interact with each other. Users can browse through a vast range of products 📚👗👟, view detailed descriptions, add their favorite items to the basket 🛒, and proceed to checkout 💳. It includes features such as user registration and login 📝🔐, product search 🔍, product categorization, and sorting to make the shopping experience more streamlined and convenient. 
 
 Key pages in the application include:
 
