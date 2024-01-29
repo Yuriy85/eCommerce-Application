@@ -1,8 +1,14 @@
 import "./detail_page.scss";
 import Events from "../../controller/events";
 import Products from "../../controller/products";
-import { ProductData, ProductVariant } from "@commercetools/platform-sdk";
+import {
+  Cart,
+  ClientResponse,
+  ProductData,
+  ProductVariant,
+} from "@commercetools/platform-sdk";
 import getSlider from "simple-slider-ts";
+import delCartImg from "../../assets/icons/basket-del.svg";
 
 class DetailPage {
   products: Products;
@@ -14,9 +20,8 @@ class DetailPage {
   }
 
   async render(): Promise<HTMLElement> {
-    const product: ProductData = await this.products.getProductByID(
-      new URL(window.location.href).hash.split("?")[1],
-    );
+    const productId: string = new URL(window.location.href).hash.split("?")[1];
+    const product: ProductData = await this.products.getProductByID(productId);
 
     const mainWrapper: HTMLElement = document.createElement("div");
     mainWrapper.classList.add("detail");
@@ -28,6 +33,7 @@ class DetailPage {
 
     const wrapper: HTMLElement = document.createElement("div");
     wrapper.classList.add("detail__wrapper");
+    wrapper.setAttribute("id", productId);
 
     const imageSlider: HTMLElement = document.createElement("div");
     imageSlider.classList.add("detail__image-slider");
@@ -75,14 +81,42 @@ class DetailPage {
     metaDescription.classList.add("detail__meta-description");
     metaDescription.innerText = product.metaDescription?.["en-US"] as string;
 
+    const firstPriceWrapper = document.createElement("div");
+    firstPriceWrapper.classList.add("detail__first-price-wrapper");
     const firstVariantPrice: HTMLElement = document.createElement("p");
     firstVariantPrice.classList.add("detail__price");
+    const toBasketFirst: HTMLButtonElement = document.createElement("button");
+    toBasketFirst.classList.add(
+      "detail__to-basket-button",
+      "detail__first-basket",
+    );
+    toBasketFirst.title = "Add to cart";
 
+    const secondPriceWrapper = document.createElement("div");
+    secondPriceWrapper.classList.add("detail__second-price-wrapper");
     const secondVariantPrice: HTMLElement = document.createElement("p");
     secondVariantPrice.classList.add("detail__price");
+    const toBasketSecond: HTMLButtonElement = document.createElement("button");
+    toBasketSecond.classList.add(
+      "detail__to-basket-button",
+      "detail__second-basket",
+    );
+    toBasketSecond.title = "Add to cart";
 
+    const thirdPriceWrapper = document.createElement("div");
+    thirdPriceWrapper.classList.add("detail__third-price-wrapper");
     const thirdVariantPrice: HTMLElement = document.createElement("p");
     thirdVariantPrice.classList.add("detail__price");
+    const toBasketThird: HTMLButtonElement = document.createElement("button");
+    toBasketThird.classList.add(
+      "detail__to-basket-button",
+      "detail__third-basket",
+    );
+    toBasketThird.title = "Add to cart";
+
+    firstPriceWrapper.append(firstVariantPrice, toBasketFirst);
+    secondPriceWrapper.append(secondVariantPrice, toBasketSecond);
+    thirdPriceWrapper.append(thirdVariantPrice, toBasketThird);
 
     const btnToCatalog: HTMLButtonElement = document.createElement("button");
     btnToCatalog.classList.add("detail__to-catalog");
@@ -93,6 +127,8 @@ class DetailPage {
     const secondProductData: ProductVariant = product.variants[0];
     const thirdProductData: ProductVariant = product.variants[1];
 
+    toBasketFirst.id = firstProductData.prices?.[0].id as string;
+
     if (firstProductData.prices?.[0].discounted) {
       firstVariantPrice.classList.add("detail__price--discount");
       firstVariantPrice.innerHTML = `${(
@@ -102,18 +138,20 @@ class DetailPage {
         .strike()} ${(
         (firstProductData.prices?.[0].discounted.value.centAmount as number) /
         100
-      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
-        separator as number,
-      )}`;
+      ).toFixed(2)} ${String.fromCharCode(
+        8364,
+      )} ${firstProductData.sku?.substring(separator as number)}`;
     } else {
       firstVariantPrice.innerHTML = `${(
         (firstProductData.prices?.[0].value.centAmount as number) / 100
-      ).toFixed(2)} EUR ${firstProductData.sku?.substring(
-        separator as number,
-      )}`;
+      ).toFixed(2)} ${String.fromCharCode(
+        8364,
+      )} ${firstProductData.sku?.substring(separator as number)}`;
     }
 
     if (secondProductData) {
+      toBasketSecond.id = secondProductData.prices?.[0].id as string;
+      toBasketSecond.style.display = "block";
       if (secondProductData.prices?.[0].discounted) {
         secondVariantPrice.classList.add("detail__price--discount");
         secondVariantPrice.innerHTML = `${(
@@ -123,19 +161,21 @@ class DetailPage {
           .strike()} ${(
           (secondProductData.prices?.[0].discounted.value
             .centAmount as number) / 100
-        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${secondProductData.sku?.substring(separator as number)}`;
       } else {
         secondVariantPrice.innerHTML = `${(
           (secondProductData.prices?.[0].value.centAmount as number) / 100
-        ).toFixed(2)} EUR ${secondProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${secondProductData.sku?.substring(separator as number)}`;
       }
     }
 
     if (thirdProductData) {
+      toBasketThird.id = thirdProductData.prices?.[0].id as string;
+      toBasketThird.style.display = "block";
       if (thirdProductData.prices?.[0].discounted) {
         thirdVariantPrice.classList.add("detail__price--discount");
         thirdVariantPrice.innerHTML = `${(
@@ -145,15 +185,42 @@ class DetailPage {
           .strike()} ${(
           (thirdProductData.prices?.[0].discounted.value.centAmount as number) /
           100
-        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${thirdProductData.sku?.substring(separator as number)}`;
       } else {
         thirdVariantPrice.innerHTML = `${(
           (thirdProductData.prices?.[0].value.centAmount as number) / 100
-        ).toFixed(2)} EUR ${thirdProductData.sku?.substring(
-          separator as number,
-        )}`;
+        ).toFixed(2)} ${String.fromCharCode(
+          8364,
+        )} ${thirdProductData.sku?.substring(separator as number)}`;
+      }
+    }
+
+    if (localStorage.getItem("objectCart")) {
+      const cartsData: ClientResponse<Cart> = JSON.parse(
+        localStorage.getItem("objectCart") as string,
+      );
+      if (
+        cartsData.body.lineItems.some(
+          (item) => item.price.id === toBasketFirst.id,
+        )
+      ) {
+        toBasketFirst.style.backgroundImage = `url(${delCartImg})`;
+      }
+      if (
+        cartsData.body.lineItems.some(
+          (item) => item.price.id === toBasketSecond.id,
+        )
+      ) {
+        toBasketSecond.style.backgroundImage = `url(${delCartImg})`;
+      }
+      if (
+        cartsData.body.lineItems.some(
+          (item) => item.price.id === toBasketThird.id,
+        )
+      ) {
+        toBasketThird.style.backgroundImage = `url(${delCartImg})`;
       }
     }
 
@@ -166,16 +233,15 @@ class DetailPage {
         imageSlider,
         imageButtonWrapper,
         btnClose,
-        btnLeft,
       ),
     );
     wrapper.append(imageSlider, description);
     description.append(
       mainDescription,
       metaDescription,
-      firstVariantPrice,
-      secondVariantPrice,
-      thirdVariantPrice,
+      firstPriceWrapper,
+      secondPriceWrapper,
+      thirdPriceWrapper,
     );
     imageButtonWrapper.append(imageWrapper, btnClose);
     imageSlider.append(btnLeft, imageButtonWrapper, btnRight);
@@ -183,6 +249,7 @@ class DetailPage {
 
     this.showSlider(imageWrapper, btnLeft, btnRight);
     this.events.clickToCatalogButton(btnToCatalog);
+    this.events.clickDetailCard(wrapper);
     return mainWrapper;
   }
 
@@ -191,7 +258,6 @@ class DetailPage {
     imageSlider: HTMLElement,
     imageButtonWrapper: HTMLElement,
     btnClose: HTMLButtonElement,
-    btnLeft: HTMLButtonElement,
   ) {
     const modalWindow = document.createElement("div");
     modalWindow.classList.add("detail__modal");
@@ -201,8 +267,6 @@ class DetailPage {
       imageSlider.style.position = "absolute";
       imageButtonWrapper.style.maxWidth = "700px";
       btnClose.style.display = "block";
-      btnLeft.style.order = "1";
-      imageSlider.style.flexDirection = "column";
     });
 
     btnClose.addEventListener("click", () => {
@@ -210,8 +274,6 @@ class DetailPage {
       imageSlider.style.position = "unset";
       imageButtonWrapper.style.maxWidth = "300px";
       btnClose.style.display = "none";
-      btnLeft.style.order = "unset";
-      imageSlider.style.flexDirection = "unset";
     });
     return modalWindow;
   }

@@ -1,4 +1,5 @@
 import Clients from "./client";
+import ClientsAnonymous from "./clientAnonymous";
 import { pagePaths } from "../routes/routes";
 import loginImg from "../assets/icons/login.svg";
 import logoutImg from "../assets/icons/logout.svg";
@@ -6,9 +7,11 @@ import { CustomerUpdateAction } from "@commercetools/platform-sdk";
 
 class Customer {
   clients: Clients;
+  clientsAnonymous: ClientsAnonymous;
 
   constructor() {
     this.clients = new Clients();
+    this.clientsAnonymous = new ClientsAnonymous();
   }
 
   async getRegisterCustomer(
@@ -145,6 +148,7 @@ class Customer {
     try {
       const apiRoot = this.clients.getPasswordFlowClient(email, login);
       const customer = await apiRoot
+        .me()
         .login()
         .post({ body: { email: email, password: login } })
         .execute();
@@ -429,6 +433,13 @@ class Customer {
         },
       })
       .execute();
+    return customer;
+  }
+
+  async getAnonymousCustomer() {
+    const apiRoot = this.clientsAnonymous.getAnonymousSessionFlowClient();
+    const customer = await apiRoot.customers().get().execute();
+    // localStorage.setItem("id", JSON.stringify(customer.body.customer.id));
     return customer;
   }
 }

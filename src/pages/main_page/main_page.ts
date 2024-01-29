@@ -51,6 +51,13 @@ class MainPage {
     linkToAbout.title = "Go to about";
     linkToAbout.innerHTML = "About Us";
 
+    const codeSushiSet: HTMLElement = document.createElement("p");
+    const codeDrinkSoft: HTMLElement = document.createElement("p");
+    codeSushiSet.classList.add("main-page__promo");
+    codeDrinkSoft.classList.add("main-page__promo");
+    codeSushiSet.textContent = "Promo code 20% for sushi set - sushiset";
+    codeDrinkSoft.textContent = "Promo code 10% for soft drink - drinksoft";
+
     linksToPages.append(
       linkToCatalog,
       linkToProfile,
@@ -58,6 +65,8 @@ class MainPage {
       linkToRegister,
       linkToBasket,
       linkToAbout,
+      codeSushiSet,
+      codeDrinkSoft,
     );
     mainWrapper.append(caption, linksToPages);
 

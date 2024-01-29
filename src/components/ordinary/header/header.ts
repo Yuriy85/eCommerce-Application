@@ -1,4 +1,3 @@
-import "./header.scss";
 import catalogImg from "../../../assets/icons/catalog.svg";
 import profileImg from "../../../assets/icons/profile.svg";
 import loginImg from "../../../assets/icons/login.svg";
@@ -10,11 +9,9 @@ import { pagePaths } from "../../../routes/routes";
 import Events from "../../../controller/events";
 
 class Header {
-  header: HTMLElement;
   events: Events;
 
   constructor() {
-    this.header = document.createElement("header");
     this.events = new Events();
   }
 
@@ -22,28 +19,36 @@ class Header {
     imgSvg: string,
     name: string,
     href: string,
+    style: string,
     id?: string,
   ): HTMLAnchorElement {
     const button = document.createElement("a");
     const buttonImg = document.createElement("img");
     const buttonTitle = document.createElement("span");
+    const buttonCount = document.createElement("span");
     button.id = id ? `${id}-btn` : "";
     button.classList.add("header__button");
     buttonImg.classList.add("header__button-img");
     buttonTitle.classList.add("header__button-title");
-    button.appendChild(buttonImg);
-    button.appendChild(buttonTitle);
+    buttonCount.classList.add("header__button-count");
+    button.append(buttonImg, buttonCount, buttonTitle);
     buttonImg.src = imgSvg;
     buttonImg.id = id ? `${id}-img` : "";
     buttonTitle.innerText = name;
     buttonTitle.id = id ? `${id}-title` : "";
-    if (!id) {
+    buttonCount.style.display = style;
+    buttonCount.textContent = Header.getCountOnBasketIcon(
+      localStorage.getItem("countProductOnCart") as string,
+    );
+    buttonCount.id = id ? `${id}-count` : "";
+    if (id !== "log") {
       button.href = href;
     }
     return button;
   }
 
-  render(parentNode: HTMLElement): void {
+  render(parentNode: HTMLElement): HTMLElement {
+    const header: HTMLElement = document.createElement("header");
     const wrapper: HTMLElement = document.createElement("div");
     const caption: HTMLElement = document.createElement("h1");
     const userMenu: HTMLElement = document.createElement("div");
@@ -51,11 +56,13 @@ class Header {
       profileImg,
       "Profile",
       pagePaths.profilePath,
+      "none",
     );
     const loginButton = this.createButton(
       loginImg,
       "Login",
       pagePaths.loginPath,
+      "none",
       "log",
     );
     caption.title = " go to main";
@@ -66,16 +73,27 @@ class Header {
     wrapper.appendChild(caption);
     wrapper.appendChild(userMenu);
     userMenu.append(
-      this.createButton(catalogImg, "Catalog", pagePaths.catalogPath),
+      this.createButton(catalogImg, "Catalog", pagePaths.catalogPath, "none"),
       profileButton,
       loginButton,
-      this.createButton(registerImg, "Register", pagePaths.registerPath),
-      this.createButton(basketImg, "Basket", pagePaths.basketPath),
-      this.createButton(aboutImg, "About Us", pagePaths.aboutPath),
+      this.createButton(
+        registerImg,
+        "Register",
+        pagePaths.registerPath,
+        "none",
+      ),
+      this.createButton(
+        basketImg,
+        "Basket",
+        pagePaths.basketPath,
+        "block",
+        "basket",
+      ),
+      this.createButton(aboutImg, "About Us", pagePaths.aboutPath, "none"),
     );
-    this.header.classList.add("header");
-    this.header.appendChild(wrapper);
-    parentNode.appendChild(this.header);
+    header.classList.add("header");
+    header.appendChild(wrapper);
+    parentNode.appendChild(header);
 
     this.events.clickPageAnchor(
       loginButton,
@@ -84,21 +102,29 @@ class Header {
     );
 
     if (localStorage.getItem("id")) {
-      this.changeLoginIcon("in");
+      this.changeLoginIcon(
+        document.getElementById("log-img") as HTMLImageElement,
+        document.getElementById("log-title") as HTMLSpanElement,
+        "in",
+      );
     } else {
       profileButton.classList.add("header__hide-element");
     }
+    return header;
   }
 
-  changeLoginIcon(method?: "in") {
-    const loginImage: HTMLImageElement = document.getElementById(
-      "log-img",
-    ) as HTMLImageElement;
-    const loginTitle: HTMLSpanElement = document.getElementById(
-      "log-title",
-    ) as HTMLSpanElement;
+  changeLoginIcon(
+    loginImage: HTMLImageElement,
+    loginTitle: HTMLSpanElement,
+    method?: "in",
+  ) {
     loginTitle.innerText = method ? "Logout" : "login";
     loginImage.src = method ? logoutImg : loginImg;
+    return loginImage;
+  }
+
+  static getCountOnBasketIcon(countFromLocalStorage: string): string {
+    return countFromLocalStorage === "0" ? "" : countFromLocalStorage;
   }
 }
 

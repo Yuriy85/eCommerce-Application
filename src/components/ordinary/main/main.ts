@@ -1,14 +1,9 @@
-import "./main.scss";
-
 class Main {
-  main: HTMLElement;
-  constructor() {
-    this.main = document.createElement("main");
-  }
-
-  render(parentNode: HTMLElement): void {
-    this.main.classList.add("main");
-    parentNode.appendChild(this.main);
+  render(parentNode: HTMLElement): HTMLElement {
+    const main = document.createElement("main");
+    main.classList.add("main");
+    parentNode.appendChild(main);
+    return main;
   }
 }
 

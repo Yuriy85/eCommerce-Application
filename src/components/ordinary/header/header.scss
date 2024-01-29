@@ -63,3 +63,14 @@
 .header__hide-element {
   display: none;
 }
+
+#basket-btn {
+  position: relative;
+}
+
+.header__button-count {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  color: #6aff00;
+}
